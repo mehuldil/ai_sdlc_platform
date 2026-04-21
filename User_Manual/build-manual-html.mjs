@@ -79,7 +79,10 @@ function titleFor(name) {
   return name.replace(/\.md$/, "").replace(/_/g, " ");
 }
 function slugFor(name) {
-  return name.replace(/\.md$/, "").toLowerCase();
+  return name
+    .replace(/\.md$/, "")
+    .replace(/^.*[\\/]/, "")  // Strip any path prefix (e.g., ../docs/)
+    .toLowerCase();
 }
 function esc(s) {
   return String(s)
