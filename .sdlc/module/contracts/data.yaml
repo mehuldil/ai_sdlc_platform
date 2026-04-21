@@ -1,0 +1,15 @@
+# Data Contract — ai-sdlc-platform
+# Generated: 2026-04-17T13:35:47Z | Commit: 57d8b719 | Stack: unknown
+
+version: "1.0"
+module: "ai-sdlc-platform"
+
+storage_type: "unknown"
+
+schemas:
+
+migrations:
+  # - id: "V001"
+  #   description: "Initial schema"
+  #   reversible: true
+  #   status: "applied"

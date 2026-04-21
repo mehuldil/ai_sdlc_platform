@@ -1,0 +1,23 @@
+# Dependencies Contract — ai-sdlc-platform
+# Generated: 2026-04-17T13:35:47Z | Commit: 57d8b719 | Stack: unknown
+
+version: "1.0"
+module: "ai-sdlc-platform"
+
+# Internal dependencies (cross-pod / cross-module)
+internal:
+  # - module: "pod-2-payments"
+  #   interface: "PaymentManager"
+  #   methods: ["processPayment", "getReceipt"]
+  #   criticality: "high"
+
+# External service dependencies
+external:
+  # - service: "UserService"
+  #   version: "3.2"
+  #   endpoints: ["GET /users/{id}"]
+  #   fallback: "local_cache"
+  #   sla: "99.9%"
+
+# Third-party libraries (critical ones only)
+libraries:

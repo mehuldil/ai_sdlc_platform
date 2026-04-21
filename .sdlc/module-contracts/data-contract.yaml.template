@@ -1,0 +1,276 @@
+# Module Data Contract Template
+# Define your database schema and migration constraints
+
+version: "1.0"
+database: postgresql
+
+# ============================================================================
+# DATABASE TABLES — Document all tables and their structure
+# ============================================================================
+
+tables:
+  users:
+    description: Stores user account information
+    columns:
+      id:
+        type: bigserial
+        primary_key: true
+        immutable: true
+        description: Unique user identifier (auto-generated)
+
+      email:
+        type: varchar(255)
+        unique: true
+        required: true
+        immutable: true
+        index: true
+        description: User's email (unique, never changes)
+
+      name:
+        type: varchar(100)
+        required: true
+        description: User's full name (mutable)
+
+      phone:
+        type: varchar(20)
+        required: false
+        description: User's phone number (optional, mutable)
+
+      password_hash:
+        type: varchar(255)
+        required: true
+        description: Bcrypt hashed password
+
+      created_at:
+        type: timestamp
+        default: "CURRENT_TIMESTAMP"
+        immutable: true
+        description: Account creation timestamp (never changes)
+
+      updated_at:
+        type: timestamp
+        default: "CURRENT_TIMESTAMP"
+        on_update: "CURRENT_TIMESTAMP"
+        description: Last modification timestamp (auto-updated)
+
+      last_login:
+        type: timestamp
+        required: false
+        description: Timestamp of last login attempt
+
+      status:
+        type: varchar(50)
+        default: "active"
+        enum: [active, suspended, deleted]
+        description: Account status (active, suspended, or deleted)
+
+    indexes:
+      - name: idx_users_email
+        columns: [email]
+        unique: true
+        description: Ensures email uniqueness
+
+      - name: idx_users_status
+        columns: [status]
+        description: For querying by account status
+
+      - name: idx_users_created_at
+        columns: [created_at]
+        description: For time-range queries
+
+    foreign_keys:
+      - column: organization_id
+        references: organizations.id
+        on_delete: cascade
+        description: Links user to organization
+
+    constraints:
+      - "email MUST be valid email format"
+      - "status MUST be one of: active, suspended, deleted"
+      - "password_hash MUST NOT be null"
+
+  user_sessions:
+    description: Tracks active user sessions
+    columns:
+      id:
+        type: uuid
+        primary_key: true
+        immutable: true
+
+      user_id:
+        type: bigserial
+        required: true
+        foreign_key: users.id
+
+      token:
+        type: varchar(500)
+        unique: true
+        required: true
+
+      created_at:
+        type: timestamp
+        default: "CURRENT_TIMESTAMP"
+        immutable: true
+
+      expires_at:
+        type: timestamp
+        required: true
+
+      last_activity:
+        type: timestamp
+        on_update: "CURRENT_TIMESTAMP"
+
+    indexes:
+      - name: idx_sessions_user_id
+        columns: [user_id]
+
+      - name: idx_sessions_token
+        columns: [token]
+        unique: true
+
+      - name: idx_sessions_expires_at
+        columns: [expires_at]
+        description: For cleanup of expired sessions
+
+# ============================================================================
+# MIGRATIONS — Track all schema changes
+# ============================================================================
+
+migrations:
+  - version: "001"
+    description: "Create users table"
+    file: "db/migrations/001_create_users.sql"
+    tested: true
+    rolled_back: true
+    date_applied: "2024-01-15"
+    notes: "Initial schema with core user fields"
+
+  - version: "002"
+    description: "Add email unique index"
+    file: "db/migrations/002_add_email_index.sql"
+    tested: true
+    rolled_back: true
+    date_applied: "2024-02-20"
+
+  - version: "003"
+    description: "Create user_sessions table"
+    file: "db/migrations/003_create_user_sessions.sql"
+    tested: true
+    rolled_back: true
+    date_applied: "2024-03-10"
+
+  - version: "004"
+    description: "Add user status column"
+    file: "db/migrations/004_add_user_status.sql"
+    tested: true
+    rolled_back: false
+    date_applied: "2024-04-01"
+    warning: "Rollback not tested — use with caution"
+
+# ============================================================================
+# COLUMN IMMUTABILITY — Mark which columns can/cannot be modified
+# ============================================================================
+
+readonly_columns:
+  # These columns are set once and never change
+  - id
+  - email (user identifier, never changes)
+  - created_at
+  - user_sessions.token (session tokens are immutable)
+
+mutable_columns:
+  # These columns can be updated after creation
+  - name
+  - phone
+  - status
+  - updated_at (auto-updated)
+  - last_login (updated on each login)
+
+# ============================================================================
+# BREAKING CHANGES TO SCHEMA
+# ============================================================================
+
+breaking_changes:
+  - version: "2.0"
+    change: "Dropped password column (moved to password_hash)"
+    date: "2024-12-31"
+    impact: "CRITICAL — All password queries will fail"
+    migration_guide: "docs/migration/v2.0-password-change.md"
+    impacted_services: [auth-service, admin-panel]
+
+  - version: "1.5"
+    change: "Renamed user_created_at → created_at"
+    date: "2024-06-30"
+    impact: "HIGH — Queries using old column name will fail"
+    migration_guide: "docs/migration/v1.5-column-rename.md"
+    impacted_services: [analytics, reporting]
+
+# ============================================================================
+# DATABASE-SPECIFIC SETTINGS
+# ============================================================================
+
+database_settings:
+  backup_retention: "30 days"
+  replication: true
+  read_replicas: ["replica-us-east-1", "replica-eu-west-1"]
+  connection_pool_size: 20
+  max_connections: 100
+  statement_timeout: "30s"
+  lock_timeout: "10s"
+
+# ============================================================================
+# PERFORMANCE CONSIDERATIONS
+# ============================================================================
+
+performance_notes: |
+  - Table `users` expected to have ~10M rows
+  - Most queries filter by email (use idx_users_email)
+  - Status queries common (use idx_users_status)
+  - Consider partitioning by created_at after 50M rows
+  - Sessions table grows quickly, implement cleanup job
+  - Vacuum and analyze required weekly
+
+# ============================================================================
+# DATA RETENTION POLICY
+# ============================================================================
+
+retention_policy:
+  active_users: "indefinite (until account deleted)"
+  deleted_users: "90 days (soft delete, then hard delete)"
+  expired_sessions: "1 day (cleanup job runs daily)"
+  audit_logs: "1 year"
+  backups: "30 days daily, 90 days weekly"
+
+# ============================================================================
+# DISASTER RECOVERY
+# ============================================================================
+
+disaster_recovery:
+  rto: "1 hour"  # Recovery Time Objective
+  rpo: "15 minutes"  # Recovery Point Objective
+  backup_location: "s3://backups/production/"
+  backup_frequency: "every 6 hours"
+  restore_test_frequency: "monthly"
+  last_restore_test: "2025-04-10"
+  notes: "Standby database in us-west-2, failover automated"
+
+# ============================================================================
+# NOTES
+# ============================================================================
+
+notes: |
+  This is an example data contract. Customize for your database.
+
+  To complete your contract:
+  1. Review all migration files in db/migrations/
+  2. Document each table's columns, types, and constraints
+  3. List all indexes and their purposes
+  4. Document foreign key relationships
+  5. Mark immutable vs. mutable columns
+  6. Test each migration's rollback capability
+  7. Document breaking changes with migration guides
+  8. Include performance considerations
+  9. Define data retention policies
+  10. Document disaster recovery procedures
+
+  See data-contract.yaml in this directory for your actual contract.

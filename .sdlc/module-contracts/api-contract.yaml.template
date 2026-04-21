@@ -1,0 +1,182 @@
+# Module API Contract Template
+# Fill in your module's API endpoints and schemas
+
+version: "1.0"
+module: USER_SERVICE_EXAMPLE
+base_path: /api/v1
+
+# ============================================================================
+# REST ENDPOINTS — Document all API endpoints here
+# ============================================================================
+
+endpoints:
+  - path: /users
+    method: POST
+    summary: Create a new user
+    request_schema: CreateUserRequest
+    response_schema: UserResponse
+    status_codes: [201, 400, 409]
+    breaking_change_notes: null
+    consumers: [mobile-app, web-app, admin-panel]
+    authentication: OAuth2
+    rate_limit: "100 req/min per user"
+
+  - path: /users/{id}
+    method: GET
+    summary: Retrieve user by ID
+    response_schema: UserResponse
+    status_codes: [200, 404]
+    consumers: [mobile-app, web-app]
+    authentication: OAuth2
+
+  - path: /users/{id}
+    method: PUT
+    summary: Update user information
+    request_schema: UpdateUserRequest
+    response_schema: UserResponse
+    status_codes: [200, 400, 404]
+    breaking_change_notes: null
+    consumers: [web-app, admin-panel]
+    authentication: OAuth2
+
+  - path: /users/{id}
+    method: DELETE
+    summary: Delete a user
+    status_codes: [204, 404]
+    breaking_change_notes: null
+    consumers: [admin-panel]
+    authentication: OAuth2
+    authorization: ADMIN_ONLY
+
+# ============================================================================
+# REQUEST/RESPONSE SCHEMAS — Define all data structures here
+# ============================================================================
+
+schemas:
+  CreateUserRequest:
+    description: Request body for creating a new user
+    fields:
+      email:
+        type: string
+        format: email
+        required: true
+        description: User's email address
+      name:
+        type: string
+        required: true
+        min_length: 2
+        max_length: 100
+        description: User's full name
+      password:
+        type: string
+        required: true
+        min_length: 8
+        pattern: "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])"
+        description: Password (must include uppercase, number, special char)
+      phone:
+        type: string
+        required: false
+        format: phone
+        description: Optional phone number
+    example:
+      email: "user@example.com"
+      name: "John Doe"
+      password: "SecurePass123!"
+      phone: "+1-555-0100"
+
+  UpdateUserRequest:
+    description: Request body for updating user information
+    fields:
+      name:
+        type: string
+        required: false
+        description: Updated name
+      phone:
+        type: string
+        required: false
+        format: phone
+        description: Updated phone number
+      profile:
+        type: object
+        required: false
+        description: User profile information
+
+  UserResponse:
+    description: Represents a user in API responses
+    fields:
+      id:
+        type: string
+        format: uuid
+        required: true
+        description: Unique user identifier
+      email:
+        type: string
+        format: email
+        required: true
+        description: User's email
+      name:
+        type: string
+        required: true
+        description: User's name
+      phone:
+        type: string
+        format: phone
+        required: false
+        description: User's phone number
+      created_at:
+        type: timestamp
+        required: true
+        description: Account creation timestamp
+      updated_at:
+        type: timestamp
+        required: true
+        description: Last update timestamp
+      status:
+        type: string
+        enum: [active, suspended, deleted]
+        required: true
+        description: Current account status
+    example:
+      id: "550e8400-e29b-41d4-a716-446655440000"
+      email: "user@example.com"
+      name: "John Doe"
+      phone: "+1-555-0100"
+      created_at: "2025-01-01T12:00:00Z"
+      updated_at: "2025-04-13T10:30:00Z"
+      status: "active"
+
+# ============================================================================
+# DEPRECATIONS — Track endpoints being phased out
+# ============================================================================
+
+deprecations:
+  - path: /user (singular)
+    deprecated_since: v2.0
+    use_instead: /users (plural)
+    removal_date: "2025-12-31"
+    migration_guide: "Change all requests from GET /user to GET /users/{id}"
+
+  - path: /users/search
+    deprecated_since: v3.0
+    use_instead: "/users?q=<query>"
+    removal_date: "2026-06-30"
+    migration_guide: "Use query parameter instead of separate endpoint"
+
+# ============================================================================
+# NOTES
+# ============================================================================
+
+notes: |
+  This is an example API contract. Update with your actual endpoints.
+
+  To fill in your contract:
+  1. List all @RequestMapping, @PostMapping, @GetMapping, etc.
+  2. Document request/response schemas for each endpoint
+  3. Identify all services that consume each API
+  4. List deprecated endpoints with removal dates
+  5. Document authentication and authorization requirements
+  6. Include rate limiting and quota information
+  7. Add error response codes and descriptions
+  8. Document any deprecation paths
+
+  See api-contract.yaml in this directory for your actual contract.

@@ -1,0 +1,205 @@
+{
+  "version": "1.0.0",
+  "description": "Cross-pipeline dependency graph for ai-sdlc-platform",
+  "last_updated": "2026-04-11T00:00:00Z",
+  "dependencies": [
+    {
+      "id": "backend-api-contract-to-frontend",
+      "source": {
+        "team": "backend",
+        "stage": "04-tech-design",
+        "stage_name": "Technical Design & API Contract",
+        "event": "complete"
+      },
+      "target": {
+        "team": "frontend",
+        "stage": "08-implementation",
+        "stage_name": "Implementation"
+      },
+      "type": "BLOCKING",
+      "priority": "critical",
+      "artifact": "OpenAPI specification committed to repo",
+      "artifact_location": "backend/specs/openapi.yaml",
+      "notification": "API contract v{version} available for frontend consumption. Endpoints: {endpoint_count}, Schemas: {schema_count}",
+      "description": "Frontend implementation cannot begin without finalized API contract from backend tech design phase",
+      "timeout_hours": 48,
+      "override_allowed": true,
+      "risk_level": "high"
+    },
+    {
+      "id": "backend-api-contract-to-qa",
+      "source": {
+        "team": "backend",
+        "stage": "04-tech-design",
+        "stage_name": "Technical Design & API Contract",
+        "event": "complete"
+      },
+      "target": {
+        "team": "qa",
+        "stage": "10-test-design",
+        "stage_name": "Test Design"
+      },
+      "type": "INFORMATIONAL",
+      "priority": "high",
+      "artifact": "OpenAPI specification committed to repo",
+      "artifact_location": "backend/specs/openapi.yaml",
+      "notification": "API contract available. QA can now design API validation tests and contract-driven scenarios",
+      "description": "QA informed early to begin planning API-level test scenarios",
+      "timeout_hours": 0,
+      "override_allowed": false,
+      "risk_level": "low"
+    },
+    {
+      "id": "backend-impl-to-qa",
+      "source": {
+        "team": "backend",
+        "stage": "08-implementation",
+        "stage_name": "Implementation",
+        "event": "complete"
+      },
+      "target": {
+        "team": "qa",
+        "stage": "10-test-design",
+        "stage_name": "Test Design"
+      },
+      "type": "INFORMATIONAL",
+      "priority": "high",
+      "artifact": "Backend implementation code merged to main",
+      "artifact_location": "backend/main branch",
+      "notification": "Backend code ready for test design. Feature scope: {features}. Code coverage: {coverage}%",
+      "description": "QA notified that backend implementation is complete and ready for test design phase",
+      "timeout_hours": 0,
+      "override_allowed": false,
+      "risk_level": "low"
+    },
+    {
+      "id": "frontend-impl-to-qa",
+      "source": {
+        "team": "frontend",
+        "stage": "08-implementation",
+        "stage_name": "Implementation",
+        "event": "complete"
+      },
+      "target": {
+        "team": "qa",
+        "stage": "11-sit",
+        "stage_name": "System Integration Testing"
+      },
+      "type": "INFORMATIONAL",
+      "priority": "high",
+      "artifact": "Frontend implementation code merged to main",
+      "artifact_location": "frontend/main branch",
+      "notification": "Frontend code ready for integration testing. Components: {component_count}. Integration points: {integration_count}",
+      "description": "QA notified that frontend implementation is complete and integration testing can begin",
+      "timeout_hours": 0,
+      "override_allowed": false,
+      "risk_level": "low"
+    },
+    {
+      "id": "qa-testdesign-to-performance",
+      "source": {
+        "team": "qa",
+        "stage": "10-test-design",
+        "stage_name": "Test Design",
+        "event": "complete"
+      },
+      "target": {
+        "team": "performance",
+        "stage": "12-performance-testing",
+        "stage_name": "Performance Testing"
+      },
+      "type": "INFORMATIONAL",
+      "priority": "medium",
+      "artifact": "Test case specifications and test data",
+      "artifact_location": ".sdlc/test-cases/",
+      "notification": "Test cases ready (count: {test_count}). Performance team can derive load and stress test scenarios",
+      "description": "Performance team informed that QA test design is complete and functional test cases can inform performance testing strategy",
+      "timeout_hours": 0,
+      "override_allowed": false,
+      "risk_level": "low"
+    },
+    {
+      "id": "qa-sit-to-devops",
+      "source": {
+        "team": "qa",
+        "stage": "11-sit",
+        "stage_name": "System Integration Testing",
+        "event": "complete"
+      },
+      "target": {
+        "team": "devops",
+        "stage": "13-deployment",
+        "stage_name": "Deployment to Pre-Production"
+      },
+      "type": "BLOCKING",
+      "priority": "critical",
+      "artifact": "SIT results report with pass/fail status",
+      "artifact_location": ".sdlc/qa-results/sit-report.json",
+      "notification": "SIT passed with {pass_count}/{total_count} tests. No critical defects. Ready for pre-production deployment",
+      "description": "Pre-production deployment is blocked until SIT testing is complete and passes",
+      "timeout_hours": 48,
+      "override_allowed": true,
+      "risk_level": "critical",
+      "blocking_condition": "SIT_PASSED"
+    },
+    {
+      "id": "performance-to-release",
+      "source": {
+        "team": "performance",
+        "stage": "12-performance-testing",
+        "stage_name": "Performance Testing",
+        "event": "complete"
+      },
+      "target": {
+        "team": "release",
+        "stage": "14-release-approval",
+        "stage_name": "Release Manager Approval"
+      },
+      "type": "INFORMATIONAL",
+      "priority": "high",
+      "artifact": "Performance baseline report with metrics",
+      "artifact_location": ".sdlc/performance-results/baseline-report.json",
+      "notification": "Performance baseline established. Throughput: {throughput} req/s, Latency p99: {latency_p99}ms, CPU: {cpu_usage}%, Memory: {mem_usage}%",
+      "description": "Release manager informed that performance baseline has been established for comparison against production targets",
+      "timeout_hours": 0,
+      "override_allowed": false,
+      "risk_level": "medium"
+    },
+    {
+      "id": "backend-impl-to-frontend",
+      "source": {
+        "team": "backend",
+        "stage": "08-implementation",
+        "stage_name": "Implementation",
+        "event": "complete"
+      },
+      "target": {
+        "team": "frontend",
+        "stage": "09-integration",
+        "stage_name": "Frontend Integration Testing"
+      },
+      "type": "INFORMATIONAL",
+      "priority": "medium",
+      "artifact": "Backend implementation and integration test suite",
+      "artifact_location": "backend/main branch, backend/tests/integration/",
+      "notification": "Backend implementation complete. Integration test suite available: {test_count} tests. Ready for frontend integration testing",
+      "description": "Frontend team can now perform integration testing against actual backend implementation",
+      "timeout_hours": 0,
+      "override_allowed": false,
+      "risk_level": "low"
+    }
+  ],
+  "conflict_detection": {
+    "cyclic_dependencies": [],
+    "last_validation": "2026-04-11T00:00:00Z",
+    "validation_status": "valid"
+  },
+  "notes": [
+    "All timestamps are in ISO 8601 format with Z for UTC",
+    "Blocking dependencies can be overridden with explicit user acknowledgment",
+    "Informational dependencies are non-blocking and for context only",
+    "Artifact locations are relative to repository root",
+    "ETA calculations based on team velocity metrics in .sdlc/team-metrics.json",
+    "Timeout hours of 0 means no time-based gate, only completion-based"
+  ]
+}

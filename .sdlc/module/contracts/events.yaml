@@ -1,0 +1,12 @@
+# Event Contract — ai-sdlc-platform
+# Generated: 2026-04-17T13:35:47Z | Commit: 57d8b719 | Stack: unknown
+
+version: "1.0"
+module: "ai-sdlc-platform"
+
+event_system: "custom"
+
+events:
+
+producers: []
+consumers: []
