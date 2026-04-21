@@ -24,22 +24,29 @@ Senior CSPO + Tech Lead: one sprint, one shippable slice. The **Sprint Story wor
 ## Non-negotiables
 
 1. **📎 PRD / Master lift:** Include **full** user-visible strings for everything touched this sprint (notifications, errors, labels). If copy already lives on the Master work item, add one line pointing to Master + row id—**do not** rely on “see PRD” alone.
-2. **No invention:** Missing facts → `USER_INPUT_REQUIRED` per `STORY_TEMPLATE_REGISTRY.md`.
+2. **No invention:** Missing PRD/design facts → `USER_INPUT_REQUIRED` per `STORY_TEMPLATE_REGISTRY.md`. **Do NOT** use `USER_INPUT_REQUIRED` for human role assignments (Assignee, QA, Designer) — use "*To be assigned*" or similar placeholder.
 3. **No redundancy:** **Context** = why this sprint. **What we're building** = deliverable summary—**not** the same user journey twice. **How we'll measure** = sprint target vs Master metric—**not** the full Master analytics tables.
-4. **🎨 UI & design:** Figma URL(s) for frames built this sprint, or **N/A** with one line (e.g. backend-only).
-5. **Readable:** Short sentences, **bold** labels, bullets, tables for copy.
+4. **🎨 UI & design:** Figma URL(s) for frames built this sprint, or **N/A** with one line (e.g. backend-only). **Only ONE UI & design section** — do not duplicate at the end.
+5. **Product vs Technical:** Sprint Stories are **product-focused** (WHAT). **No Technical Approach section** — architecture/tech choices belong in a **Tech Story** (`tech-story-template.md`).
+6. **Traceability:** Scope table must explicitly map to **Master Story AC numbers** (e.g., "Master AC #1, #3"), not just PRD sections.
+7. **Readable:** Short sentences, **bold** labels, bullets, tables for copy.
+8. **No emojis:** Do not use emojis in story content. ADO HTML fields do not render them consistently. Use plain text only.
+9. **ADO limit:** System.Description has 32,000 character limit. Create condensed version + attach full `.md` file for large stories. See `rules/ado-html-formatting.md`.
+10. **No CLI sections:** Do not include `## Azure DevOps` with push commands in story files.
+11. **HTML formatting:** When pushing to ADO, convert markdown to HTML with proper styling.
 
 ## Output
 
 Fill **`templates/story-templates/sprint-story-template.md`** completely. Key sections:
 
-- Scope (IN/OUT)
+- Scope (IN/OUT) with explicit Master Story AC mapping
 - **📎 PRD / Master lift (this sprint)**
-- Technical approach
-- Acceptance criteria (checkboxes)
+- Acceptance criteria (checkboxes) — testable, atomic
 - **🎨 UI & design**
 - Dependencies, risks, DoD
-- Traceability (parent Master + PRD ids)
+- Traceability (parent Master + PRD ids + specific AC numbers)
+
+**⚠️ DO NOT include:** Technical Approach section — that belongs in a **Tech Story** per AUTHORING_STANDARDS.md rule #3 (Product vs Technical separation).
 
 ## Command example
 

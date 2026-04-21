@@ -52,8 +52,13 @@ Key difference: Master Story is WHAT, Sprint Story is WHAT + WHO + HOW LONG.
 11. **No “plausible” filler** for Evidence, Success metrics, personas, or KPIs without PRD/supporting source — prompt instead.
 12. **ADO-ready:** The Master Story must be **self-contained** in Azure DevOps. **Lift verbatim** from the PRD into **📎 PRD-sourced specifics**: every notification/error/label (all locales), not just ids like `N7`. If the PRD names an artifact, the **full text** appears in 📎 (or `USER_INPUT_REQUIRED` if missing from PRD).
 13. **No cross-section redundancy:** Follow the **section map** in `master-story-template.md`. Do not paste the same narrative into Outcome, Problem, and JTBD. Do not repeat full KPI tables in **Validation plan** (reference metric names only).
-14. **UI:** Put Figma / prototype / design status in **🎨 UI & design**, not inside Experience intent.
+14. **UI:** Put Figma / prototype / design status in **🎨 UI & design**, not inside Experience intent. **Only ONE UI & design section** — do not add a duplicate "Design Resources" section at the end.
 15. **Readable output:** Short sentences. **Bold** field labels. Bullets. Blank lines. Tables for PRD extracts.
+16. **USER_INPUT_REQUIRED usage:** Use only for **missing PRD/design facts**, not for human role assignments (Owner, Assignee, Designer, QA). For unassigned humans, use "*To be assigned*" or similar placeholder.
+17. **No emojis in ADO work items:** Do not use emojis (🧠, 🎯, 🔍, etc.) in story content. ADO HTML fields do not render emojis consistently. Use plain text only.
+18. **ADO description limit:** System.Description field has 32,000 character limit. For large stories, create condensed version + attach full `.md` file. See `rules/ado-html-formatting.md`.
+19. **No Azure DevOps CLI sections:** Do not include `## Azure DevOps` with push commands in story files. These belong in platform documentation, not work items.
+20. **HTML formatting:** When pushing to ADO, convert markdown to HTML with proper tables, lists, and styling. See `stories/ado_html_converter.js` for reference implementation.
 
 ---
 
@@ -106,6 +111,7 @@ Before considering a story complete, verify:
 
 - [ ] **📎 PRD-sourced specifics** contains verbatim copy for every notification/error/label the PRD defines (or `USER_INPUT_REQUIRED`)
 - [ ] **🎨 UI & design** has Figma (or N/A / USER_INPUT_REQUIRED for backend-only)
+- [ ] **Only ONE UI & design section** — no duplicate "Design Resources" at end
 - [ ] No PRD artifact id without lifted text (or explicit pointer to row in 📎)
 - [ ] No duplicated paragraphs across Outcome / Problem / Context / Solution
 - [ ] **Measurement** vs **Validation plan** are distinct (metrics vs methodology)

@@ -201,6 +201,9 @@ stderr.log
 **/auth*
 **/jwt*
 
+# Except: Authoring standards validator (not an auth token)
+!templates/validators/authoring-standards-validator.sh
+
 # Database files (local dev)
 *.db
 *.sqlite

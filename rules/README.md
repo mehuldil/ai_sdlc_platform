@@ -16,7 +16,7 @@ Single source of truth for platform governance. Cursor loads these via project s
 | **Quality & engineering** | `global-standards`, `quality-standards`, `coverage-rule`, `prd-standards`, `nfr-targets`, `branch-strategy`, `mobile-code-review`, `qa-guardrails`, `repo-grounded-change` | What “good” looks like by artifact type; **coverage-rule** centralizes default coverage targets; **repo-grounded-change** ties design/implementation/tests to real paths, module KB, and regression-aware unit tests. |
 | **Compliance & risk** | `compliance-standards`, `operational-reliability`, `pre-merge-test-enforcement`, `merge-and-source-of-truth` | Audit, reliability, merge policy. |
 | **Gates & traceability** | `gate-enforcement`, `gate-metrics`, `traceability-pr-prd`, `cross-pipeline-triggers`, `state-reconciliation`, `cross-team-dependencies` | ADO/state alignment. |
-| **Tooling & integration** | `ado-standards`, `mcp-resilience`, `user-config` | Azure DevOps/MCP and user configuration. |
+| **Tooling & integration** | `ado-standards`, `ado-html-formatting`, `mcp-resilience`, `user-config` | Azure DevOps/MCP, HTML formatting for work items, and user configuration. |
 | **Docs & repo hygiene** | `commit-conventions`, `user-manual-sync` | Commits and manual drift. |
 
 ## Merge vs keep separate
