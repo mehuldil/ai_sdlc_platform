@@ -80,3 +80,121 @@ See also [Traceability_and_Governance](Traceability_and_Governance.md) §6.
 - Keep `retain_versions` conservative (default 5) to avoid unbounded growth.
 - Rely on **JSONL + module KB in git** for portability; SQLite is regenerated locally after pull.
 
+---
+
+## Platform Team Memory: Cross-Team Sync
+
+### Architecture Overview
+
+The AI-SDLC Platform uses a **dual-layer memory system** for cross-team collaboration:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    PLATFORM REPO (Shared)                        │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────────────┐  │
+│  │ memory/team/ │    │ memory/     │    │ .sdlc/memory/       │  │
+│  │  backend/    │◄──►│  shared/    │◄──►│ semantic-memory-    │  │
+│  │  frontend/   │    │             │    │ team.jsonl          │  │
+│  │  qa/         │    │ cross-team  │    │ (Git-tracked)       │  │
+│  │  product/    │    │ -log.md     │    └─────────────────────┘  │
+│  │  ...         │    │             │                             │
+│  └─────────────┘    └─────────────┘                             │
+└─────────────────────────────────────────────────────────────────┘
+         ▲                           ▲
+         │                           │
+    git pull/push              git hooks export/import
+         │                           │
+┌────────┴──────────────────────────┴──────────────────────────┐
+│                         LOCAL MACHINE                         │
+│  ┌─────────────────────┐    ┌──────────────────────────────┐  │
+│  │ Local Stories       │    │ .sdlc/memory/                │  │
+│  │ (Not in git)        │    │ semantic-memory.sqlite3      │  │
+│  │ c:\...\stories\     │    │ (Gitignored, rebuilt)        │  │
+│  └─────────────────────┘    └──────────────────────────────┘  │
+└───────────────────────────────────────────────────────────────┘
+```
+
+### How Teams Sync Memory
+
+| Action | What Happens | Direction |
+|--------|--------------|-----------|
+| `git commit` | Local SQLite → `semantic-memory-team.jsonl` | Export |
+| `git push` | JSONL uploaded to Azure DevOps origin | Upload |
+| `git pull` | Remote JSONL merged → Local SQLite | Import |
+| `git merge` | Same as pull — import teammates' entries | Import |
+
+### Organization-Specific Content Pattern
+
+**Problem**: Platform repo is shared across all teams, but organization-specific stories should not be in the platform repo.
+
+**Solution**: Keep stories local, store ADO reference pointers in platform memory.
+
+```
+Local (not in git):
+  c:\JioCloudCursor\AISDLC\stories\
+  ├── FH-001-master-family-hub-phase1.md
+  ├── FH-001-S01-sprint-hub-creation-invite.md
+  └── FH-001-S02-sprint-member-management.md
+
+Platform repo (git-tracked):
+  AI_SDLC_Platform/memory/team/product/
+  └── FH-001-family-hub-ado-reference.md  ← ADO links only
+```
+
+**Example Reference File**:
+
+```markdown
+# Family Hub (FH-001) - ADO Work Item Reference
+
+| Work Item | Type | Title | State |
+|-----------|------|-------|-------|
+| [865620](https://dev.azure.com/...) | Feature | Family Hub Phase 1 | Proposed |
+| [865621](https://dev.azure.com/...) | User Story | Sprint 3: Hub Creation | New |
+| [865622](https://dev.azure.com/...) | User Story | Sprint 4: Member Management | New |
+```
+
+**Benefits**:
+- Platform repo stays clean (no org-specific content)
+- ADO work items are discoverable via platform memory
+- Cross-team impact logged in shared memory
+- Stories remain local for organization privacy
+
+### For New Teams Joining the Platform
+
+1. **Clone the platform repo**:
+   ```bash
+   git clone https://dev.azure.com/JPL-Limited/JioAIphotos/_git/AI-sdlc-platform
+   ```
+
+2. **Initialize memory**:
+   ```bash
+   cd ai-sdlc-platform
+   sdlc memory init
+   ```
+
+3. **Create team folder** (if doesn't exist):
+   ```bash
+   mkdir -p memory/team/{your-team-name}
+   ```
+
+4. **Add ADO references** for your work items in `memory/team/product/`
+
+5. **Commit and push**:
+   ```bash
+   git add memory/
+   git commit -m "Add team memory and ADO references"
+   git push origin main
+   ```
+
+### Cross-Team Discovery
+
+Any team can discover another team's ADO work items:
+
+```bash
+# Search all team memory for ADO links
+grep -r "dev.azure.com" memory/team/
+
+# Or query via semantic memory
+sdlc memory semantic-query --text="Family Hub ADO work item"
+```
+
