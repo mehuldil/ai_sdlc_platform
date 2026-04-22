@@ -330,6 +330,34 @@ Run `sdlc ado sync` manually. Check `sdlc doctor` for connection status.
 2. Fill the markdown files.
 3. `sdlc story push ./stories/MS-....md --type=feature` for an ADO **Feature** (master story), or `sdlc story push ./stories/SS-....md` for a **User Story** (default). Same as `sdlc ado push-story`; prints the numeric id on success.
 
+**Q: How do I search ADO work items without MCP? (v2.1.3+)**
+Use CLI search commands (no MCP required):
+```bash
+# Text search
+sdlc ado search "Family Hub"
+
+# Filter by state
+sdlc ado search state=Active
+
+# Filter by type
+sdlc ado search type=Feature
+
+# My work items
+sdlc ado search assignedTo=me
+
+# Combined filters
+sdlc ado search "Family Hub" state=Proposed type=Feature --top 5
+```
+
+**Q: What's the difference between `sdlc ado show` and `sdlc ado get`?**
+- `show` — Full work item details (JSON-like output, all fields)
+- `get` — Formatted summary (box-style, quick reference, truncated description)
+
+Use `get` for quick lookups, `show` for detailed analysis.
+
+**Q: Can I search ADO when offline?**
+No — both CLI and MCP require network connectivity to Azure DevOps. However, CLI search uses fewer tokens (~200 vs ~800) and has no MCP dependency, making it more reliable in restricted environments.
+
 **Q: Setup said hooks could not be verified**
 Setup no longer aborts for this. Run `sdlc doctor` or re-run `./setup.sh`. Hooks are retried automatically during setup.
 

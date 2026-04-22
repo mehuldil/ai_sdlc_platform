@@ -24,6 +24,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.3] - 2026-04-22
+
+### Added — ADO Search Commands (CLI)
+
+- **`sdlc ado search <query>`** — Search Azure DevOps work items via CLI without MCP
+  - Text search: `sdlc ado search "Family Hub"`
+  - State filter: `sdlc ado search state=Active`
+  - Type filter: `sdlc ado search type=Feature`
+  - Assignee filter: `sdlc ado search assignedTo=me`
+  - Combined filters: `sdlc ado search "Family Hub" state=Proposed type=Feature`
+  - Result limiting: `--top N` flag
+  - Implementation: WIQL-based query via ADO REST API v7.0
+
+- **`sdlc ado get <id>`** — Quick formatted summary of work item
+  - Box-style formatted output (ID, Type, State, Title, Assigned, Description)
+  - Direct link to ADO work item
+  - Faster than `show` for quick lookups
+
+### Changed — Documentation
+
+- `User_Manual/Commands.md` — Added ADO search command reference with filter table
+- `User_Manual/ADO_MCP_Integration.md` — Added quick reference table (CLI vs MCP search)
+- `cli/sdlc.sh` — Updated help text with new `search` and `get` commands
+- `cli/lib/ado.sh` — Added `_ado_search()` and `_ado_get()` functions
+
+### Why This Matters
+
+**Offline/No-MCP Access:** Teams can now search ADO work items without MCP setup or when MCP is unavailable. CLI-only environments (CI, restricted workstations) get full search capability.
+
+**Token Efficiency:** CLI search uses ~200 tokens vs ~800 tokens for MCP roundtrip.
+
+**Pattern Established:** Organization-specific stories stay local (not in repo), ADO references in `memory/team/product/` provide discoverability, CLI search bridges the gap.
+
+---
+
 ## [2.1.2] - 2026-04-20
 
 ### Added — Token-optimization v2: env knobs + stage re-run guard

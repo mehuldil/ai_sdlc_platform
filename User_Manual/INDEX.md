@@ -29,10 +29,10 @@ Search does **not** query your project, Azure DevOps, or local SQLite — only t
 | 8 | [SDLC_Flows](SDLC_Flows.md) | **Per-stage I/O table**, gates, flows, story pipeline, execution **what/how/where** |
 | 9 | [Role_and_Stage_Playbook](Role_and_Stage_Playbook.md) | Roles, handoffs, chains of work |
 | 10 | [Features — how they work](FEATURES_REFERENCE.md) | **Deep dive**: what each area *is* and *how it runs* |
-| 11 | [Commands](Commands.md) | Full CLI / slash / CI reference |
+| 11 | [Commands](Commands.md) | Full CLI / slash / CI reference (incl. ADO search) |
 | 12 | [Guided_Execution_and_Recovery](Guided_Execution_and_Recovery.md) | When things fail; ASK in chat |
 | 13 | [Persistent_Memory](Persistent_Memory.md) | Memory vs module KB; SQLite, JSONL, hooks |
-| 14 | [ADO_MCP_Integration](ADO_MCP_Integration.md) | PAT, MCP, sync |
+| 14 | [ADO_MCP_Integration](ADO_MCP_Integration.md) | PAT, MCP, sync, CLI search |
 | 15 | [Agents_Skills_Rules](Agents_Skills_Rules.md) | Steering the model |
 | 16 | [Architecture](Architecture.md) | Components, folders, extension points |
 | 17 | [PR_Merge_Process](PR_Merge_Process.md) | PRs, AB#, policies |

@@ -67,15 +67,34 @@ Both scripts auto-load `env/.env`. See [Prerequisites](Prerequisites.md) for det
 
 ### Azure DevOps (full sdlc CLI — bash/Git Bash required)
 ```bash
+# Work Item Creation & Management
 sdlc ado create story --title="..." [--yes]   # Create work item (non-TTY: --yes or SDLC_ADO_CONFIRM=yes)
 sdlc ado list --type=story          # List stories
-sdlc ado show <id>                  # View work item
+sdlc ado show <id>                  # View work item (full details)
 sdlc ado update <id> --state=Done   # Update status
 sdlc ado push-story <file.md> [--type=story|feature|epic] [--yes]  # Push markdown to ADO (default: User Story)
 sdlc ado link <id1> <id2>           # Link work items
 sdlc ado comment <id> "message"      # Discussion comment on work item
 sdlc ado sync                       # Sync local ↔ ADO
+
+# ADO Search (v2.1.3+) — No MCP required
+sdlc ado search "Family Hub"                    # Text search in titles
+sdlc ado search "Family Hub" --top 5           # Limit results
+sdlc ado search state=Active                    # Filter by state
+sdlc ado search type=Feature                    # Filter by type
+sdlc ado search assignedTo=me                    # My work items
+sdlc ado search "Family Hub" state=Proposed    # Combined filters
+sdlc ado get 865620                             # Quick formatted summary
 ```
+
+**Search Filter Reference:**
+| Filter | Syntax | Example |
+|--------|--------|---------|
+| Text | `"search text"` | `sdlc ado search "Family Hub"` |
+| State | `state=<state>` | `sdlc ado search state=Active` |
+| Type | `type=<type>` | `sdlc ado search type=Feature` |
+| Assignee | `assignedTo=me\|<name>` | `sdlc ado search assignedTo=me` |
+| Top N | `--top N` | `sdlc ado search "query" --top 10` |
 
 ### Module System
 ```bash
