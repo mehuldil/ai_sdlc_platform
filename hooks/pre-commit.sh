@@ -127,19 +127,29 @@ if [ "${SDL_AUTO_SYNC:-1}" != "0" ]; then
 fi
 
 # ============================================================================
-# 2c. User_Manual/manual.html — regenerate when sources are staged (single-file offline reader)
+# 2c. User_Manual/manual.html — regenerate when ANY documentation sources are staged
 # ============================================================================
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
-STAGED_UM=$(git diff --cached --name-only 2>/dev/null | grep -E '^User_Manual/.*\.md$|^User_Manual/VERSION$|^User_Manual/build-manual-html\.mjs$|^User_Manual/manual-client\.js$' || true)
-if [ -n "$STAGED_UM" ] && [ -f "$REPO_ROOT/User_Manual/build-manual-html.mjs" ]; then
-    echo -e "${BLUE}Step 2c:${NC} Regenerating User_Manual/manual.html from markdown sources..."
+
+# Extended pattern: regenerate manual.html when any documentation-related files change
+# Includes: User_Manual docs, platform docs, rules, skills, agents, stages, templates
+STAGED_DOCS=$(git diff --cached --name-only 2>/dev/null | grep -E '^User_Manual/.*\.md$|^docs/.*\.md$|^rules/.*\.md$|^skills/.*\.md$|^agents/.*\.md$|^stages/.*\.md$|^templates/.*\.md$|^User_Manual/VERSION$|^User_Manual/build-manual-html\.mjs$|^User_Manual/manual-client\.js$' || true)
+
+if [ -n "$STAGED_DOCS" ] && [ -f "$REPO_ROOT/User_Manual/build-manual-html.mjs" ]; then
+    echo -e "${BLUE}Step 2c:${NC} Documentation changes detected. Regenerating User_Manual/manual.html..."
+    
+    # Show what triggered the regeneration
+    echo -e "${BLUE}→${NC} Changes in:"
+    echo "$STAGED_DOCS" | head -5 | sed 's/^/   /'
+    [ $(echo "$STAGED_DOCS" | wc -l) -gt 5 ] && echo "   ... and $(( $(echo "$STAGED_DOCS" | wc -l) - 5 )) more"
+    
     if command -v node &>/dev/null && node -v &>/dev/null; then
         (cd "$REPO_ROOT" && node User_Manual/build-manual-html.mjs) || {
             echo -e "${RED}BLOCKED:${NC} manual.html generation failed"
             exit 1
         }
         git add "$REPO_ROOT/User_Manual/manual.html" 2>/dev/null || git add User_Manual/manual.html
-        echo -e "${GREEN}✓${NC} Staged User_Manual/manual.html (embedded docs + v from VERSION)"
+        echo -e "${GREEN}✓${NC} Regenerated and staged User_Manual/manual.html (v$(cat "$REPO_ROOT/User_Manual/VERSION" 2>/dev/null || echo "unknown"))"
     else
         echo -e "${RED}BLOCKED:${NC} Node.js is required to regenerate User_Manual/manual.html (install Node 18+)"
         exit 1

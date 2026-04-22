@@ -236,8 +236,24 @@ Roles → Agents → Skills → Stages
 | Architecture deep-dive | [Architecture](User_Manual/Architecture.md) |
 | Troubleshooting | [FAQ](User_Manual/FAQ.md) |
 
-Regenerate the offline manual after editing any Markdown:
+#### Automatic Documentation Updates
 
+The platform includes **git hooks** that automatically regenerate `User_Manual/manual.html` whenever documentation files change. No manual intervention needed.
+
+**Setup hooks (one-time):**
+```bash
+# Linux/Mac:
+bash hooks/setup-hooks.sh
+
+# Windows:
+setup-hooks.cmd
+```
+
+**How it works:**
+- **Pre-commit hook** — Detects changes to `User_Manual/*.md`, `docs/*.md`, `rules/*.md`, `skills/*.md`, `agents/*.md`, `stages/*.md`, or `templates/*.md` and auto-regenerates `manual.html` before every commit
+- **Pre-push hook** — Verifies `manual.html` is current before allowing push to remote (blocks push if outdated)
+
+**Manual regeneration** (if needed):
 ```bash
 node User_Manual/build-manual-html.mjs
 ```

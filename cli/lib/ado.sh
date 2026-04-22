@@ -280,7 +280,7 @@ _ado_collect_fields() {
       _ado_collect_field_value "$collected_fields_var" "Custom.UserstorySource" \
         "Userstory Source" "" "${ADO_WI_USERSTORY_SOURCE:-Product Backlog}" || return 1
       _ado_collect_field_value "$collected_fields_var" "Custom.ApplicationPlatform" \
-        "Application platform" "Android;Database;Devops;Server;Web" "${ADO_WI_PLATFORM_example-org:-Android}" || return 1
+        "Application platform" "Android;Database;Devops;Server;Web" "${ADO_WI_PLATFORM:-Android}" || return 1
       ;;
     Task)
       # Task mandatory fields (process may require Assigned To + Platform — see ado-field-registry.sh)
@@ -291,7 +291,7 @@ _ado_collect_fields() {
       _ado_collect_field_value "$collected_fields_var" "System.AssignedTo" \
         "Assigned To" "" "$(_ado_assignee_patch_value "${ADO_USER_EMAIL:-}")" || return 1
       _ado_collect_field_value "$collected_fields_var" "Custom.ApplicationPlatform" \
-        "Application platform" "Android;Database;Devops;Server;Web" "${ADO_WI_PLATFORM_example-org:-Android}" || return 1
+        "Application platform" "Android;Database;Devops;Server;Web" "${ADO_WI_PLATFORM:-Android}" || return 1
       ;;
     Bug)
       # Bug mandatory fields
