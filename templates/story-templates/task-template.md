@@ -63,6 +63,38 @@ Use **numbered** checklist items (`1. [ ]`, `2. [ ]`, …). **One criterion per 
 
 ---
 
+## 📎 Parent Story PRD Coverage *(required)*
+
+**Purpose:** Trace this Task to specific PRD artifacts (N#/R#/S#/D#/E#) from parent Master/Sprint stories. Tasks must NOT introduce new PRD artifacts.
+
+### PRD Traceability
+
+| Parent Story | AC Reference | PRD Artifacts Implemented | Verification |
+|--------------|--------------|---------------------------|--------------|
+| **Master Story** | AC #X | N#, R#, S#, D#, E# covered | ⬜ |
+| **Sprint Story** | AC #Y | N#, R#, S#, D#, E# covered | ⬜ |
+| **Tech Story** (if applicable) | Section | Technical requirements | ⬜ |
+
+### Coverage Checklist
+
+- [ ] **No new PRD artifacts:** This Task does NOT introduce new N#/R#/S#/D#/E# not in parent stories
+- [ ] **Specific AC identified:** Task implements specific numbered AC from parent story
+- [ ] **Notifications (N#):** Any notifications this task touches are listed
+- [ ] **Rules (R#):** Any rules this task enforces are listed
+- [ ] **Errors (E#):** Any errors this task handles are listed
+- [ ] **Timing compliance:** Any timing requirements from parent are achievable in this task's scope
+
+### ADO-865620 Prevention for Tasks
+
+| Check | Question | Status |
+|-------|----------|--------|
+| **AC alignment** | Does this task implement the exact AC from parent story? | ⬜ |
+| **No scope creep** | Does this task add requirements not in parent AC? | ⬜ |
+| **Text verbatim** | Does this task use parent's exact user-visible text? | ⬜ |
+| **Count correct** | Do technical limits match parent's count rules? | ⬜ |
+
+---
+
 ## 📊 How We Know It Works
 **<Validation—avoid duplicating full Sprint test plan>**
 

@@ -34,6 +34,17 @@ Senior CSPO + Tech Lead: one sprint, one shippable slice. The **Sprint Story wor
 9. **ADO limit:** System.Description has 32,000 character limit. Create condensed version + attach full `.md` file for large stories. See `rules/ado-html-formatting.md`.
 10. **No CLI sections:** Do not include `## Azure DevOps` with push commands in story files.
 11. **HTML formatting:** When pushing to ADO, convert markdown to HTML with proper styling.
+12. **PRD Coverage Inheritance:** Cross-check that all PRD artifacts (N#/R#/S#/D#/E#) in this sprint's scope are covered. Verify against Master Story's PRD Coverage Matrix.
+
+## Quality Checklist for Sprint Stories
+
+Before handoff, verify:
+- [ ] Scope table maps to specific Master Story AC numbers
+- [ ] All notifications/errors for this sprint's scope have full text in PRD/Master lift
+- [ ] If Master has N4/N5 decline/expiry behavior, Sprint inherits it if in scope
+- [ ] If Master has timing requirements (e.g., N7+N8 within 60s), Sprint includes them
+- [ ] If Master has entry points (+ and See All), Sprint covers both if in scope
+- [ ] Traceability: Parent Master + specific AC numbers + PRD sections
 
 ## Output
 

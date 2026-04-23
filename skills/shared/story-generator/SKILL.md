@@ -51,6 +51,13 @@ Key difference: Master Story is WHAT, Sprint Story is WHAT + WHO + HOW LONG.
 10. **Story is written for two audiences simultaneously** — tech team reads it to build, QA reads it to break.
 11. **No “plausible” filler** for Evidence, Success metrics, personas, or KPIs without PRD/supporting source — prompt instead.
 12. **ADO-ready:** The Master Story must be **self-contained** in Azure DevOps. **Lift verbatim** from the PRD into **📎 PRD-sourced specifics**: every notification/error/label (all locales), not just ids like `N7`. If the PRD names an artifact, the **full text** appears in 📎 (or `USER_INPUT_REQUIRED` if missing from PRD).
+13. **PRD Coverage Matrix required:** Include the coverage table in **📎 PRD-sourced specifics** mapping all PRD artifacts (N#, R#, S#, D#, E#) to ACs. See [`templates/story-templates/PRD_COVERAGE_CHECKLIST.md`](../../templates/story-templates/PRD_COVERAGE_CHECKLIST.md).
+14. **Contradiction prevention:** Verify no AC contradicts PRD:
+    - Flow: Check auto-creation vs separate Create step
+    - Counts: Verify "including" vs "excluding" owner for member limits
+    - Copy: Dialog text matches PRD exactly (not scenario descriptions)
+    - Timing: SLA requirements (e.g., "within 60s") explicitly captured
+    - Visibility: What's shown/hidden matches PRD rules
 13. **No cross-section redundancy:** Follow the **section map** in `master-story-template.md`. Do not paste the same narrative into Outcome, Problem, and JTBD. Do not repeat full KPI tables in **Validation plan** (reference metric names only).
 14. **UI:** Put Figma / prototype / design status in **🎨 UI & design**, not inside Experience intent. **Only ONE UI & design section** — do not add a duplicate "Design Resources" section at the end.
 15. **Readable output:** Short sentences. **Bold** field labels. Bullets. Blank lines. Tables for PRD extracts.
@@ -109,7 +116,9 @@ Use **tech-task-generator** when:
 
 Before considering a story complete, verify:
 
+### Content Quality
 - [ ] **📎 PRD-sourced specifics** contains verbatim copy for every notification/error/label the PRD defines (or `USER_INPUT_REQUIRED`)
+- [ ] **📎 PRD Coverage Matrix** table present with all N#/R#/S#/D#/E# mapped to ACs
 - [ ] **🎨 UI & design** has Figma (or N/A / USER_INPUT_REQUIRED for backend-only)
 - [ ] **Only ONE UI & design section** — no duplicate "Design Resources" at end
 - [ ] No PRD artifact id without lifted text (or explicit pointer to row in 📎)
@@ -118,6 +127,35 @@ Before considering a story complete, verify:
 - [ ] Problem and success signal are specific and measurable
 - [ ] Story is written from the user's perspective, not the system's
 - [ ] Flow is clear enough to build without a meeting
+
+### Coverage Completeness (ADO-865620 Prevention)
+- [ ] **Every N#** from PRD Notification Matrix has row in coverage table
+- [ ] **N4/N5** specifically: Decline/expiry with NO push (status-only)
+- [ ] **N7/N8** specifically: Timing requirement ("within 60s") captured
+- [ ] **N14** specifically: Owner account deletion push included
+- [ ] **Every R#** from PRD Rules has row in coverage table
+- [ ] **R2** specifically: Delete-before-new rule for multiple hubs
+- [ ] **R3** specifically: "X out of 5" display format
+- [ ] **R5** specifically: Declined invites NOT shown
+- [ ] **R6** specifically: Resend behavior (new code, invalidates old)
+- [ ] **R15** specifically: Owner storage visibility
+- [ ] **Every S#** from PRD Scenarios has row in coverage table
+- [ ] **S6** specifically: Degraded state on owner deletion
+- [ ] **S7** specifically: Over-quota leave scenario
+- [ ] **S8** specifically: Storage consumption order (personal→family)
+- [ ] **Every D#** from PRD Dependencies has row in dependencies table
+- [ ] **D6** specifically: Member Details API (even if referenced in D7)
+- [ ] **Entry points**: All paths documented (+ icon, See All, etc.)
+- [ ] **Redirections**: Post-removal and post-leave behaviors documented
+
+### Contradiction Prevention
+- [ ] **Flow check**: No "Create Family Hub" step if PRD says auto-creation
+- [ ] **Count check**: Member limit wording matches PRD exactly ("including" vs "excluding")
+- [ ] **Copy check**: Dialog text matches PRD exactly (not scenario descriptions)
+- [ ] **Timing check**: SLA requirements explicitly stated
+- [ ] **Visibility check**: Show/hide rules match PRD
+
+### AC Quality
 - [ ] Every AC is independently verifiable (may reference 📎 rows for copy)
 - [ ] All five states covered where applicable (No data, Loading, Success, Error, No connection)
 - [ ] Tracking events named before build
@@ -135,6 +173,24 @@ Ask the PM:
 1. Is the persona correct, or should it be more specific?
 2. Does the success metric reflect what your team will actually be held accountable for?
 3. Are there any exclusions missing from the §13 Out of Scope section?
+4. **PRD Coverage Check:** Does the Coverage Matrix include every N#/R#/S#/D#/E# from the PRD?
+5. **Contradiction Check:** Review the 5 common patterns - any AC contradicting PRD?
+6. **Entry Points:** Are all user entry paths documented (+, See All, deep links)?
+
+### Validation Steps Before ADO Push
+```bash
+# 1. Validate story structure
+sdlc story validate stories/MS-xxx.md
+
+# 2. Check PRD coverage (catches ADO-865620-type gaps)
+./templates/story-templates/validators/prd-coverage-validator.sh \
+  stories/MS-xxx.md \
+  docs/prd/YourPRD.docx
+
+# 3. Fix any critical contradictions or omissions
+# 4. Push to ADO
+sdlc story push stories/MS-xxx.md --type=feature
+```
 
 ### For Sprint Stories
 Ask the team:

@@ -114,6 +114,24 @@
 
 *If a subsection does not apply, write **N/A — not in PRD** (do not invent placeholders).*
 
+### PRD Coverage Matrix *(required for ADO push)*
+
+**Purpose:** Ensure every PRD requirement is mapped to an AC. See [`PRD_COVERAGE_CHECKLIST.md`](PRD_COVERAGE_CHECKLIST.md) for full guidance.
+
+| PRD Artifact | IDs in PRD | IDs in Story | Coverage % | Status |
+|--------------|------------|--------------|------------|--------|
+| Notifications (N#) | | | | ⬜ |
+| Rules (R#) | | | | ⬜ |
+| Scenarios (S#) | | | | ⬜ |
+| Dependencies (D#) | | | | ⬜ |
+| Errors (E#) | | | | ⬜ |
+
+**Contradiction Check:**
+- [ ] No AC contradicts PRD requirements
+- [ ] All user-visible text matches PRD verbatim
+- [ ] Timing/SLA requirements explicitly captured
+- [ ] Count limits verified ("including" vs "excluding")
+
 ---
 
 ## 🎯 Experience Intent

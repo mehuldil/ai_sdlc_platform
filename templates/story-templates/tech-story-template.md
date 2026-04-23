@@ -214,6 +214,42 @@ Use **numbered** checklist items (`1. [ ]`, `2. [ ]`, …). **Blank line between
 
 ---
 
+## 📎 PRD Inheritance & Coverage Verification *(required)*
+
+**Purpose:** Verify all PRD artifacts (N#/R#/S#/D#/E#) from parent Master/Sprint stories are understood and properly implemented. Tech Stories must NOT introduce new PRD artifacts not covered by parent stories.
+
+### Inherited from Parent Stories
+
+| PRD Artifact | ID | Parent Story Location | Implementation Approach | Verified |
+|--------------|-----|----------------------|------------------------|----------|
+| **Notifications** | N# | Master/Sprint section | How this tech story implements it | ⬜ |
+| **Rules** | R# | Master/Sprint section | How this tech story enforces it | ⬜ |
+| **Scenarios** | S# | Master/Sprint section | How this tech story handles it | ⬜ |
+| **Dependencies** | D# | Master/Sprint section | API/Service implementation status | ⬜ |
+| **Errors** | E# | Master/Sprint section | Error handling implementation | ⬜ |
+
+### Coverage Verification Checklist
+
+- [ ] **No new PRD artifacts:** This Tech Story does NOT introduce new N#/R#/S#/D#/E# not in parent stories
+- [ ] **All inherited N# covered:** Every notification from parent has implementation approach
+- [ ] **All inherited R# enforced:** Every rule from parent has technical enforcement mechanism
+- [ ] **All inherited D# available:** Every dependency API is available or has workaround
+- [ ] **All inherited E# handled:** Every error scenario has technical handling strategy
+- [ ] **Timing requirements captured:** SLA/timing requirements (e.g., "within 60s") have technical implementation
+- [ ] **Count limits enforced:** Member/data limits have technical enforcement (db constraints, validation)
+
+### ADO-865620 Prevention for Tech Stories
+
+| Pattern | Check | Status |
+|---------|-------|--------|
+| **Flow contradiction** | Implementation matches parent's flow | ⬜ |
+| **Count contradiction** | Technical enforcement matches parent's count rules | ⬜ |
+| **Copy contradiction** | Technical implementation uses parent's verbatim text | ⬜ |
+| **Timing contradiction** | Technical implementation meets parent's timing requirements | ⬜ |
+| **Visibility contradiction** | Technical implementation matches parent's show/hide rules | ⬜ |
+
+---
+
 ## ℹ️ Template info
 
 **Purpose:** Implementation-grade technical spec—grounded in design and stories, with explicit **non-regression**.  
