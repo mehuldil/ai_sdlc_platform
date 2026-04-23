@@ -39,6 +39,8 @@
 
 Any change to these components **MUST** trigger a documentation update:
 
+> **Auto-Documentation-Guardian:** The `auto-documentation-guardian` agent (Tier 1 Universal) automatically monitors these triggers and ensures User Manual stays current, simple, non-duplicative, and minimal. See [`Agents_Skills_Rules.md`](Agents_Skills_Rules.md) for agent details.
+
 | Changed | Update In |
 |---------|-----------|
 | New/modified skill | [Agents_Skills_Rules](Agents_Skills_Rules.md) |
@@ -69,12 +71,12 @@ Enforced by `hooks/doc-change-check.sh`:
 
 ## Change Validation Hooks
 
-| Hook | What It Catches |
-|------|----------------|
-| `doc-change-check.sh` | System files changed without doc update |
-| `pre-merge-duplication-check.sh` | New skills/agents duplicating existing ones |
-| `commit-msg.sh` | Commit format violations |
-| `branch-name-check.sh` | Invalid branch naming |
+| Hook | What It Catches | Guardian Integration |
+|------|----------------|---------------------|
+| `doc-change-check.sh` | System files changed without doc update | Triggers auto-documentation-guardian analysis |
+| `pre-merge-duplication-check.sh` | New skills/agents duplicating existing ones | Guardian runs duplication validation |
+| `commit-msg.sh` | Commit format violations | — |
+| `branch-name-check.sh` | Invalid branch naming | — |
 
 ## Traceability Map
 

@@ -1,8 +1,25 @@
 {
   "version": "2.0.0",
   "description": "Agent Registry - Complete manifest of all AI agents",
-  "last_updated": "2026-04-13",
+  "last_updated": "2026-04-22",
   "tier_1_universal": {
+    "auto-documentation-guardian": {
+      "path": "shared/auto-documentation-guardian.md",
+      "tier": 1,
+      "primary_role": "shared",
+      "description": "Ensure User Manual stays current, simple, non-duplicative, minimal, and action-oriented on any platform change",
+      "tags": [
+        "documentation",
+        "governance",
+        "validation",
+        "sync"
+      ],
+      "accepts_roles": [
+        "*"
+      ],
+      "output_cost_tokens": 400,
+      "required_env": []
+    },
     "context-guard": {
       "path": "shared/context-guard.md",
       "tier": 1,
@@ -867,8 +884,8 @@
     "show_agent": "sdlc agent show <agent-id>",
     "invoke_agent": "sdlc agent invoke <agent-id> --role=<role> --stage=<stage> [--ado-id=<id>]"
   },
-  "total_agents": 56,
-  "total_tier_1": 5,
+  "total_agents": 57,
+  "total_tier_1": 6,
   "total_tier_2": 40,
   "total_tier_3": 8
 }

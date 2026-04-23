@@ -1,6 +1,6 @@
 # Agents, Skills & Rules
 
-## Agents (52 Total)
+## Agents (53 Total)
 
 ### What Is an Agent?
 An AI persona that embodies a role at specific stages. Loads role context + stage context + gates. Invokes skills to perform work. Uses **THIN orchestrator pattern** — delegates to atomic skills, contains no inline logic.
@@ -9,9 +9,9 @@ An AI persona that embodies a role at specific stages. Loads role context + stag
 
 | Tier | Count | Purpose | Examples |
 |------|-------|---------|---------|
-| Tier 1 (Universal) | 16 | Cross-role infrastructure | See Tier 1 in `agents/CAPABILITY_MATRIX.md` |
-| Tier 2 (Domain) | 35 | Role-specific execution | Backend, frontend, QA, performance, product agents |
-| Tier 3 (Reports / Executive) | 1 | Cross-cutting reports and release | See Tier 3 in `agents/CAPABILITY_MATRIX.md` |
+| Tier 1 (Universal) | 6 | Cross-role infrastructure | context-guard, smart-routing, auto-documentation-guardian, etc. |
+| Tier 2 (Domain) | 40 | Role-specific execution | Backend, frontend, QA, performance, product agents |
+| Tier 3 (Reports / Executive) | 8 | Cross-cutting reports and release | release-manager, compliance-auditor, etc. |
 
 ### Agent Registry
 All agents defined in `agents/agent-registry.json` with: path, tier, role, description, tags, token budget, required env vars, and **accepts_roles** (which roles can invoke this agent). Governance for the registry (dedup, skills-first): [`agents/REGISTRY_AND_ATOMIC_DESIGN.md`](../agents/REGISTRY_AND_ATOMIC_DESIGN.md).
@@ -19,6 +19,30 @@ All agents defined in `agents/agent-registry.json` with: path, tier, role, descr
 ### THIN Orchestrator Pattern (Canonical)
 Agents delegate to skills. Example: `security-agent.md` orchestrates `security-scan` + `security-remediation` skills.
 Full (non-orchestrator) versions archived as `{name}-FULL.md` for reference.
+
+### Documentation Governance Agents
+
+| Agent | Tier | Purpose | Triggers |
+|-------|------|---------|----------|
+| **auto-documentation-guardian** | 1 (Universal) | Keep User Manual current, simple, non-duplicative, minimal | Any change to skills/, agents/, rules/, commands/, stages/ |
+
+**What it does:**
+1. Detects documentation impact from platform changes
+2. Checks for duplication before adding content
+3. Updates docs following strict 5-part format
+4. Validates UX (scannable, understandable)
+5. Cross-references instead of duplicating
+
+**Status output:**
+- 📄 Updated files
+- ✂️ Duplication removed
+- 🔗 Cross-links added
+- 📉 Token optimization notes
+- 🚦 Status: SAFE / NEEDS_IMPROVEMENT / BLOCKED
+
+**Invoke:** `sdlc agent invoke auto-documentation-guardian` or automatic via `hooks/doc-change-check.sh`
+
+See full definition: [`agents/shared/auto-documentation-guardian.md`](../agents/shared/auto-documentation-guardian.md)
 
 ## Skills (v2.1.1 Architecture)
 
