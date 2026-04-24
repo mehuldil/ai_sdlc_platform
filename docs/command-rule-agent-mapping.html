@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI-SDLC Platform — Command to Rule to Agent/Skill mapping" />
+  <title>AI-SDLC Platform — Command/Rule/Agent/Skill Mapping</title>
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f7;
+      --bg-tertiary: #efefef;
+      --text-primary: #1d1d1d;
+      --text-secondary: #666666;
+      --text-tertiary: #999999;
+      --accent: #0071e3;
+      --accent-hover: #0077ed;
+      --border: #e5e5e7;
+      --success: #34c759;
+      --warning: #ff9500;
+      --error: #ff3b30;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1d1d1f;
+        --bg-secondary: #2a2a2e;
+        --bg-tertiary: #424245;
+        --text-primary: #f5f5f7;
+        --text-secondary: #a1a1a6;
+        --text-tertiary: #727278;
+        --border: #424245;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0 0 12px 0;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"],
+    select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: var(--font);
+    }
+
+    input[type="text"]::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    button {
+      padding: 8px 16px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.2s var(--ease);
+    }
+
+    button:hover {
+      background: var(--accent-hover);
+    }
+
+    button.secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    button.secondary:hover {
+      background: var(--border);
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 8px;
+    }
+
+    .view-btn {
+      padding: 8px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      transition: all 0.2s var(--ease);
+    }
+
+    .view-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* Flow Diagram */
+    .flow-diagram {
+      margin: 40px 0;
+      overflow-x: auto;
+    }
+
+    .flow-container {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      min-width: min-content;
+    }
+
+    .flow-box {
+      min-width: 180px;
+      padding: 16px;
+      background: var(--bg-primary);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      text-align: center;
+      position: relative;
+    }
+
+    .flow-box.command {
+      border-color: #0071e3;
+      background: rgba(0, 113, 227, 0.05);
+    }
+
+    .flow-box.rule {
+      border-color: #ff9500;
+      background: rgba(255, 149, 0, 0.05);
+    }
+
+    .flow-box.agent {
+      border-color: #34c759;
+      background: rgba(52, 199, 89, 0.05);
+    }
+
+    .flow-box.skill {
+      border-color: #af52de;
+      background: rgba(175, 82, 222, 0.05);
+    }
+
+    .flow-box.script {
+      border-color: #5856d6;
+      background: rgba(88, 86, 214, 0.05);
+    }
+
+    .flow-box-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+    }
+
+    .flow-box-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      font-size: 18px;
+    }
+
+    /* Table View */
+    .table-view {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    thead {
+      background: var(--bg-secondary);
+      border-bottom: 2px solid var(--border);
+    }
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    tr:hover {
+      background: var(--bg-secondary);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+
+    .tag-command {
+      background: rgba(0, 113, 227, 0.2);
+      color: #0071e3;
+    }
+
+    .tag-rule {
+      background: rgba(255, 149, 0, 0.2);
+      color: #ff9500;
+    }
+
+    .tag-agent {
+      background: rgba(52, 199, 89, 0.2);
+      color: #34c759;
+    }
+
+    .tag-skill {
+      background: rgba(175, 82, 222, 0.2);
+      color: #af52de;
+    }
+
+    .tag-script {
+      background: rgba(88, 86, 214, 0.2);
+      color: #5856d6;
+    }
+
+    /* Card View */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      transition: all 0.2s var(--ease);
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      border-color: var(--accent);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 12px 0;
+      color: var(--text-primary);
+    }
+
+    .card-field {
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .card-field-label {
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .card-field-value {
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+    }
+
+    /* SVG Diagram */
+    svg {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      margin: 20px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+
+      .controls {
+        flex-direction: column;
+      }
+
+      input[type="text"],
+      select {
+        width: 100%;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🏗️ AI-SDLC Platform</h1>
+      <p class="subtitle">Command → Script → Rule → Agent/Skill Mapping</p>
+    </header>
+
+    <div class="controls">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search commands, rules, agents, skills..."
+        style="flex: 1; min-width: 250px"
+      />
+      <select id="filterType">
+        <option value="">All Types</option>
+        <option value="command">Commands</option>
+        <option value="rule">Rules</option>
+        <option value="agent">Agents</option>
+        <option value="skill">Skills</option>
+        <option value="script">Scripts</option>
+      </select>
+      <div class="view-toggle">
+        <button class="view-btn active" data-view="diagram">Flow Diagram</button>
+        <button class="view-btn" data-view="table">Table View</button>
+        <button class="view-btn" data-view="cards">Card View</button>
+      </div>
+      <button class="secondary" onclick="resetView()">Reset</button>
+    </div>
+
+    <!-- Diagram View -->
+    <div id="diagramView" class="flow-diagram">
+      <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+        <p>Select a command to see its mapping flow</p>
+      </div>
+    </div>
+
+    <!-- Table View -->
+    <div id="tableView" style="display: none;">
+      <div class="table-view">
+        <table>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Script</th>
+              <th>Rules</th>
+              <th>Agents</th>
+              <th>Skills</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Card View -->
+    <div id="cardView" style="display: none;">
+      <div class="card-grid" id="cardGrid">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Comprehensive mapping data
+    const mappings = [
+      {
+        command: "sdlc use",
+        script: "cli/lib/config.sh",
+        rules: ["user-config.md", "ask-first-protocol.md"],
+        agents: ["smart-routing", "context-guard"],
+        skills: ["workspace"],
+        description: "Set active role and stack context"
+      },
+      {
+        command: "sdlc run",
+        script: "cli/lib/executor.sh",
+        rules: ["rpi-workflow.md", "token-optimization.md", "gate-enforcement.md"],
+        agents: ["pipeline-flow", "rpi-coordinator", "gate-informant"],
+        skills: ["rpi-implement.md", "rpi-plan.md"],
+        description: "Execute SDLC stage with role context"
+      },
+      {
+        command: "sdlc agent",
+        script: "cli/lib/executor.sh",
+        rules: ["repo-grounded-change.md", "subagent-delegation.md"],
+        agents: ["smart-routing"],
+        skills: ["rpi-research.md"],
+        description: "Browse, show, or invoke agents"
+      },
+      {
+        command: "sdlc skills",
+        script: "cli/lib/executor.sh",
+        rules: ["repo-grounded-change.md"],
+        agents: ["smart-routing"],
+        skills: ["rpi-research.md"],
+        description: "Browse, show, or invoke skills"
+      },
+      {
+        command: "sdlc story",
+        script: "cli/commands/story.sh",
+        rules: ["commit-conventions.md", "traceability-pr-prd.md", "prd-standards.md"],
+        agents: ["pm-agent", "tech-lead-agent"],
+        skills: ["story-generator.md"],
+        description: "Create, validate, push user stories"
+      },
+      {
+        command: "sdlc ado",
+        script: "cli/lib/ado.sh",
+        rules: ["ado-standards.md", "ado-html-formatting.md", "traceability-pr-prd.md"],
+        agents: ["ado-integration", "pm-agent"],
+        skills: [],
+        description: "Create, list, update, sync Azure DevOps work items"
+      },
+      {
+        command: "sdlc memory",
+        script: "cli/commands/memory-distributed.sh",
+        rules: ["state-reconciliation.md", "merge-and-source-of-truth.md"],
+        agents: ["state-reconciler-agent", "context-memory-manager"],
+        skills: ["rpi-plan.md", "rpi-implement.md"],
+        description: "Initialize, sync, and manage knowledge memory"
+      },
+      {
+        command: "sdlc ado push-story",
+        script: "cli/lib/ado.sh",
+        rules: ["traceability-pr-prd.md", "prd-standards.md", "ado-standards.md"],
+        agents: ["pm-agent", "ado-integration"],
+        skills: ["story-generator.md"],
+        description: "Push markdown story to Azure DevOps as work item"
+      },
+      {
+        command: "sdlc gate-check",
+        script: "cli/lib/executor.sh",
+        rules: ["gate-enforcement.md", "gate-metrics.md", "pre-merge-test-enforcement.md"],
+        agents: ["gate-informant", "gate-matrix"],
+        skills: ["rpi-verify.md"],
+        description: "Advisory gate check for stage readiness"
+      },
+      {
+        command: "sdlc remember",
+        script: "cli/commands/remember.sh",
+        rules: ["state-reconciliation.md"],
+        agents: ["context-memory-manager"],
+        skills: [],
+        description: "Save knowledge/decisions to semantic memory"
+      },
+      {
+        command: "sdlc recall",
+        script: "cli/commands/remember.sh",
+        rules: ["state-reconciliation.md"],
+        agents: ["context-memory-manager"],
+        skills: [],
+        description: "Query semantic memory for knowledge"
+      },
+      {
+        command: "sdlc flow",
+        script: "cli/lib/executor.sh",
+        rules: ["rpi-workflow.md", "gate-enforcement.md"],
+        agents: ["pipeline-flow", "rpi-coordinator"],
+        skills: ["rpi-plan.md", "rpi-implement.md"],
+        description: "Run or list SDLC workflows"
+      },
+      {
+        command: "sdlc tokens",
+        script: "cli/lib/executor.sh",
+        rules: ["token-optimization.md"],
+        agents: [],
+        skills: [],
+        description: "Show token budget and spend report"
+      },
+      {
+        command: "sdlc skip-tests",
+        script: "cli/sdlc.sh",
+        rules: ["pre-merge-test-enforcement.md", "compliance-standards.md"],
+        agents: ["qa-agent"],
+        skills: [],
+        description: "Mark test skip with mandatory ADO work item"
+      },
+      {
+        command: "sdlc doctor",
+        script: "cli/lib/config.sh",
+        rules: ["global-standards.md", "user-manual-sync.md"],
+        agents: ["compliance-auditor"],
+        skills: [],
+        description: "Validate environment, docs drift, registries"
+      },
+      {
+        command: "sdlc repos",
+        script: "cli/lib/repos.sh",
+        rules: ["cross-team-dependencies.md", "cross-pipeline-triggers.md"],
+        agents: ["pipeline-coordinator-agent"],
+        skills: [],
+        description: "Register, list, and manage multi-repo dependencies"
+      },
+      {
+        command: "sdlc rpi",
+        script: "cli/lib/executor.sh",
+        rules: ["rpi-workflow.md", "token-optimization.md"],
+        agents: ["rpi-coordinator"],
+        skills: ["rpi-research.md", "rpi-plan.md", "rpi-implement.md", "rpi-verify.md"],
+        description: "Execute Research → Plan → Implement → Verify workflow"
+      },
+      {
+        command: "sdlc init",
+        script: "cli/lib/setup.sh",
+        rules: ["compliance-standards.md", "global-standards.md"],
+        agents: [],
+        skills: [],
+        description: "Initialize SDLC workspace in current directory"
+      },
+      {
+        command: "sdlc setup",
+        script: "cli/lib/setup.sh",
+        rules: ["global-standards.md", "user-config.md"],
+        agents: [],
+        skills: [],
+        description: "One-shot environment + .sdlc + IDE symlinks"
+      }
+    ];
+
+    let currentView = "diagram";
+    let filteredData = [...mappings];
+
+    // Search and filter
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      const query = e.target.value.toLowerCase();
+      const type = document.getElementById("filterType").value;
+
+      filteredData = mappings.filter((item) => {
+        const matchesQuery =
+          !query ||
+          item.command.toLowerCase().includes(query) ||
+          item.script.toLowerCase().includes(query) ||
+          item.rules.some((r) => r.toLowerCase().includes(query)) ||
+          item.agents.some((a) => a.toLowerCase().includes(query)) ||
+          item.skills.some((s) => s.toLowerCase().includes(query));
+
+        const matchesType =
+          !type ||
+          (type === "command" && item.command) ||
+          (type === "script" && item.script) ||
+          (type === "rule" && item.rules.length > 0) ||
+          (type === "agent" && item.agents.length > 0) ||
+          (type === "skill" && item.skills.length > 0);
+
+        return matchesQuery && matchesType;
+      });
+
+      renderView();
+    });
+
+    document.getElementById("filterType").addEventListener("change", () => {
+      document.getElementById("searchInput").dispatchEvent(new Event("input"));
+    });
+
+    // View toggle
+    document.querySelectorAll(".view-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        document.querySelectorAll(".view-btn").forEach((b) => b.classList.remove("active"));
+        e.target.classList.add("active");
+        currentView = e.target.dataset.view;
+        renderView();
+      });
+    });
+
+    function renderDiagramView() {
+      const container = document.getElementById("diagramView");
+      if (filteredData.length === 0) {
+        container.innerHTML = '<div class="no-results">No results found</div>';
+        return;
+      }
+
+      container.innerHTML = filteredData
+        .map(
+          (item) => `
+        <div style="margin: 20px 0; padding: 20px; background: var(--bg-secondary); border-radius: var(--radius-md);">
+          <h3 style="margin: 0 0 16px 0; color: var(--text-primary);">${item.command}</h3>
+          <div class="flow-container">
+            <div class="flow-box command">
+              <div class="flow-box-label">Command</div>
+              <div class="flow-box-title">${item.command}</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box script">
+              <div class="flow-box-label">Script</div>
+              <div class="flow-box-title" style="font-size: 12px;">${item.script}</div>
+            </div>
+            ${item.rules.length > 0 ? `
+            <div class="flow-arrow">→</div>
+            <div class="flow-box rule">
+              <div class="flow-box-label">Rules</div>
+              <div class="flow-box-title">${item.rules.length}</div>
+              <div style="font-size: 11px; margin-top: 8px; color: var(--text-secondary);">${item.rules.slice(0, 2).join(", ")}</div>
+            </div>
+            ` : ''}
+            ${item.agents.length > 0 ? `
+            <div class="flow-arrow">→</div>
+            <div class="flow-box agent">
+              <div class="flow-box-label">Agents</div>
+              <div class="flow-box-title">${item.agents.length}</div>
+              <div style="font-size: 11px; margin-top: 8px; color: var(--text-secondary);">${item.agents.slice(0, 1).join(", ")}</div>
+            </div>
+            ` : ''}
+            ${item.skills.length > 0 ? `
+            <div class="flow-arrow">→</div>
+            <div class="flow-box skill">
+              <div class="flow-box-label">Skills</div>
+              <div class="flow-box-title">${item.skills.length}</div>
+              <div style="font-size: 11px; margin-top: 8px; color: var(--text-secondary);">${item.skills.slice(0, 1).join(", ")}</div>
+            </div>
+            ` : ''}
+          </div>
+          <p style="margin: 12px 0 0 0; font-size: 14px; color: var(--text-secondary);">${item.description}</p>
+        </div>
+      `
+        )
+        .join("");
+    }
+
+    function renderTableView() {
+      const tbody = document.getElementById("tableBody");
+      if (filteredData.length === 0) {
+        tbody.innerHTML =
+          '<tr><td colspan="5" class="no-results">No results found</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filteredData
+        .map(
+          (item) => `
+        <tr>
+          <td><span class="tag tag-command">${item.command}</span></td>
+          <td><code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px; font-size: 12px;">${item.script}</code></td>
+          <td>${item.rules.map((r) => `<span class="tag tag-rule">${r}</span>`).join("")}</td>
+          <td>${item.agents.map((a) => `<span class="tag tag-agent">${a}</span>`).join("")}</td>
+          <td>${item.skills.map((s) => `<span class="tag tag-skill">${s}</span>`).join("")}</td>
+        </tr>
+      `
+        )
+        .join("");
+    }
+
+    function renderCardView() {
+      const grid = document.getElementById("cardGrid");
+      if (filteredData.length === 0) {
+        grid.innerHTML = '<div class="no-results" style="grid-column: 1 / -1;">No results found</div>';
+        return;
+      }
+
+      grid.innerHTML = filteredData
+        .map(
+          (item) => `
+        <div class="card">
+          <div class="card-title">${item.command}</div>
+          <p style="margin: 0 0 16px 0; font-size: 13px; color: var(--text-secondary);">${item.description}</p>
+          <div class="card-field">
+            <div class="card-field-label">Script</div>
+            <div class="card-field-value" style="font-family: monospace; font-size: 12px;">${item.script}</div>
+          </div>
+          ${item.rules.length > 0 ? `
+          <div class="card-field">
+            <div class="card-field-label">Rules (${item.rules.length})</div>
+            <div class="card-field-value">${item.rules.map((r) => `<span class="tag tag-rule">${r}</span>`).join("")}</div>
+          </div>
+          ` : ''}
+          ${item.agents.length > 0 ? `
+          <div class="card-field">
+            <div class="card-field-label">Agents (${item.agents.length})</div>
+            <div class="card-field-value">${item.agents.map((a) => `<span class="tag tag-agent">${a}</span>`).join("")}</div>
+          </div>
+          ` : ''}
+          ${item.skills.length > 0 ? `
+          <div class="card-field">
+            <div class="card-field-label">Skills (${item.skills.length})</div>
+            <div class="card-field-value">${item.skills.map((s) => `<span class="tag tag-skill">${s}</span>`).join("")}</div>
+          </div>
+          ` : ''}
+        </div>
+      `
+        )
+        .join("");
+    }
+
+    function renderView() {
+      document.getElementById("diagramView").style.display =
+        currentView === "diagram" ? "block" : "none";
+      document.getElementById("tableView").style.display =
+        currentView === "table" ? "block" : "none";
+      document.getElementById("cardView").style.display =
+        currentView === "cards" ? "block" : "none";
+
+      if (currentView === "diagram") renderDiagramView();
+      else if (currentView === "table") renderTableView();
+      else if (currentView === "cards") renderCardView();
+    }
+
+    function resetView() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("filterType").value = "";
+      filteredData = [...mappings];
+      renderView();
+    }
+
+    // Initial render
+    renderView();
+  </script>
+</body>
+</html>

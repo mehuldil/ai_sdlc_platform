@@ -1,0 +1,103 @@
+graph TB
+    subgraph Commands["📍 Commands"]
+        CMD_USE["sdlc use<br/>Set role/stack"]
+        CMD_RUN["sdlc run<br/>Execute stage"]
+        CMD_STORY["sdlc story<br/>Story mgmt"]
+        CMD_ADO["sdlc ado<br/>Azure DevOps"]
+        CMD_MEMORY["sdlc memory<br/>Knowledge"]
+        CMD_GATE["sdlc gate-check<br/>Gate validation"]
+        CMD_RPI["sdlc rpi<br/>RPI workflow"]
+        CMD_TOKENS["sdlc tokens<br/>Budget report"]
+    end
+
+    subgraph Scripts["🔧 Scripts"]
+        SCRIPT_CONFIG["cli/lib/config.sh<br/>Config & validators"]
+        SCRIPT_EXECUTOR["cli/lib/executor.sh<br/>Stage execution"]
+        SCRIPT_ADO["cli/lib/ado.sh<br/>ADO integration"]
+        SCRIPT_MEMORY["cli/commands/memory.sh<br/>Memory ops"]
+        SCRIPT_STORY["cli/commands/story.sh<br/>Story operations"]
+        SCRIPT_SETUP["cli/lib/setup.sh<br/>Environment init"]
+    end
+
+    subgraph Rules["📋 Rules"]
+        RULE_USER["user-config.md"]
+        RULE_RPI["rpi-workflow.md"]
+        RULE_GATE["gate-enforcement.md"]
+        RULE_TOKEN["token-optimization.md"]
+        RULE_ADO["ado-standards.md"]
+        RULE_TRACE["traceability-pr-prd.md"]
+        RULE_STATE["state-reconciliation.md"]
+        RULE_GLOBAL["global-standards.md"]
+    end
+
+    subgraph Agents["🤖 Agents"]
+        AGENT_ROUTING["smart-routing"]
+        AGENT_CONTEXT["context-guard"]
+        AGENT_PIPELINE["pipeline-flow"]
+        AGENT_RPI["rpi-coordinator"]
+        AGENT_GATE["gate-informant"]
+        AGENT_PM["pm-agent"]
+        AGENT_ADO["ado-integration"]
+        AGENT_STATE["state-reconciler-agent"]
+        AGENT_MEMORY["context-memory-manager"]
+    end
+
+    subgraph Skills["🎯 Skills"]
+        SKILL_WORKSPACE["workspace"]
+        SKILL_RESEARCH["rpi-research.md"]
+        SKILL_PLAN["rpi-plan.md"]
+        SKILL_IMPLEMENT["rpi-implement.md"]
+        SKILL_VERIFY["rpi-verify.md"]
+        SKILL_STORY["story-generator.md"]
+    end
+
+    %% Command -> Script mappings
+    CMD_USE --> SCRIPT_CONFIG
+    CMD_RUN --> SCRIPT_EXECUTOR
+    CMD_STORY --> SCRIPT_STORY
+    CMD_ADO --> SCRIPT_ADO
+    CMD_MEMORY --> SCRIPT_MEMORY
+    CMD_GATE --> SCRIPT_EXECUTOR
+    CMD_RPI --> SCRIPT_EXECUTOR
+    CMD_TOKENS --> SCRIPT_EXECUTOR
+
+    %% Script -> Rule mappings
+    SCRIPT_CONFIG --> RULE_USER
+    SCRIPT_EXECUTOR --> RULE_RPI
+    SCRIPT_EXECUTOR --> RULE_TOKEN
+    SCRIPT_EXECUTOR --> RULE_GATE
+    SCRIPT_ADO --> RULE_ADO
+    SCRIPT_ADO --> RULE_TRACE
+    SCRIPT_MEMORY --> RULE_STATE
+    SCRIPT_SETUP --> RULE_GLOBAL
+
+    %% Rule -> Agent mappings
+    RULE_USER --> AGENT_ROUTING
+    RULE_USER --> AGENT_CONTEXT
+    RULE_RPI --> AGENT_RPI
+    RULE_GATE --> AGENT_GATE
+    RULE_ADO --> AGENT_ADO
+    RULE_TRACE --> AGENT_PM
+    RULE_STATE --> AGENT_STATE
+    RULE_STATE --> AGENT_MEMORY
+
+    %% Agent -> Skill mappings
+    AGENT_ROUTING --> SKILL_WORKSPACE
+    AGENT_RPI --> SKILL_PLAN
+    AGENT_RPI --> SKILL_IMPLEMENT
+    AGENT_RPI --> SKILL_VERIFY
+    AGENT_PM --> SKILL_STORY
+    AGENT_MEMORY --> SKILL_RESEARCH
+
+    %% Styling
+    classDef command fill:#0071e3,stroke:#0071e3,color:#fff,stroke-width:2px
+    classDef script fill:#5856d6,stroke:#5856d6,color:#fff,stroke-width:2px
+    classDef rule fill:#ff9500,stroke:#ff9500,color:#fff,stroke-width:2px
+    classDef agent fill:#34c759,stroke:#34c759,color:#fff,stroke-width:2px
+    classDef skill fill:#af52de,stroke:#af52de,color:#fff,stroke-width:2px
+
+    class CMD_USE,CMD_RUN,CMD_STORY,CMD_ADO,CMD_MEMORY,CMD_GATE,CMD_RPI,CMD_TOKENS command
+    class SCRIPT_CONFIG,SCRIPT_EXECUTOR,SCRIPT_ADO,SCRIPT_MEMORY,SCRIPT_STORY,SCRIPT_SETUP script
+    class RULE_USER,RULE_RPI,RULE_GATE,RULE_TOKEN,RULE_ADO,RULE_TRACE,RULE_STATE,RULE_GLOBAL rule
+    class AGENT_ROUTING,AGENT_CONTEXT,AGENT_PIPELINE,AGENT_RPI,AGENT_GATE,AGENT_PM,AGENT_ADO,AGENT_STATE,AGENT_MEMORY agent
+    class SKILL_WORKSPACE,SKILL_RESEARCH,SKILL_PLAN,SKILL_IMPLEMENT,SKILL_VERIFY,SKILL_STORY skill
