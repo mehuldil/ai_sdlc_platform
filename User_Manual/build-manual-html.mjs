@@ -55,10 +55,6 @@ const ORDER = [
   "Platform_Extension_Onboarding.md",
   "Team_Onboarding_Presentation.md",
   "Documentation_Rules.md",
-  "Migrating_From_V1_to_V2.md",
-  "Migrating_From_V2_to_V2.1.md",
-  "Migrating_From_V2_to_Current.md",
-  "V2_Improvements_Over_V1.md",
   "FAQ.md",
   "CHANGELOG.md",
 ];
