@@ -1,6 +1,6 @@
 # Family Hub (FH-001) - ADO Work Item Reference
 
-**Primary Repository**: `https://dev.azure.com/JPL-Limited/JioAIphotos/_git/AI-sdlc-platform`
+**Primary Repository**: `https://dev.azure.com/YourOrg/YourProject/_git/your-repo`
 
 **Local Path**: `c:\JioCloudCursor\AISDLC\stories\`
 
@@ -12,9 +12,9 @@
 
 | Work Item | Type | Title | State | Local Reference |
 |-----------|------|-------|-------|-----------------|
-| [865620](https://dev.azure.com/JPL-Limited/JioAIPhotos/_workitems/edit/865620) | Feature | Family Hub Phase 1 - Master Story | Proposed | `FH-001-master-family-hub-phase1.md` |
-| [865621](https://dev.azure.com/JPL-Limited/JioAIPhotos/_workitems/edit/865621) | User Story | Sprint 3: Hub Creation and Invite Flow | New | `FH-001-S01-sprint-hub-creation-invite.md` |
-| [865622](https://dev.azure.com/JPL-Limited/JioAIPhotos/_workitems/edit/865622) | User Story | Sprint 4: Member Management and Storage Alerts | New | `FH-001-S02-sprint-member-management.md` |
+| [865620](https://dev.azure.com/YourOrg/YourProject/_workitems/edit/865620) | Feature | Family Hub Phase 1 - Master Story | Proposed | `FH-001-master-family-hub-phase1.md` |
+| [865621](https://dev.azure.com/YourOrg/YourProject/_workitems/edit/865621) | User Story | Sprint 3: Hub Creation and Invite Flow | New | `FH-001-S01-sprint-hub-creation-invite.md` |
+| [865622](https://dev.azure.com/YourOrg/YourProject/_workitems/edit/865622) | User Story | Sprint 4: Member Management and Storage Alerts | New | `FH-001-S02-sprint-member-management.md` |
 
 ---
 

@@ -18,10 +18,10 @@ EXC=(
 
 # Needles that must not remain after neutralize (matched case-insensitively with git grep -i).
 PATS=(
-  'JPL-Limited'
-  'JioAIphotos'
-  'jiocloud'
-  'JioCloudCursor'
+  'YourOrg'
+  'YourProject'
+  'yourcloud'
+  'YourCursor'
   'neutral mirror'
   '_git/AI-sdlc-platform'
 )

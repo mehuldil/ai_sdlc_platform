@@ -58,7 +58,7 @@ public class UserNotFoundException extends ApplicationServiceException {
 
 ## Serialization
 - **Only Gson** (never Jackson, XStream, or manual JSON)
-- Reason: Consistent across JPL TEJ ecosystem
+- Reason: Consistent across Your Org ecosystem
 - Example:
   ```java
   Gson gson = new Gson();
