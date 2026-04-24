@@ -128,30 +128,11 @@ process.stdout.write(String(t).trim());
 
 # Convert markdown to HTML for ADO System.Description
 # Uses cli/lib/markdown-to-html.js when node is available (paragraphs, lists, spacing).
-<<<<<<< HEAD
-=======
-# If content already contains HTML tags (like <div>, <table>), returns as-is.
->>>>>>> 5a6d807 (Final commit of AI-SDLC Platform)
 _markdown_to_html() {
   local md="$1"
   local html
   local _md_js="${PLATFORM_DIR}/cli/lib/markdown-to-html.js"
 
-<<<<<<< HEAD
-=======
-  # Check if content is already HTML (contains <div> or <table> or <p> tags)
-  if echo "$md" | grep -qE '<(div|table|p|h[1-6]|ul|ol|li|span|br)' ; then
-    # Content is already HTML, return as-is but ensure proper wrapping
-    if ! echo "$md" | grep -q '^<div' ; then
-      # Wrap in div if not already wrapped
-      echo "<div style=\"font-family:Segoe UI,sans-serif;\">$md</div>"
-    else
-      echo "$md"
-    fi
-    return 0
-  fi
-
->>>>>>> 5a6d807 (Final commit of AI-SDLC Platform)
   if command -v node &>/dev/null && [[ -f "$_md_js" ]]; then
     html=$(printf '%s' "$md" | node "$_md_js" 2>/dev/null) || true
     if [[ -n "$html" ]]; then
@@ -166,7 +147,6 @@ _markdown_to_html() {
   html="${html//</\&lt;}"
   html="${html//>/\&gt;}"
   html=$(printf '%s' "$html" | sed 's/$/<br\/>/' | tr -d '\n')
-<<<<<<< HEAD
   echo "<div style=\"line-height:1.5;\">$html</div>"
 }
 
@@ -174,16 +154,6 @@ _markdown_to_html() {
 _parse_story_file() {
   local file="$1"
   local title="" desc="" criteria=""
-=======
-  echo "<div style=\"font-family:Segoe UI,sans-serif;\">$html</div>"
-}
-
-# Split story markdown into title, description, acceptance criteria
-# Extracts both HTML sections separately for ADO System.Description and Microsoft.VSTS.Common.AcceptanceCriteria
-_parse_story_file() {
-  local file="$1"
-  local title="" desc="" criteria="" desc_html="" ac_html=""
->>>>>>> 5a6d807 (Final commit of AI-SDLC Platform)
 
   if [[ ! -f "$file" ]]; then
     return 1
@@ -192,7 +162,6 @@ _parse_story_file() {
   # Extract title (first # heading)
   title=$(grep -m1 '^#' "$file" | sed 's/^#\s*//' | sed 's/#\s*$//')
 
-<<<<<<< HEAD
   # Extract description (between title and "## … Acceptance Criteria" — keep blank lines for readable HTML)
   desc=$(sed -n '/^#[^#]/,/^## .*Acceptance Criteria/p' "$file" | sed '1d;$d')
 
@@ -204,54 +173,6 @@ _parse_story_file() {
   echo "$desc"
   [[ -n "$criteria" ]] && echo "---CRITERIA---"
   echo "$criteria"
-=======
-  # Check for new format: ## HTML Formatting for ADO with separate Description and AC sections
-  if grep -q "### Description (System.Description field)" "$file"; then
-    # Extract Description HTML (between ### Description and ### Acceptance Criteria or ---)
-    desc_html=$(sed -n '/### Description (System.Description field)/,/### Acceptance Criteria/p' "$file" | \
-                sed '1d;$d' | \
-                sed '/^---$/d' | \
-                sed '/^$/N;/^\n$/d')
-    
-    # Extract Acceptance Criteria HTML (between ### Acceptance Criteria and end of file or next ---)
-    ac_html=$(sed -n '/### Acceptance Criteria (Microsoft.VSTS.Common.AcceptanceCriteria field)/,/^---$/p' "$file" | \
-              sed '1d;$d' | \
-              sed '/^---$/d' | \
-              sed '/^$/N;/^\n$/d')
-  
-  # Check for old format: ## HTML Formatting for ADO Description (single section)
-  elif grep -q "## HTML Formatting for ADO Description" "$file"; then
-    # Extract HTML section (from <div> to </div>)
-    desc_html=$(sed -n '/## HTML Formatting for ADO Description/,/^---$/p' "$file" | \
-                   grep -v "^## HTML Formatting" | \
-                   grep -v "^---$" | \
-                   sed '/^$/N;/^\n$/d' | \
-                   sed '1{/^$/d}')
-    
-    # Also extract markdown acceptance criteria for AC field
-    ac_html=$(sed -n '/^## .*Acceptance Criteria/,/^## /p' "$file" | sed '1d;$d')
-  fi
-
-  # If no HTML sections found, fall back to markdown extraction
-  if [[ -z "$desc_html" ]]; then
-    desc=$(sed -n '/^#[^#]/,/^## .*Acceptance Criteria/p' "$file" | sed '1d;$d')
-    ac_html=$(sed -n '/^## .*Acceptance Criteria/,/^## /p' "$file" | sed '1d;$d')
-  fi
-
-  echo "$title"
-  if [[ -n "$desc_html" ]]; then
-    echo "---DESC_HTML---"
-    echo "$desc_html"
-  elif [[ -n "$desc" ]]; then
-    echo "---DESC---"
-    echo "$desc"
-  fi
-  
-  if [[ -n "$ac_html" ]]; then
-    echo "---AC_HTML---"
-    echo "$ac_html"
-  fi
->>>>>>> 5a6d807 (Final commit of AI-SDLC Platform)
 }
 
 # ============================================================================
@@ -347,7 +268,6 @@ _ado_collect_fields() {
         "Iteration Path" "" "${ADO_WI_ITERATION_PATH:-YourAzureProject\\Sprint 1}" || return 1
       ;;
     "User Story")
-<<<<<<< HEAD
       # User Story mandatory fields (see templates/ado-field-registry.sh)
       _ado_collect_field_value "$collected_fields_var" "System.AreaPath" \
         "Area Path" "" "${ADO_WI_AREA_PATH:-YourAzureProject\\POD 1}" || return 1
@@ -360,37 +280,7 @@ _ado_collect_fields() {
       _ado_collect_field_value "$collected_fields_var" "Custom.UserstorySource" \
         "Userstory Source" "" "${ADO_WI_USERSTORY_SOURCE:-Product Backlog}" || return 1
       _ado_collect_field_value "$collected_fields_var" "Custom.ApplicationPlatform" \
-        "Application platform" "Android;Database;Devops;Server;Web" "${ADO_WI_PLATFORM:-Android}" || return 1
-=======
-      # User Story mandatory fields - ALWAYS prompt user for input
-      log_section "User Story Field Input"
-      log_info "Please provide values for the following required fields:"
-      echo ""
-
-      _ado_collect_field_value "$collected_fields_var" "System.AreaPath" \
-        "Area Path" "" "${ADO_WI_AREA_PATH:-YourProject}" || return 1
-      _ado_collect_field_value "$collected_fields_var" "System.IterationPath" \
-        "Iteration Path" "" "${ADO_WI_ITERATION_PATH:-YourProject}" || return 1
-      _ado_collect_field_value "$collected_fields_var" "System.AssignedTo" \
-        "Assigned To" "" "$(_ado_assignee_patch_value "${ADO_USER_EMAIL:-}")" || return 1
-
-      # Project-specific required fields - User must explicitly select values
-      echo ""
-      log_info "Project Custom Fields:"
-      echo ""
-
-      # Dependency - Single select
-      _ado_collect_field_value "$collected_fields_var" "Dependency" \
-        "Dependency" "Android;Server;Web" "${ADO_WI_DEPENDENCY:-}" || return 1
-
-      # Userstory Source - Free text with default
-      _ado_collect_field_value "$collected_fields_var" "Userstory Source" \
-        "Userstory Source" "" "${ADO_WI_USERSTORY_SOURCE:-Product Backlog}" || return 1
-
-      # Platform - Single select (can be extended to multi-select if needed)
-      _ado_collect_field_value "$collected_fields_var" "Platform" \
-        "Platform" "Android;Database;Devops;Server;Web" "${ADO_WI_PLATFORM:-}" || return 1
->>>>>>> 5a6d807 (Final commit of AI-SDLC Platform)
+        "Application platform" "Android;Database;Devops;Server;Web" "${ADO_WI_PLATFORM_example-org:-Android}" || return 1
       ;;
     Task)
       # Task mandatory fields (process may require Assigned To + Platform — see ado-field-registry.sh)
@@ -401,7 +291,7 @@ _ado_collect_fields() {
       _ado_collect_field_value "$collected_fields_var" "System.AssignedTo" \
         "Assigned To" "" "$(_ado_assignee_patch_value "${ADO_USER_EMAIL:-}")" || return 1
       _ado_collect_field_value "$collected_fields_var" "Custom.ApplicationPlatform" \
-        "Application platform" "Android;Database;Devops;Server;Web" "${ADO_WI_PLATFORM:-Android}" || return 1
+        "Application platform" "Android;Database;Devops;Server;Web" "${ADO_WI_PLATFORM_example-org:-Android}" || return 1
       ;;
     Bug)
       # Bug mandatory fields
@@ -415,18 +305,12 @@ _ado_collect_fields() {
   return 0
 }
 
-<<<<<<< HEAD
 # Collect a single field value, prompting if necessary
-=======
-# Collect a single field value, ALWAYS prompting user for input in interactive mode
-# This ensures user explicitly selects values rather than using env defaults
->>>>>>> 5a6d807 (Final commit of AI-SDLC Platform)
 _ado_collect_field_value() {
   local arr_var="$1"
   local field_id="$2"
   local display_name="$3"
   local allowed_values="$4"
-<<<<<<< HEAD
   local env_value="${5:-}"
 
   if [[ -n "$env_value" ]]; then
@@ -445,150 +329,6 @@ _ado_collect_field_value() {
   }
 
   eval "${arr_var}[$field_id]='$user_value'"
-=======
-  local default_value="${5:-}"
-
-  # Always prompt user when in interactive mode (TTY)
-  if _is_tty; then
-    local user_value
-    user_value=$(_ado_prompt_field_interactive "$field_id" "$display_name" "$allowed_values" "$default_value") || {
-      log_error "Failed to collect value for $display_name"
-      return 1
-    }
-    eval "${arr_var}[$field_id]='$user_value'"
-    return 0
-  else
-    # Non-TTY: use default value if provided
-    if [[ -n "$default_value" ]]; then
-      eval "${arr_var}[$field_id]='$default_value'"
-      return 0
-    fi
-    # Cannot prompt and no default - fail
-    log_error "Cannot prompt for $display_name in non-interactive mode"
-    return 1
-  fi
-}
-
-# Interactive prompt for single-select fields with numbered choices
-_ado_prompt_field_interactive() {
-  local field_name="$1"
-  local display_name="$2"
-  local allowed_values="$3"  # semicolon-separated
-  local default_value="${4:-}"
-
-  log_section "Input Required: $display_name"
-
-  if [[ -n "$allowed_values" ]]; then
-    # Single-select from predefined options
-    log_info "Please select a value for: $display_name"
-    echo ""
-
-    local i=1
-    local IFS=';'
-    local options=()
-
-    for val in $allowed_values; do
-      options+=("$val")
-      if [[ "$val" == "$default_value" ]]; then
-        printf '  [%d] %s (default)\n' "$i" "$val" >&2
-      else
-        printf '  [%d] %s\n' "$i" "$val" >&2
-      fi
-      ((i++))
-    done
-
-    echo ""
-    read -rp "Enter choice number [1-$((i-1))]: " choice
-
-    # Validate choice
-    if [[ -z "$choice" ]] && [[ -n "$default_value" ]]; then
-      echo "$default_value"
-      return 0
-    fi
-
-    if ! [[ "$choice" =~ ^[0-9]+$ ]] || [[ "$choice" -lt 1 ]] || [[ "$choice" -ge "$i" ]]; then
-      log_error "Invalid choice: $choice"
-      return 1
-    fi
-
-    echo "${options[$((choice-1))]}"
-    return 0
-  else
-    # Free text input
-    if [[ -n "$default_value" ]]; then
-      read -rp "Enter value for $display_name [default: $default_value]: " value
-      echo "${value:-$default_value}"
-    else
-      read -rp "Enter value for $display_name: " value
-      if [[ -z "$value" ]]; then
-        log_error "Value cannot be empty"
-        return 1
-      fi
-      echo "$value"
-    fi
-    return 0
-  fi
-}
-
-# Collect multiple values for fields that support multi-select
-# Usage: _ado_collect_multi_select_field arr_var "field_id" "Display Name" "opt1;opt2;opt3" "default1;default2"
-_ado_collect_multi_select_field() {
-  local arr_var="$1"
-  local field_id="$2"
-  local display_name="$3"
-  local allowed_values="$4"
-  local default_values="${5:-}"
-
-  if ! _is_tty; then
-    # Non-TTY: use defaults
-    if [[ -n "$default_values" ]]; then
-      eval "${arr_var}[$field_id]='$default_values'"
-      return 0
-    fi
-    log_error "Cannot multi-select in non-interactive mode without defaults"
-    return 1
-  fi
-
-  log_section "Multi-Select Input: $display_name"
-  log_info "Select one or more options (comma-separated numbers, e.g., 1,3,5)"
-  echo ""
-
-  local i=1
-  local IFS=';'
-  local options=()
-
-  for val in $allowed_values; do
-    options+=("$val")
-    printf '  [%d] %s\n' "$i" "$val" >&2
-    ((i++))
-  done
-
-  echo ""
-  read -rp "Enter choices [1-$((i-1))]: " choices
-
-  if [[ -z "$choices" ]]; then
-    log_error "At least one selection required"
-    return 1
-  fi
-
-  # Parse comma-separated choices
-  local selected_values=""
-  local IFS=','
-  for choice in $choices; do
-    choice=$(echo "$choice" | tr -d ' ')  # trim whitespace
-    if ! [[ "$choice" =~ ^[0-9]+$ ]] || [[ "$choice" -lt 1 ]] || [[ "$choice" -ge "$i" ]]; then
-      log_error "Invalid choice: $choice"
-      return 1
-    fi
-    if [[ -n "$selected_values" ]]; then
-      selected_values="${selected_values};"
-    fi
-    selected_values="${selected_values}${options[$((choice-1))]}"
-  done
-
-  eval "${arr_var}[$field_id]='$selected_values'"
-  log_success "Selected: $selected_values"
->>>>>>> 5a6d807 (Final commit of AI-SDLC Platform)
   return 0
 }
 
@@ -936,11 +676,7 @@ cmd_ado() {
 
   if [[ -z "$subcmd" ]]; then
     log_error "Usage: sdlc ado <command> [options]"
-<<<<<<< HEAD
     log_info "Commands: create, list, show, update, link, link-pr, comment, description, push-story, sync, ..."
-=======
-    log_info "Commands: create, list, show, update, link, link-pr, comment, description, acceptance-criteria, push-story, sync, ..."
->>>>>>> 5a6d807 (Final commit of AI-SDLC Platform)
     return 1
   fi
 
@@ -1508,7 +1244,6 @@ _ado_push_story() {
 
   local title=$(echo "$parsed" | head -1)
   local desc_section=""
-<<<<<<< HEAD
   local criteria_section=""
 
   if echo "$parsed" | grep -q "^---DESC---"; then
@@ -1517,23 +1252,6 @@ _ado_push_story() {
 
   if echo "$parsed" | grep -q "^---CRITERIA---"; then
     criteria_section=$(echo "$parsed" | sed -n '/^---CRITERIA---/,$p' | sed '1d')
-=======
-  local desc_html=""
-  local ac_html=""
-
-  # Check for new format: separate Description HTML and AC HTML
-  if echo "$parsed" | grep -q "^---DESC_HTML---"; then
-    desc_html=$(echo "$parsed" | sed -n '/^---DESC_HTML---/,/^---AC_HTML---/p' | sed '1d;$d')
-    log_info "Using pre-formatted HTML for Description"
-  elif echo "$parsed" | grep -q "^---DESC---"; then
-    desc_section=$(echo "$parsed" | sed -n '/^---DESC---/,/^---AC_HTML---/p' | sed '1d;$d')
-  fi
-
-  # Extract Acceptance Criteria HTML
-  if echo "$parsed" | grep -q "^---AC_HTML---"; then
-    ac_html=$(echo "$parsed" | sed -n '/^---AC_HTML---/,$p' | sed '1d')
-    log_info "Using pre-formatted HTML for Acceptance Criteria"
->>>>>>> 5a6d807 (Final commit of AI-SDLC Platform)
   fi
 
   if [[ -z "$title" ]]; then
@@ -1543,38 +1261,20 @@ _ado_push_story() {
 
   log_info "Title: $title"
 
-<<<<<<< HEAD
   # Create temporary description file (description only, AC goes to separate field)
   local temp_desc
   temp_desc="$(mktemp 2>/dev/null || echo "${TMPDIR:-/tmp}/sdlc-story-desc-$$.md")"
   {
     if [[ -n "$desc_section" ]]; then
-=======
-  # Create temporary description file (HTML preferred, fallback to markdown)
-  local temp_desc
-  temp_desc="$(mktemp 2>/dev/null || echo "${TMPDIR:-/tmp}/sdlc-story-desc-$$.md")"
-  {
-    if [[ -n "$desc_html" ]]; then
-      # Use pre-formatted HTML directly
-      echo "$desc_html"
-    elif [[ -n "$desc_section" ]]; then
->>>>>>> 5a6d807 (Final commit of AI-SDLC Platform)
       echo "$desc_section"
     fi
   } > "$temp_desc"
 
   # Create temporary acceptance criteria file
   local temp_ac=""
-<<<<<<< HEAD
   if [[ -n "$criteria_section" ]]; then
     temp_ac="$(mktemp 2>/dev/null || echo "${TMPDIR:-/tmp}/sdlc-story-ac-$$.md")"
     echo "$criteria_section" > "$temp_ac"
-=======
-  if [[ -n "$ac_html" ]]; then
-    temp_ac="$(mktemp 2>/dev/null || echo "${TMPDIR:-/tmp}/sdlc-story-ac-$$.md")"
-    echo "$ac_html" > "$temp_ac"
-    log_info "Acceptance Criteria HTML captured"
->>>>>>> 5a6d807 (Final commit of AI-SDLC Platform)
   fi
 
   # Create work item with description and acceptance criteria
@@ -1637,41 +1337,7 @@ _ado_set_description() {
   _ado_patch_desc_to_file() {
     local op="${1:-replace}"
     rm -f "$tmp"
-<<<<<<< HEAD
     SDL_DESC_PATCH_OP="$op" cat "$file" | node "$patch_js" >"$tmp" || return 1
-=======
-    
-    # Extract just the description content from story file
-    local desc_content=""
-    
-    # Check for new format: separate Description HTML section
-    if grep -q "### Description (System.Description field)" "$file"; then
-      desc_content=$(sed -n '/### Description (System.Description field)/,/### Acceptance Criteria/p' "$file" | \
-                     sed '1d;$d' | \
-                     sed '/^---$/d' | \
-                     sed '/^$/N;/^\n$/d')
-      log_info "Extracted Description HTML section"
-    # Check for old format: single HTML section
-    elif grep -q "## HTML Formatting for ADO Description" "$file"; then
-      desc_content=$(sed -n '/## HTML Formatting for ADO Description/,/^---$/p' "$file" | \
-                     grep -v "^## HTML Formatting" | \
-                     grep -v "^---$" | \
-                     sed '/^$/N;/^\n$/d' | \
-                     sed '1{/^$/d}')
-      log_info "Extracted HTML section for description"
-    else
-      # Fallback: extract content between title and ## Acceptance Criteria
-      desc_content=$(sed -n '/^#[^#]/,/^## .*Acceptance Criteria/p' "$file" | sed '1d;$d')
-      log_info "Extracted markdown section for description"
-    fi
-    
-    if [[ -z "$desc_content" ]]; then
-      log_error "No description content found in file"
-      return 1
-    fi
-    
-    SDL_DESC_PATCH_OP="$op" echo "$desc_content" | node "$patch_js" >"$tmp" || return 1
->>>>>>> 5a6d807 (Final commit of AI-SDLC Platform)
     [[ -s "$tmp" ]] || return 1
     return 0
   }
