@@ -1,6 +1,6 @@
 # Agent Capability Matrix
 
-**Last Generated**: 2026-04-24T11:22:48Z
+**Last Generated**: 2026-04-24T11:23:29Z
 **Total Agents**: 55
 
 **Authoritative manifest:** [agent-registry.json](agent-registry.json) — tiers, tags, token budgets, and tool wiring.
@@ -117,5 +117,5 @@ grep -r "description" agents/ --include="*.md"
 
 ---
 
-**Generated**: 2026-04-24T11:22:48Z
+**Generated**: 2026-04-24T11:23:29Z
 **Command**: regenerate-registries.sh --update
