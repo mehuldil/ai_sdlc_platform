@@ -107,6 +107,8 @@ function buildHTML(docs) {
   <meta name="description" content="AI-SDLC Platform — Complete offline user manual (v2.1.4)" />
   <meta name="theme-color" content="#ffffff" />
   <title>AI-SDLC Platform · User Manual v2.1.4</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <style>
     :root {
       --bg-primary: #ffffff;
@@ -273,16 +275,42 @@ function buildHTML(docs) {
     }
 
     .doc-content pre {
-      background: var(--bg-secondary);
+      background: var(--bg-tertiary);
       padding: 16px;
       border-radius: var(--radius-md);
       overflow-x: auto;
       border: 1px solid var(--border);
+      margin: 16px 0;
     }
 
     .doc-content pre code {
       background: none;
       padding: 0;
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Syntax highlighting */
+    .hljs {
+      background: var(--bg-tertiary) !important;
+      color: var(--text-primary) !important;
+    }
+
+    .hljs-attr, .hljs-attribute { color: #0071e3; }
+    .hljs-string { color: #34c759; }
+    .hljs-number { color: #ff9500; }
+    .hljs-literal { color: #af52de; }
+    .hljs-type { color: #0071e3; }
+    .hljs-params { color: var(--text-primary); }
+
+    @media (prefers-color-scheme: dark) {
+      .hljs {
+        background: var(--bg-tertiary) !important;
+      }
+      .hljs-string { color: #34c759; }
+      .hljs-number { color: #ff9500; }
+      .hljs-literal { color: #af52de; }
     }
 
     .doc-content ul, .doc-content ol {
@@ -383,6 +411,13 @@ function buildHTML(docs) {
   </div>
 
   <script>
+    // Initialize syntax highlighting
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightElement(block);
+      });
+    });
+
     // Smooth active link highlighting
     const links = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.doc-card');
@@ -429,76 +464,96 @@ function buildHTML(docs) {
 function markdownToHtml(md) {
   let html = md;
 
-  // Headings (before other replacements)
+  // Store code blocks and special content
+  const codeBlocks = [];
+  const tables = [];
+  const blockquotes = [];
+
+  // Extract code blocks with language hints
+  html = html.replace(/```([\w]*)\n([\s\S]*?)```/g, (match, lang, code) => {
+    const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
+    const language = lang || 'bash';
+    codeBlocks.push(`<pre><code class="language-${language}">${esc(code.trim())}</code></pre>`);
+    return `\n${placeholder}\n`;
+  });
+
+  // Extract tables
+  html = html.replace(/\n(\|.+\n)+/g, (match) => {
+    const placeholder = `__TABLE_${tables.length}__`;
+    const rows = match.trim().split('\n').filter(r => r);
+    let isHeader = true;
+    const table = '<table>\n' + rows.map((row) => {
+      const cells = row.split('|').filter(c => c.trim()).map(c => c.trim());
+      if (cells.every(c => /^[:—-]+$/.test(c))) return ''; // Skip separator
+      const tag = isHeader ? 'th' : 'td';
+      const rowHtml = `<tr>${cells.map(c => `<${tag}>${c}</${tag}>`).join('')}</tr>`;
+      if (isHeader) isHeader = false;
+      return rowHtml;
+    }).filter(r => r).join('\n') + '\n</table>';
+    tables.push(table);
+    return `\n${placeholder}\n`;
+  });
+
+  // Extract block quotes
+  html = html.replace(/^> (.+)$/gm, (match, content) => {
+    const placeholder = `__BLOCKQUOTE_${blockquotes.length}__`;
+    blockquotes.push(`<blockquote>${content}</blockquote>`);
+    return placeholder;
+  });
+
+  // Headings
   html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
   html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
   html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
 
-  // Code blocks (preserve as-is)
-  const codeBlockRegex = /```[\w]*\n([\s\S]*?)```/g;
-  const codeBlocks = [];
-  html = html.replace(codeBlockRegex, (match, code) => {
-    const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
-    codeBlocks.push(`<pre><code>${esc(code)}</code></pre>`);
-    return placeholder;
+  // Unordered lists
+  html = html.replace(/^[\s]*[-*+] (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>.*<\/li>)/s, (match) => {
+    return '<ul>\n' + match + '\n</ul>';
   });
 
-  // Tables (preserve as-is)
-  const tableRegex = /\|[\s\S]*?\|(?:\n\|[-:\s|]+\|)?[\s\S]*?\n(?!\|)/;
-  const tables = [];
-  html = html.replace(tableRegex, (match) => {
-    const placeholder = `__TABLE_${tables.length}__`;
-    const rows = match.trim().split('\n');
-    const table = '<table>\n' + rows.map((row, idx) => {
-      const cells = row.split('|').filter(c => c.trim()).map(c => c.trim());
-      if (idx === 1 && cells.every(c => /^[:—-]+$/.test(c))) return ''; // Skip separator
-      const tag = idx === 0 ? 'th' : 'td';
-      return `<tr>${cells.map(c => `<${tag}>${c}</${tag}>`).join('')}</tr>`;
-    }).filter(r => r).join('\n') + '\n</table>';
-    tables.push(table);
-    return placeholder;
-  });
+  // Ordered lists
+  html = html.replace(/^[\s]*\d+\. (.+)$/gm, '<li>$1</li>');
 
-  // Lists
-  const listItems = [];
-  html = html.replace(/^[\s]*[-*] (.+)$/gm, (match) => {
-    listItems.push(match.trim());
-    return '__LIST_ITEM__';
-  });
-
-  // Wrap consecutive list items in <ul>
-  html = html.replace(/(__LIST_ITEM__\n?)+/g, (match) => {
-    const items = listItems.splice(0, match.split('__LIST_ITEM__').length - 1);
-    return '<ul>\n' + items.map(item => {
-      const text = item.replace(/^[-*]\s+/, '');
-      return `<li>${text}</li>`;
-    }).join('\n') + '\n</ul>';
-  });
-
-  // Inline formatting
+  // Inline formatting (bold before italic to avoid conflicts)
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/_(.+?)_/g, '<em>$1</em>');
+
+  // Inline code (backticks)
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
 
   // Links
   html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
 
-  // Blockquotes
-  html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+  // Horizontal rules
+  html = html.replace(/^[-*_]{3,}$/gm, '<hr />');
 
-  // Paragraphs (double newline indicates new paragraph)
+  // Paragraphs (double newline)
   html = html.split('\n\n').map(para => {
     para = para.trim();
-    if (!para || para.startsWith('<')) return para;
+    if (!para || para.startsWith('<') || para.startsWith('__')) return para;
+    // Don't wrap if already a list item or heading
+    if (para.match(/^<(h|ul|ol|table|blockquote|pre)/)) return para;
     return `<p>${para}</p>`;
   }).join('\n');
 
-  // Restore code blocks and tables
-  codeBlocks.forEach((block, idx) => {
-    html = html.replace(`__CODE_BLOCK_${idx}__`, block);
+  // Single line breaks in lists and blockquotes
+  html = html.replace(/(<li>.*?<\/li>)/g, (match) => match.replace(/\n/g, ''));
+  html = html.replace(/(<blockquote>.*?<\/blockquote>)/gs, (match) => match.replace(/\n/g, ''));
+
+  // Restore placeholders in order (reverse to avoid conflicts)
+  blockquotes.reverse().forEach((bq, idx) => {
+    html = html.replace(`__BLOCKQUOTE_${blockquotes.length - 1 - idx}__`, bq);
   });
-  tables.forEach((table, idx) => {
-    html = html.replace(`__TABLE_${idx}__`, table);
+
+  tables.reverse().forEach((table, idx) => {
+    html = html.replace(`__TABLE_${tables.length - 1 - idx}__`, table);
+  });
+
+  codeBlocks.reverse().forEach((block, idx) => {
+    html = html.replace(`__CODE_BLOCK_${codeBlocks.length - 1 - idx}__`, block);
   });
 
   return html;
