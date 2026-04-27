@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /**
- * build-manual-html.mjs (v7.2.1) - SMART TOC (ONLY when needed)
+ * build-manual-html.mjs (v7.3.0) - NO TOC + FIX PRISM.JS
  *
- * Fix: TOC only shows when section has h2 headings
- * Empty TOC boxes no longer break layout
+ * Changes:
+ * - Remove TOC completely from all pages
+ * - Fix Prism.js: ensure proper language detection and highlighting
+ * - Force Prism to run after DOM is ready
  */
 
 import fs from 'node:fs';
@@ -151,28 +153,13 @@ function loadDocs() {
   return docs;
 }
 
-function generatePageTOC(markdown) {
-  const lines = markdown.split('\n');
-  const headings = lines.filter(l => l.match(/^## /));
-
-  // RETURN EMPTY STRING if no headings (no TOC box shown)
-  if (headings.length === 0) return '';
-
-  const toc = headings.map(h => {
-    const text = h.replace(/^## /, '').trim();
-    const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-    return `<li><a href="#${id}">${esc(text)}</a></li>`;
-  }).join('\n');
-
-  return `<details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul>${toc}</ul></nav></details>`;
-}
-
 function markdownToHtml(markdown) {
   const md = new MarkdownIt({
     html: false,
     linkify: true,
     typographer: true,
     highlight: function(str, lang) {
+      // CRITICAL: return proper <pre><code> with language class for Prism.js
       if (lang) {
         return `<pre class="language-${lang}"><code class="language-${lang}">${esc(str)}</code></pre>`;
       }
@@ -253,7 +240,6 @@ function buildHTML(docs) {
   const searchIndex = buildSearchIndex(docs);
 
   const docCards = docs.map(d => {
-    const toc = generatePageTOC(d.markdown);
     const htmlContent = markdownToHtml(d.markdown);
 
     const currentIndex = docs.findIndex(doc => doc.slug === d.slug);
@@ -271,7 +257,6 @@ function buildHTML(docs) {
     return `<article id="${d.slug}" class="doc-section">
       <header class="doc-header">
         <h1>${esc(d.title)}</h1>
-        ${toc}
       </header>
       <main class="doc-body">${htmlContent}</main>
       ${nav}
@@ -283,13 +268,14 @@ function buildHTML(docs) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI-SDLC Platform Manual v7.2.1" />
+  <meta name="description" content="AI-SDLC Platform Manual v7.3.0" />
   <title>AI-SDLC Platform Manual</title>
 
-  <!-- Prism.js -->
+  <!-- Prism.js with all language support -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"><\/script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"><\/script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-shell-session.min.js"><\/script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"><\/script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"><\/script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"><\/script>
@@ -661,69 +647,6 @@ main {
   background-clip: text;
 }
 
-/* Collapsible TOC - SMART: only show if has headings */
-.toc-collapsible {
-  margin: 20px 0;
-  padding: 14px 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  user-select: none;
-  transition: var(--transition);
-}
-
-.toc-collapsible:hover {
-  background: var(--bg-alt);
-  border-color: var(--accent-cyan);
-}
-
-.toc-collapsible[open] {
-  background: rgba(0, 217, 255, 0.05);
-  border-color: var(--accent-cyan);
-}
-
-.toc-collapsible summary {
-  font-weight: 700;
-  font-size: 13px;
-  color: var(--accent-cyan);
-  outline: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  user-select: none;
-}
-
-.toc-collapsible summary::-webkit-details-marker {
-  color: var(--accent-cyan);
-}
-
-.toc {
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border-subtle);
-}
-
-.toc ul {
-  list-style: none;
-  margin: 0;
-}
-
-.toc li {
-  margin: 8px 0;
-}
-
-.toc a {
-  color: var(--text-secondary);
-  font-size: 12px;
-  transition: var(--transition);
-}
-
-.toc a:hover {
-  color: var(--accent-cyan);
-}
-
 /* Body Content */
 .doc-body {
   font-size: 15px;
@@ -762,7 +685,7 @@ main {
   color: var(--text-secondary);
 }
 
-/* Code */
+/* Code - PRISM.JS SUPPORT */
 .doc-body code {
   background: var(--bg-card);
   padding: 2px 6px;
@@ -793,6 +716,21 @@ main {
   background: none;
   padding: 0;
   color: inherit;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+/* Prism.js Theme Overrides */
+code[class*="language-"],
+pre[class*="language-"] {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+pre[class*="language-"] {
+  background: var(--bg-code) !important;
+  border: 1px solid var(--border) !important;
 }
 
 /* Tables */
@@ -912,7 +850,6 @@ a:hover {
   <script>
     // Lazy reveal discovery blocks on scroll
     const discoveryContainer = document.getElementById('discovery-container');
-
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -921,7 +858,6 @@ a:hover {
         }
       });
     }, { threshold: 0.1 });
-
     observer.observe(discoveryContainer);
 
     // Search
@@ -959,11 +895,25 @@ a:hover {
       setTimeout(() => searchResults.classList.remove('active'), 200);
     });
 
-    // Prism
-    document.addEventListener('DOMContentLoaded', () => {
-      if (typeof Prism !== 'undefined') Prism.highlightAll();
-      if (typeof mermaid !== 'undefined') mermaid.contentLoaded();
-    });
+    // PRISM.JS - Force highlight after DOM ready
+    function initPrism() {
+      if (typeof Prism !== 'undefined') {
+        Prism.highlightAll();
+      }
+      if (typeof mermaid !== 'undefined') {
+        mermaid.contentLoaded();
+      }
+    }
+
+    // Run on DOM ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPrism);
+    } else {
+      initPrism();
+    }
+
+    // Also run when content might be lazy-loaded
+    setTimeout(initPrism, 100);
   </script>
 </body>
 </html>`;
@@ -984,7 +934,7 @@ function main() {
   fs.writeFileSync(HASH_FILE, hash);
 
   const size = (fs.statSync(OUT).size / 1024).toFixed(1);
-  console.log(`Generated ${OUT} (v7.2.1, ${docs.length} sections, ${size} KB)`);
+  console.log(`Generated ${OUT} (v7.3.0, ${docs.length} sections, ${size} KB)`);
 }
 
 main();
