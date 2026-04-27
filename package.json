@@ -1,0 +1,25 @@
+{
+  "name": "ai-sdlc-platform-docs",
+  "version": "2.0.0",
+  "description": "Professional documentation build system for AI-SDLC Platform",
+  "type": "module",
+  "scripts": {
+    "build:docs": "node build-manual-enhanced.mjs",
+    "build:docs:legacy": "node build-manual-html.mjs",
+    "validate:docs": "node scripts/validate-docs.mjs",
+    "preview:docs": "node scripts/preview-server.mjs",
+    "clean:docs": "rm -f manual.html .manual.hash && echo 'Docs cleaned'"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0",
+    "markdown-it-highlightjs": "^4.0.1",
+    "markdown-it-anchor": "^8.6.7",
+    "highlight.js": "^11.9.0"
+  },
+  "devDependencies": {
+    "html-validate": "^8.8.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
