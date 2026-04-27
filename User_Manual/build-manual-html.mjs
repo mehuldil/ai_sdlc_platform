@@ -1,16 +1,14 @@
 #!/usr/bin/env node
 /**
- * build-manual-html.mjs (v7.0.0) - DARK-FIRST PREMIUM DESIGN
+ * build-manual-html.mjs (v7.1.0) - SPACING & USABILITY FIXES
  *
- * Features:
- * - Dark-first design with neon cyan/magenta accents
- * - Compact header, no wasted space
- * - Collapsible TOC sections (default closed)
- * - Glassmorphism + modern gradients
- * - Premium typography with serif accents
- * - Full-text search with live filtering
- * - Prism.js code highlighting
- * - Mermaid.js diagram support
+ * Fixes from v7.0.0:
+ * - Header overlap: reduced scroll-margin-top to match header height
+ * - TOC spacing: proper padding/margin when expanded
+ * - Card containment: fixed horizontal scroll overflow
+ * - Netflix blocks now link to FULL section (not just card preview)
+ * - Better vertical rhythm and breathing room
+ * - Proper section anchoring without jumping
  */
 
 import fs from 'node:fs';
@@ -153,7 +151,7 @@ function loadDocs() {
     docs.push({ file: f, slug: slugFor(f), title: titleFor(f), markdown });
   }
   if (missing.length > 0) {
-    console.log(`⚠️  Missing ${missing.length} files: ${missing.join(', ')}`);
+    console.log(`⚠️  Missing ${missing.length} files`);
   }
   return docs;
 }
@@ -288,7 +286,7 @@ function buildHTML(docs) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI-SDLC Platform Manual v7.0.0" />
+  <meta name="description" content="AI-SDLC Platform Manual v7.1.0" />
   <title>AI-SDLC Platform Manual</title>
 
   <!-- Prism.js -->
@@ -328,6 +326,7 @@ function buildHTML(docs) {
   --shadow-md: 0 8px 24px rgba(255, 0, 255, 0.08);
   --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.4);
   --transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  --header-height: 56px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -347,6 +346,7 @@ header {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
   padding: 12px 0;
+  height: var(--header-height);
   box-shadow: var(--shadow-sm);
 }
 
@@ -358,6 +358,7 @@ header {
   gap: 24px;
   align-items: center;
   justify-content: space-between;
+  height: 100%;
 }
 
 .logo {
@@ -388,6 +389,7 @@ header {
   font-family: var(--font);
   font-size: 13px;
   transition: var(--transition);
+  height: 40px;
 }
 
 .search input:focus {
@@ -410,12 +412,13 @@ header {
   display: none;
   z-index: 1000;
   box-shadow: var(--shadow-lg);
+  margin-top: 4px;
 }
 
 .search-results.active { display: block; }
 
 .search-result-item {
-  padding: 10px 14px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--border-subtle);
   cursor: pointer;
   transition: var(--transition);
@@ -431,7 +434,7 @@ header {
   font-weight: 700;
   font-size: 13px;
   color: var(--accent-cyan);
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 
 .search-result-snippet {
@@ -440,21 +443,21 @@ header {
   line-height: 1.3;
 }
 
-/* Main - Compact spacing */
+/* Main - Proper spacing */
 main {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 32px 24px;
 }
 
-/* Topic Groups */
+/* Topic Groups - Better spacing */
 .topic-group {
-  margin-bottom: 48px;
+  margin-bottom: 40px;
   padding: 28px;
   background: rgba(26, 26, 36, 0.5);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
   border-left: 3px solid var(--group-color);
+  border-radius: var(--radius);
   backdrop-filter: blur(10px);
   transition: var(--transition);
 }
@@ -489,14 +492,16 @@ main {
   letter-spacing: 0.5px;
 }
 
-/* Card Scroll */
+/* Card Scroll - Fixed containment */
 .card-scroll {
   display: flex;
   gap: 14px;
   overflow-x: auto;
+  overflow-y: hidden;
   padding-bottom: 8px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  padding-right: 4px;
 }
 
 .card-scroll::-webkit-scrollbar { height: 4px; }
@@ -504,6 +509,10 @@ main {
 .card-scroll::-webkit-scrollbar-thumb {
   background: var(--text-tertiary);
   border-radius: 2px;
+}
+
+.card-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }
 
 /* Topic Cards */
@@ -586,6 +595,7 @@ main {
   transition: var(--transition);
   letter-spacing: 0.3px;
   border: 1px solid rgba(0, 217, 255, 0.2);
+  white-space: nowrap;
 }
 
 .topic-card:hover .action-tag {
@@ -604,18 +614,19 @@ main {
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 1;
 }
 
 .topic-card:hover .arrow {
   opacity: 1;
 }
 
-/* Document Sections */
+/* Document Sections - Better anchoring */
 .doc-section {
   max-width: 900px;
   margin: 0 auto;
-  padding: 60px 0;
-  scroll-margin-top: 80px;
+  padding: 56px 0 40px;
+  scroll-margin-top: calc(var(--header-height) + 20px);
 }
 
 .doc-header {
@@ -636,10 +647,10 @@ main {
   background-clip: text;
 }
 
-/* Collapsible TOC */
+/* Collapsible TOC - Proper spacing */
 .toc-collapsible {
-  margin: 16px 0;
-  padding: 12px 16px;
+  margin: 20px 0;
+  padding: 14px 16px;
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
@@ -653,12 +664,21 @@ main {
   border-color: var(--accent-cyan);
 }
 
+.toc-collapsible[open] {
+  background: rgba(0, 217, 255, 0.05);
+  border-color: var(--accent-cyan);
+}
+
 .toc-collapsible summary {
   font-weight: 700;
   font-size: 13px;
   color: var(--accent-cyan);
   outline: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
 }
 
 .toc-collapsible summary::-webkit-details-marker {
@@ -666,8 +686,8 @@ main {
 }
 
 .toc {
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
   border-top: 1px solid var(--border-subtle);
 }
 
@@ -677,7 +697,7 @@ main {
 }
 
 .toc li {
-  margin: 6px 0;
+  margin: 8px 0;
 }
 
 .toc a {
@@ -703,6 +723,7 @@ main {
   margin: 36px 0 16px;
   letter-spacing: -0.5px;
   color: var(--text);
+  scroll-margin-top: calc(var(--header-height) + 16px);
 }
 
 .doc-body h3 {
@@ -710,6 +731,7 @@ main {
   font-weight: 700;
   margin: 28px 0 12px;
   letter-spacing: -0.3px;
+  scroll-margin-top: calc(var(--header-height) + 16px);
 }
 
 .doc-body p {
@@ -722,7 +744,7 @@ main {
 }
 
 .doc-body li {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   color: var(--text-secondary);
 }
 
@@ -741,6 +763,7 @@ main {
   padding: 14px;
   border-radius: var(--radius-sm);
   overflow-x: auto;
+  overflow-y: hidden;
   margin: 20px 0;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
@@ -850,6 +873,7 @@ a:hover {
   .doc-header h1 { font-size: 28px; }
   .doc-body h2 { font-size: 22px; }
   .topic-card { flex: 0 0 240px; }
+  .topic-group { margin-bottom: 32px; padding: 20px; }
 }
   </style>
 </head>
@@ -930,7 +954,7 @@ function main() {
   fs.writeFileSync(HASH_FILE, hash);
 
   const size = (fs.statSync(OUT).size / 1024).toFixed(1);
-  console.log(`Generated ${OUT} (v7.0.0, ${docs.length} sections, ${size} KB)`);
+  console.log(`Generated ${OUT} (v7.1.0, ${docs.length} sections, ${size} KB)`);
 }
 
 main();
