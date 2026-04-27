@@ -3,221 +3,643 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI-SDLC Platform — Complete offline manual (v3.0.0)" />
-  <title>AI-SDLC Platform · Manual v3.0.0</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <meta name="description" content="AI-SDLC Platform Manual v5.0.0" />
+  <title>AI-SDLC Platform Manual</title>
+  
+  <!-- Prism.js for code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+  
+  <!-- Mermaid.js for diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  
   <style>
 :root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f5f5f7;
-  --bg-tertiary: #efefef;
-  --text-primary: #1d1d1d;
-  --text-secondary: #666666;
-  --text-tertiary: #999999;
+  --bg: #fff;
+  --bg-alt: #f5f5f7;
+  --bg-code: #efefef;
+  --text: #1d1d1d;
+  --text-secondary: #666;
+  --text-tertiary: #999;
   --accent: #0071e3;
-  --accent-hover: #0077ed;
   --border: #e5e5e7;
   --radius: 12px;
-  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-primary: #1d1d1f;
-    --bg-secondary: #2a2a2e;
-    --bg-tertiary: #424245;
-    --text-primary: #f5f5f7;
+    --bg: #000;
+    --bg-alt: #1d1d1f;
+    --bg-code: #2a2a2e;
+    --text: #f5f5f7;
     --text-secondary: #a1a1a6;
     --text-tertiary: #727278;
     --border: #424245;
   }
 }
 
-* { box-sizing: border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; font-family: var(--font); background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; }
 
-.app-container { display: grid; grid-template-columns: 280px 1fr; max-width: 1400px; margin: 0 auto; min-height: 100vh; }
+/* Header */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 0;
+}
 
-.sidebar { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 24px 0; border-right: 1px solid var(--border); background: var(--bg-secondary); }
+@media (prefers-color-scheme: dark) {
+  header { background: rgba(0, 0, 0, 0.95); }
+}
 
-.sidebar-header { padding: 0 20px 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
 
-.sidebar-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); }
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
 
-.search-box { padding: 0 20px 20px; }
+.search {
+  flex: 1;
+  max-width: 350px;
+}
 
-.search-input { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-primary); color: var(--text-primary); font-size: 14px; font-family: var(--font); }
+.search input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-alt);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  transition: all 0.2s;
+}
 
-.search-input::placeholder { color: var(--text-tertiary); }
+.search input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--bg);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+}
 
-.nav-group { margin: 0; border: none; padding: 0 0 20px 0; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
+/* Main */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
 
-.nav-group:last-child { border-bottom: none; }
+/* Topic Groups (Netflix Blocks) */
+.topic-group {
+  margin-bottom: 60px;
+  padding: 32px;
+  background: var(--bg-alt);
+  border-radius: var(--radius);
+  border-left: 4px solid;
+}
 
-.nav-group legend { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); padding: 0 20px 12px 20px; margin: 0; }
+.group-header {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: flex-start;
+}
 
-.nav-group ul { list-style: none; padding: 0; margin: 0; }
+.group-emoji {
+  font-size: 32px;
+  line-height: 1;
+}
 
-.nav-link { display: block; padding: 10px 20px; color: var(--text-secondary); text-decoration: none; font-size: 14px; border-left: 3px solid transparent; transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1); }
+.group-header h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
 
-.nav-link:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+.group-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
 
-.nav-link.active { color: var(--accent); border-left-color: var(--accent); background: var(--bg-primary); }
+/* Horizontal scrolling cards */
+.card-scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scroll-behavior: smooth;
+}
 
-.main-content { padding: 40px 60px; overflow-y: auto; max-height: 100vh; }
+.card-scroll::-webkit-scrollbar {
+  height: 6px;
+}
 
-.doc-card { margin-bottom: 80px; scroll-margin-top: 100px; }
+.card-scroll::-webkit-scrollbar-track {
+  background: var(--bg);
+}
 
-.doc-header h1 { font-size: 32px; font-weight: 700; margin: 0 0 12px 0; line-height: 1.2; }
+.card-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
 
-.page-toc { margin: 20px 0; padding: 12px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); }
+.topic-card {
+  flex: 0 0 280px;
+  padding: 18px;
+  background: var(--bg);
+  border-left: 4px solid;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
 
-.page-toc summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+.topic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
 
-.page-toc ul { margin: 12px 0 0 0; padding-left: 20px; list-style: none; }
+.topic-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.topic-card p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  min-height: 26px;
+}
+
+.topic-card .arrow {
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  display: inline-block;
+}
+
+.topic-card:hover .arrow {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+/* Documents */
+.doc-section {
+  margin-bottom: 100px;
+  scroll-margin-top: 80px;
+}
+
+.doc-header {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-header h1 {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.page-toc {
+  margin-top: 16px;
+}
+
+.page-toc summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.page-toc ul {
+  margin: 12px 0 0 20px;
+  padding: 0;
+  list-style: none;
+}
 
 .page-toc li { margin: 6px 0; }
 
-.page-toc a { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+.page-toc a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.2s;
+}
 
 .page-toc a:hover { color: var(--accent); }
 
-.doc-content { font-size: 16px; }
+/* Content */
+.doc-body {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
 
-.doc-content h2 { font-size: 24px; font-weight: 600; margin: 36px 0 16px 0; padding-top: 20px; border-top: 1px solid var(--border); }
+.doc-body h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 48px 0 24px 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
 
-.doc-content h3 { font-size: 18px; font-weight: 600; margin: 24px 0 12px 0; }
+.doc-body h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 32px 0 16px 0;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
 
-.doc-content p { margin: 16px 0; }
+.doc-body p {
+  margin: 16px 0;
+  color: var(--text-secondary);
+}
 
-.doc-content a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.doc-body a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 113, 227, 0.2);
+  transition: all 0.2s;
+}
 
-.doc-content a:hover { text-decoration: underline; }
+.doc-body a:hover {
+  border-bottom-color: var(--accent);
+}
 
-.doc-content code { background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Monaco', monospace; font-size: 14px; }
+.doc-body code {
+  background: var(--bg-code);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
 
-.doc-content pre { background: var(--bg-tertiary); padding: 16px; border-radius: var(--radius); overflow-x: auto; border: 1px solid var(--border); margin: 16px 0; }
+.doc-body pre {
+  background: var(--bg-code);
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 20px 0;
+  border-left: 4px solid var(--accent);
+  position: relative;
+}
 
-.doc-content pre code { background: none; padding: 0; font-size: 13px; line-height: 1.5; }
+.doc-body pre code {
+  background: none;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+}
 
-.hljs { background: transparent !important; }
+.doc-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
 
-.doc-content table { border-collapse: collapse; width: 100%; margin: 16px 0; border: 1px solid var(--border); }
+.doc-body th {
+  background: var(--bg-alt);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
 
-.doc-content th { background: var(--bg-secondary); padding: 12px; text-align: left; font-weight: 600; border: 1px solid var(--border); }
+.doc-body td {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+}
 
-.doc-content td { padding: 12px; border: 1px solid var(--border); }
+.doc-body tbody tr:hover {
+  background: var(--bg-alt);
+}
 
-.doc-content ul, .doc-content ol { margin: 16px 0; padding-left: 24px; }
+.doc-body ul, .doc-body ol {
+  margin: 16px 0;
+  padding-left: 28px;
+}
 
-.doc-content li { margin: 8px 0; }
+.doc-body li { margin: 8px 0; }
 
-.doc-content blockquote { margin: 16px 0; padding: 12px 16px; border-left: 3px solid var(--accent); background: var(--bg-secondary); border-radius: 4px; }
+.doc-body blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  border-left: 4px solid var(--accent);
+  background: var(--bg-alt);
+  border-radius: 0 8px 8px 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
 
-.doc-content hr { margin: 20px 0; border: none; border-top: 1px solid var(--border); }
+.doc-body hr {
+  margin: 40px 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+/* Mermaid styling */
+.mermaid {
+  background: var(--bg-alt);
+  padding: 16px;
+  border-radius: 8px;
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Flow Navigation */
+.doc-nav {
+  display: flex;
+  gap: 16px;
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.nav-prev, .nav-next {
+  flex: 1;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.nav-prev:hover, .nav-next:hover {
+  background: var(--bg-alt);
+  transform: translateY(-2px);
+}
 
 @media (max-width: 768px) {
-  .app-container { grid-template-columns: 1fr; }
-  .sidebar { position: relative; height: auto; max-height: 50vh; border-right: none; border-bottom: 1px solid var(--border); }
-  .main-content { padding: 24px; }
-  .doc-header h1 { font-size: 24px; }
-  .doc-content { font-size: 14px; }
-  .doc-content table { font-size: 12px; }
-  .doc-content th, .doc-content td { padding: 8px; }
+  .header-inner {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .search { max-width: 100%; }
+  main { padding: 40px 16px; }
+  .group-header { flex-direction: column; }
+  .group-emoji { font-size: 28px; }
+  .group-header h2 { font-size: 20px; }
+  .card-scroll { gap: 12px; }
+  .topic-card { flex: 0 0 240px; }
+  .doc-header h1 { font-size: 32px; }
+  .doc-body h2 { font-size: 22px; }
+  .doc-nav { flex-direction: column; }
 }
 
 @media print {
-  .sidebar { display: none; }
-  .main-content { max-height: none; padding: 0; }
-  .page-toc { display: none; }
+  header { display: none; }
+  .topic-group { display: none; }
+  main { padding: 0; }
 }
+
+.token.string { color: inherit; }
+.token.number { color: inherit; }
+.token.keyword { color: inherit; }
   </style>
 </head>
 <body>
-  <div class="app-container">
-    <aside class="sidebar" role="navigation" aria-label="Documentation sections">
-    <div class="sidebar-header">
-      <h2 class="sidebar-title">📖 Sections</h2>
+  <header>
+    <div class="header-inner">
+      <div class="logo">📘 AI-SDLC Manual</div>
+      <div class="search">
+        <input type="text" id="globalSearch" placeholder="Search docs (Cmd+K)..." />
+      </div>
     </div>
-    <div class="search-box">
-      <input type="text" class="search-input" id="searchInput" placeholder="Search..." aria-label="Search documentation" />
-    </div>
-    <nav>
-    <fieldset class="nav-group">
-      <legend>📍 Getting Started</legend>
-      <ul>
-        <li><a href="#readme" class="nav-link">🏠 Home</a></li>
-        <li><a href="#index" class="nav-link">📚 Index & Guide</a></li>
-        <li><a href="#prerequisites" class="nav-link">Prerequisites</a></li>
-        <li><a href="#getting_started" class="nav-link">Getting Started</a></li>
-      </ul>
-    </fieldset>
-    <fieldset class="nav-group">
-      <legend>🎯 Concepts & Architecture</legend>
-      <ul>
-        <li><a href="#system_overview" class="nav-link">System Overview</a></li>
-        <li><a href="#architecture" class="nav-link">Architecture</a></li>
-        <li><a href="#canonical_repo_and_interfaces" class="nav-link">🏗️ Canonical Repo</a></li>
-      </ul>
-    </fieldset>
-    <fieldset class="nav-group">
-      <legend>🛠️ Workflows & Execution</legend>
-      <ul>
-        <li><a href="#sdlc_flows" class="nav-link">🌊 SDLC Flows</a></li>
-        <li><a href="#happy_path_end_to_end" class="nav-link">Happy Path End to End</a></li>
-        <li><a href="#role_and_stage_playbook" class="nav-link">Role and Stage Playbook</a></li>
-        <li><a href="#commands" class="nav-link">Commands</a></li>
-        <li><a href="#guided_execution_and_recovery" class="nav-link">Guided Execution and Recovery</a></li>
-      </ul>
-    </fieldset>
-    <fieldset class="nav-group">
-      <legend>✨ Features</legend>
-      <ul>
-        <li><a href="#features_reference" class="nav-link">✨ Features</a></li>
-        <li><a href="#persistent_memory" class="nav-link">Persistent Memory</a></li>
-        <li><a href="#ado_mcp_integration" class="nav-link">🔗 ADO & MCP</a></li>
-        <li><a href="#token_efficiency_and_context_loading" class="nav-link">Token Efficiency and Context Loading</a></li>
-      </ul>
-    </fieldset>
-    <fieldset class="nav-group">
-      <legend>📖 Deep Dives</legend>
-      <ul>
-        <li><a href="#agents_skills_rules" class="nav-link">Agents Skills Rules</a></li>
-        <li><a href="#repository_complexity_explained" class="nav-link">Repository Complexity Explained</a></li>
-        <li><a href="#sdlc-stage-role-mapping" class="nav-link">../docs/sdlc-stage-role-mapping</a></li>
-      </ul>
-    </fieldset>
-    <fieldset class="nav-group">
-      <legend>🔒 Quality & Governance</legend>
-      <ul>
-        <li><a href="#pr_merge_process" class="nav-link">🔄 PR & Merge</a></li>
-        <li><a href="#enforcement_contract" class="nav-link">Enforcement Contract</a></li>
-        <li><a href="#traceability_and_governance" class="nav-link">Traceability and Governance</a></li>
-      </ul>
-    </fieldset>
-    <fieldset class="nav-group">
-      <legend>🔧 Advanced</legend>
-      <ul>
-        <li><a href="#platform_extension_onboarding" class="nav-link">Platform Extension Onboarding</a></li>
-        <li><a href="#team_onboarding_presentation" class="nav-link">Team Onboarding Presentation</a></li>
-        <li><a href="#documentation_rules" class="nav-link">Documentation Rules</a></li>
-      </ul>
-    </fieldset>
-    <fieldset class="nav-group">
-      <legend>📚 Reference</legend>
-      <ul>
-        <li><a href="#faq" class="nav-link">❓ FAQ</a></li>
-        <li><a href="#changelog" class="nav-link">📝 Changelog</a></li>
-      </ul>
-    </fieldset>
-    </nav>
-    </aside>
-    <main class="main-content" id="main-content" role="main">
-    <article id="readme" class="doc-card">
-      <div class="doc-header"><h1>🏠 Home</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#what-is-this">What is this?</a></li><li><a href="#the-three-fastest-ways-to-read">The three fastest ways to read</a></li><li><a href="#get-the-platform-source">Get the platform source</a></li><li><a href="#short-navigation-same-order-as-manual-html-sidebar">Short navigation (same order as `manual.html` sidebar)</a></li><li><a href="#how-search-in-manual-html-works">How search in `manual.html` works</a></li><li><a href="#principles-short">Principles (short)</a></li><li><a href="#older-documentation">Older documentation</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>AI-SDLC Platform — User Manual (home)</h1>
+  </header>
+
+  <main>
+    <!-- Netflix-style discovery blocks -->
+    <section id="discovery">
+      <section class="topic-group" style="border-color: #FF6B35">
+      <div class="group-header">
+        <span class="group-emoji">🚀</span>
+        <div>
+          <h2>Start Here</h2>
+          <p class="group-desc">Begin your AI-SDLC journey</p>
+        </div>
+      </div>
+      <div class="card-scroll"><a href="#readme" class="topic-card" style="border-left: 4px solid #FF6B35">
+        <h3>Home</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#index" class="topic-card" style="border-left: 4px solid #FF6B35">
+        <h3>Index</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#prerequisites" class="topic-card" style="border-left: 4px solid #FF6B35">
+        <h3>Prerequisites</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#getting_started" class="topic-card" style="border-left: 4px solid #FF6B35">
+        <h3>Getting Started</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a></div></section><section class="topic-group" style="border-color: #004E89">
+      <div class="group-header">
+        <span class="group-emoji">🎯</span>
+        <div>
+          <h2>Core Concepts</h2>
+          <p class="group-desc">Master the fundamentals</p>
+        </div>
+      </div>
+      <div class="card-scroll"><a href="#system_overview" class="topic-card" style="border-left: 4px solid #004E89">
+        <h3>System Overview</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#canonical_repo_and_interfaces" class="topic-card" style="border-left: 4px solid #004E89">
+        <h3>Canonical Repo</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#architecture" class="topic-card" style="border-left: 4px solid #004E89">
+        <h3>Architecture</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a></div></section><section class="topic-group" style="border-color: #1B998B">
+      <div class="group-header">
+        <span class="group-emoji">🛠️</span>
+        <div>
+          <h2>Execution</h2>
+          <p class="group-desc">Run your workflows</p>
+        </div>
+      </div>
+      <div class="card-scroll"><a href="#sdlc_flows" class="topic-card" style="border-left: 4px solid #1B998B">
+        <h3>SDLC Flows</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#happy_path_end_to_end" class="topic-card" style="border-left: 4px solid #1B998B">
+        <h3>Happy Path End to End</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#role_and_stage_playbook" class="topic-card" style="border-left: 4px solid #1B998B">
+        <h3>Role and Stage Playbook</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#commands" class="topic-card" style="border-left: 4px solid #1B998B">
+        <h3>Commands</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#guided_execution_and_recovery" class="topic-card" style="border-left: 4px solid #1B998B">
+        <h3>Guided Execution and Recovery</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a></div></section><section class="topic-group" style="border-color: #F77F00">
+      <div class="group-header">
+        <span class="group-emoji">✨</span>
+        <div>
+          <h2>Features</h2>
+          <p class="group-desc">Advanced capabilities</p>
+        </div>
+      </div>
+      <div class="card-scroll"><a href="#features_reference" class="topic-card" style="border-left: 4px solid #F77F00">
+        <h3>Features</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#persistent_memory" class="topic-card" style="border-left: 4px solid #F77F00">
+        <h3>Persistent Memory</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#ado_mcp_integration" class="topic-card" style="border-left: 4px solid #F77F00">
+        <h3>ADO &amp; MCP</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#token_efficiency_and_context_loading" class="topic-card" style="border-left: 4px solid #F77F00">
+        <h3>Token Efficiency and Context Loading</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a></div></section><section class="topic-group" style="border-color: #A23B72">
+      <div class="group-header">
+        <span class="group-emoji">📚</span>
+        <div>
+          <h2>Deep Dives</h2>
+          <p class="group-desc">Complex topics</p>
+        </div>
+      </div>
+      <div class="card-scroll"><a href="#agents_skills_rules" class="topic-card" style="border-left: 4px solid #A23B72">
+        <h3>Agents Skills Rules</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#repository_complexity_explained" class="topic-card" style="border-left: 4px solid #A23B72">
+        <h3>Repository Complexity Explained</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#sdlc-stage-role-mapping" class="topic-card" style="border-left: 4px solid #A23B72">
+        <h3>../docs/sdlc-stage-role-mapping</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a></div></section><section class="topic-group" style="border-color: #C1121F">
+      <div class="group-header">
+        <span class="group-emoji">🔒</span>
+        <div>
+          <h2>Quality</h2>
+          <p class="group-desc">Ensure compliance</p>
+        </div>
+      </div>
+      <div class="card-scroll"><a href="#pr_merge_process" class="topic-card" style="border-left: 4px solid #C1121F">
+        <h3>PR &amp; Merge</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#enforcement_contract" class="topic-card" style="border-left: 4px solid #C1121F">
+        <h3>Enforcement Contract</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#traceability_and_governance" class="topic-card" style="border-left: 4px solid #C1121F">
+        <h3>Traceability and Governance</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a></div></section><section class="topic-group" style="border-color: #6A4C93">
+      <div class="group-header">
+        <span class="group-emoji">🔧</span>
+        <div>
+          <h2>Advanced</h2>
+          <p class="group-desc">Extend & customize</p>
+        </div>
+      </div>
+      <div class="card-scroll"><a href="#platform_extension_onboarding" class="topic-card" style="border-left: 4px solid #6A4C93">
+        <h3>Platform Extension Onboarding</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#team_onboarding_presentation" class="topic-card" style="border-left: 4px solid #6A4C93">
+        <h3>Team Onboarding Presentation</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#documentation_rules" class="topic-card" style="border-left: 4px solid #6A4C93">
+        <h3>Documentation Rules</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a></div></section><section class="topic-group" style="border-color: #1D3557">
+      <div class="group-header">
+        <span class="group-emoji">📖</span>
+        <div>
+          <h2>Reference</h2>
+          <p class="group-desc">Lookup & updates</p>
+        </div>
+      </div>
+      <div class="card-scroll"><a href="#faq" class="topic-card" style="border-left: 4px solid #1D3557">
+        <h3>FAQ</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a><a href="#changelog" class="topic-card" style="border-left: 4px solid #1D3557">
+        <h3>Changelog</h3>
+        <p>...</p>
+        <span class="arrow">→</span>
+      </a></div></section>
+    </section>
+
+    <!-- Linear documentation flow -->
+    <section id="content">
+      <article id="readme" class="doc-section">
+      <header class="doc-header">
+        <h1>Home</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#what-is-this">What is this?</a></li><li><a href="#the-three-fastest-ways-to-read">The three fastest ways to read</a></li><li><a href="#get-the-platform-source">Get the platform source</a></li><li><a href="#short-navigation-same-order-as-manual-html-sidebar">Short navigation (same order as `manual.html` sidebar)</a></li><li><a href="#how-search-in-manual-html-works">How search in `manual.html` works</a></li><li><a href="#principles-short">Principles (short)</a></li><li><a href="#older-documentation">Older documentation</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>AI-SDLC Platform — User Manual (home)</h1>
 <p>Welcome. This manual is written for <strong>everyone</strong> on the team: developers, testers, product owners, and leads. You do <strong>not</strong> need to know how the AI works internally to get value — in <strong><code>manual.html</code></strong>, read the <strong>sidebar top to bottom</strong> (that order is intentional), or open <strong><a href="#index">INDEX</a></strong> for the numbered list and glossary.</p>
 <h2 id="what-is-this%3F" tabindex="-1">What is this?</h2>
 <p><strong>AI-SDLC</strong> is a <strong>workflow + documentation + tooling</strong> layer around your normal Git and Azure DevOps habits. It helps you:</p>
@@ -386,12 +808,15 @@ cd ai_sdlc_platform
 </ul>
 <h2 id="older-documentation" tabindex="-1">Older documentation</h2>
 <p>Historical material lives in <strong>git history</strong>. Example: <code>git log --all --diff-filter=D -- &quot;*.md&quot;</code>.</p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#index" class="nav-next">Index →</a></nav>
     </article>
-
-    <article id="index" class="doc-card">
-      <div class="doc-header"><h1>📚 Index &amp; Guide</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#how-to-use-the-offline-manual-manual-html">How to use the offline manual (`manual.html`)</a></li><li><a href="#manual-order-same-as-sidebar-read-down-this-list">Manual order (same as sidebar — read down this list)</a></li><li><a href="#start-here-by-goal-still-jump-in-anywhere">Start here (by goal — still jump in anywhere)</a></li><li><a href="#lookup-all-pages-by-title-a-z">Lookup: all pages by title (A–Z)</a></li><li><a href="#glossary-short">Glossary (short)</a></li><li><a href="#cursor-agent-note-setup-without-a-tty">Cursor agent note (setup without a TTY)</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Index &amp; reading guide</h1>
+<article id="index" class="doc-section">
+      <header class="doc-header">
+        <h1>Index</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#how-to-use-the-offline-manual-manual-html">How to use the offline manual (`manual.html`)</a></li><li><a href="#manual-order-same-as-sidebar-read-down-this-list">Manual order (same as sidebar — read down this list)</a></li><li><a href="#start-here-by-goal-still-jump-in-anywhere">Start here (by goal — still jump in anywhere)</a></li><li><a href="#lookup-all-pages-by-title-a-z">Lookup: all pages by title (A–Z)</a></li><li><a href="#glossary-short">Glossary (short)</a></li><li><a href="#cursor-agent-note-setup-without-a-tty">Cursor agent note (setup without a TTY)</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Index &amp; reading guide</h1>
 <p>This page is the <strong>map of the manual</strong>. The <strong>order below matches the sidebar</strong> in <code>manual.html</code> (see <code>User_Manual/build-manual-html.mjs</code> → <code>ORDER</code>): read <strong>top to bottom</strong> for a linear path from “what is this?” to “how do I extend or troubleshoot?”</p>
 <h2 id="how-to-use-the-offline-manual-(manual.html)" tabindex="-1">How to use the offline manual (<code>manual.html</code>)</h2>
 <ol>
@@ -733,12 +1158,15 @@ cd ai_sdlc_platform
 <hr>
 <h2 id="cursor-agent-note-(setup-without-a-tty)" tabindex="-1">Cursor agent note (setup without a TTY)</h2>
 <p>When the assistant runs <strong><code>sdlc-setup.sh</code></strong> or <strong><code>./setup.sh</code></strong>, there is often <strong>no keyboard</strong> on stdin. Use <strong>AskQuestion</strong>, then pass <strong><code>SDL_SETUP_*</code></strong> and <strong><code>ADO_*</code></strong> as documented in <strong><code>cli/sdlc-setup.sh --help</code></strong> and <a href="#getting_started">Getting_Started</a>.</p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#readme" class="nav-prev">← Home</a><a href="#system_overview" class="nav-next">System Overview →</a></nav>
     </article>
-
-    <article id="system_overview" class="doc-card">
-      <div class="doc-header"><h1>System Overview</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#1-what-this-system-is">1. What This System Is</a></li><li><a href="#2-what-it-does-end-to-end">2. What It Does (End-to-End)</a></li><li><a href="#2a-where-it-runs-what-how-where">2a. Where it runs — **what**, **how**, **where**</a></li>  <li><a href="#two-repositories-in-a-normal-setup">Two repositories in a normal setup</a></li>  <li><a href="#what-happens-when-you-run-a-stage">What happens when you “run a stage”</a></li>  <li><a href="#where-intelligence-is-split-so-you-know-what-to-open">Where “intelligence” is split (so you know what to open)</a></li><li><a href="#2b-how-this-overview-fits-the-rest-of-the-manual">2b. How this overview fits the rest of the manual</a></li><li><a href="#3-core-capabilities">3. Core Capabilities</a></li><li><a href="#4-key-features">4. Key Features</a></li><li><a href="#5-why-it-is-effective">5. Why It Is Effective</a></li><li><a href="#6-design-principles">6. Design Principles</a></li><li><a href="#7-component-inventory-current">7. Component Inventory (Current)</a></li><li><a href="#8-enforcement-summary">8. Enforcement Summary</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>System Overview</h1>
+<article id="system_overview" class="doc-section">
+      <header class="doc-header">
+        <h1>System Overview</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#1-what-this-system-is">1. What This System Is</a></li><li><a href="#2-what-it-does-end-to-end">2. What It Does (End-to-End)</a></li><li><a href="#2a-where-it-runs-what-how-where">2a. Where it runs — **what**, **how**, **where**</a></li>  <li><a href="#two-repositories-in-a-normal-setup">Two repositories in a normal setup</a></li>  <li><a href="#what-happens-when-you-run-a-stage">What happens when you “run a stage”</a></li>  <li><a href="#where-intelligence-is-split-so-you-know-what-to-open">Where “intelligence” is split (so you know what to open)</a></li><li><a href="#2b-how-this-overview-fits-the-rest-of-the-manual">2b. How this overview fits the rest of the manual</a></li><li><a href="#3-core-capabilities">3. Core Capabilities</a></li><li><a href="#4-key-features">4. Key Features</a></li><li><a href="#5-why-it-is-effective">5. Why It Is Effective</a></li><li><a href="#6-design-principles">6. Design Principles</a></li><li><a href="#7-component-inventory-current">7. Component Inventory (Current)</a></li><li><a href="#8-enforcement-summary">8. Enforcement Summary</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>System Overview</h1>
 <h2 id="1.-what-this-system-is" tabindex="-1">1. What This System Is</h2>
 <p>AI-SDLC is an AI-native orchestration platform that manages the full software development lifecycle — from requirement intake to release — across multiple teams, roles, and tech stacks.</p>
 <p>It runs inside your IDE (Cursor, Claude Code) or terminal. One command sets it up. Natural language drives execution.</p>
@@ -1046,12 +1474,15 @@ cd ai_sdlc_platform
 <blockquote>
 <p>For deeper details, ask: &quot;Explain the stage execution flow&quot; or &quot;How does distributed memory work?&quot;</p>
 </blockquote>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#index" class="nav-prev">← Index</a><a href="#prerequisites" class="nav-next">Prerequisites →</a></nav>
     </article>
-
-    <article id="prerequisites" class="doc-card">
-      <div class="doc-header"><h1>Prerequisites</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#required-for-setup-sh-platform-bootstrap">Required for `./setup.sh` (platform bootstrap)</a></li><li><a href="#strongly-recommended-cli-and-diagnostics">Strongly recommended (CLI and diagnostics)</a></li><li><a href="#recommended-for-full-platform-features">Recommended for full platform features</a></li><li><a href="#optional-specific-subsystems">Optional (specific subsystems)</a></li><li><a href="#windows-without-admin-no-wsl-no-git-bash">Windows without admin (no WSL, no Git Bash)</a></li><li><a href="#macos-linux-without-full-sdlc-setup">macOS / Linux (without full sdlc setup)</a></li><li><a href="#verify-after-install">Verify after install</a></li><li><a href="#confirm-all-documentation-is-up-to-date">Confirm all documentation is up to date</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Prerequisites (before <code>setup</code>)</h1>
+<article id="prerequisites" class="doc-section">
+      <header class="doc-header">
+        <h1>Prerequisites</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#required-for-setup-sh-platform-bootstrap">Required for `./setup.sh` (platform bootstrap)</a></li><li><a href="#strongly-recommended-cli-and-diagnostics">Strongly recommended (CLI and diagnostics)</a></li><li><a href="#recommended-for-full-platform-features">Recommended for full platform features</a></li><li><a href="#optional-specific-subsystems">Optional (specific subsystems)</a></li><li><a href="#windows-without-admin-no-wsl-no-git-bash">Windows without admin (no WSL, no Git Bash)</a></li><li><a href="#macos-linux-without-full-sdlc-setup">macOS / Linux (without full sdlc setup)</a></li><li><a href="#verify-after-install">Verify after install</a></li><li><a href="#confirm-all-documentation-is-up-to-date">Confirm all documentation is up to date</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Prerequisites (before <code>setup</code>)</h1>
 <p>Install these <strong>before</strong> running <code>./setup.sh</code> or <code>sdlc setup</code>. The setup scripts assume a Unix-style shell (Bash) and will validate some of them automatically.</p>
 <p><strong>Get the platform:</strong> clone from Azure DevOps — see <strong><a href="#get-the-platform-source">Getting_Started — Get the platform source</a></strong> (canonical URL).</p>
 <h2 id="required-for-.%2Fsetup.sh-(platform-bootstrap)" tabindex="-1">Required for <code>./setup.sh</code> (platform bootstrap)</h2>
@@ -1223,12 +1654,15 @@ sdlc doctor --verbose    # show validator script output
 </code></pre>
 <p>Pre-commit hooks (<code>hooks/doc-change-check.sh</code>) block commits when system paths change without matching <strong>User_Manual</strong> updates — see <a href="#documentation_rules">Documentation_Rules</a>.</p>
 <p>See also: <a href="#getting_started">Getting_Started</a>, <a href="#commands">Commands</a> (<code>sdlc doctor</code>), and <a href="#setup_guide">SETUP_GUIDE.md</a> at the repo root.</p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#system_overview" class="nav-prev">← System Overview</a><a href="#getting_started" class="nav-next">Getting Started →</a></nav>
     </article>
-
-    <article id="getting_started" class="doc-card">
-      <div class="doc-header"><h1>Getting Started</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#prerequisites">Prerequisites</a></li><li><a href="#setup-1-command">Setup (1 Command)</a></li><li><a href="#post-setup">Post-Setup</a></li><li><a href="#many-microservice-repositories">Many microservice repositories</a></li><li><a href="#first-run">First Run</a></li><li><a href="#role-selection">Role Selection</a></li><li><a href="#validation">Validation</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Getting Started</h1>
+<article id="getting_started" class="doc-section">
+      <header class="doc-header">
+        <h1>Getting Started</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#prerequisites">Prerequisites</a></li><li><a href="#setup-1-command">Setup (1 Command)</a></li><li><a href="#post-setup">Post-Setup</a></li><li><a href="#many-microservice-repositories">Many microservice repositories</a></li><li><a href="#first-run">First Run</a></li><li><a href="#role-selection">Role Selection</a></li><li><a href="#validation">Validation</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Getting Started</h1>
 <h2 id="prerequisites" tabindex="-1">Prerequisites</h2>
 <ul>
 <li><strong>Required:</strong> Bash, Git, Node.js 18+, npm (see <a href="#prerequisites">Prerequisites</a> for full list and optional tools)</li>
@@ -1319,12 +1753,15 @@ bash cli/tests/smoke.sh   # Smoke tests
 <blockquote>
 <p>For troubleshooting, see <a href="#faq">FAQ</a></p>
 </blockquote>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#prerequisites" class="nav-prev">← Prerequisites</a><a href="#canonical_repo_and_interfaces" class="nav-next">Canonical Repo →</a></nav>
     </article>
-
-    <article id="canonical_repo_and_interfaces" class="doc-card">
-      <div class="doc-header"><h1>🏗️ Canonical Repo</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#single-source-of-truth-natural-language-sdlc">Single source of truth (natural language + SDLC)</a></li><li><a href="#how-the-same-flows-run-everywhere">How the same flows run everywhere</a></li><li><a href="#ask-first-advisory-gates">Ask-first + advisory gates</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Canonical NL engine &amp; interfaces</h1>
+<article id="canonical_repo_and_interfaces" class="doc-section">
+      <header class="doc-header">
+        <h1>Canonical Repo</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#single-source-of-truth-natural-language-sdlc">Single source of truth (natural language + SDLC)</a></li><li><a href="#how-the-same-flows-run-everywhere">How the same flows run everywhere</a></li><li><a href="#ask-first-advisory-gates">Ask-first + advisory gates</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Canonical NL engine &amp; interfaces</h1>
 <h2 id="single-source-of-truth-(natural-language-%2B-sdlc)" tabindex="-1">Single source of truth (natural language + SDLC)</h2>
 <p><strong>Repository root:</strong> <code>ai_sdlc_platform/</code> in this workspace — all agents, skills, rules, orchestrators, CLI, hooks, and the IDE plugin under <code>plugins/ide-plugin/</code> live here.</p>
 <ul>
@@ -1370,12 +1807,15 @@ bash cli/tests/smoke.sh   # Smoke tests
 <p>After clone, <strong><code>./setup.sh</code></strong> (or <strong><code>sdlc setup</code></strong>) is <strong>required</strong>: it <strong>auto-installs git hooks</strong> (never aborts the script), bootstraps <strong>module memory + semantic DB init</strong>, and links IDE + NL. In chat, say <strong>“install SDLC”</strong> or <strong>“run setup”</strong> so the assistant runs the same scripts. Validate with <strong><code>sdlc doctor</code></strong>.</p>
 <h2 id="ask-first-%2B-advisory-gates" tabindex="-1">Ask-first + advisory gates</h2>
 <p>Gates <strong>G1–G10</strong> stay <strong>advisory</strong>: the NL engine surfaces gaps in chat; humans confirm; updates go to <strong>ADO</strong> via MCP / <code>sdlc ado</code> when online. No change to that philosophy.</p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#getting_started" class="nav-prev">← Getting Started</a><a href="#happy_path_end_to_end" class="nav-next">Happy Path End to End →</a></nav>
     </article>
-
-    <article id="happy_path_end_to_end" class="doc-card">
-      <div class="doc-header"><h1>Happy Path End to End</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#one-time-before-you-start">One-time: before you start</a></li><li><a href="#map-of-the-15-stages-layman-labels">Map of the 15 stages (layman labels)</a></li><li><a href="#happy-path-a-from-prd-to-design-stages-01-06">Happy path A — From PRD to design (stages 01 → 06)</a></li><li><a href="#happy-path-b-tasks-and-implementation-stages-07-09">Happy path B — Tasks and implementation (stages 07 → 09)</a></li><li><a href="#happy-path-c-tests-stages-10-11">Happy path C — Tests (stages 10 → 11)</a></li><li><a href="#happy-path-d-commit-push-merge-stages-12-15-git">Happy path D — Commit, push, merge (stages 12 → 15 + Git)</a></li>  <li><a href="#local-merge-vs-azure-devops-git">Local merge vs Azure DevOps Git</a></li><li><a href="#interfaces-cheat-sheet-same-engine-different-entry">Interfaces cheat sheet (same engine, different entry)</a></li><li><a href="#memory-module-when-they-show-up">Memory & module (when they show up)</a></li><li><a href="#if-something-fails">If something fails</a></li><li><a href="#full-path-dry-run-cli-rehearsal-no-ado-required">Full-path dry run (CLI rehearsal, no ADO required)</a></li><li><a href="#document-ownership">Document ownership</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Happy path: PRD → code → tests → merge (end-to-end)</h1>
+<article id="happy_path_end_to_end" class="doc-section">
+      <header class="doc-header">
+        <h1>Happy Path End to End</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#one-time-before-you-start">One-time: before you start</a></li><li><a href="#map-of-the-15-stages-layman-labels">Map of the 15 stages (layman labels)</a></li><li><a href="#happy-path-a-from-prd-to-design-stages-01-06">Happy path A — From PRD to design (stages 01 → 06)</a></li><li><a href="#happy-path-b-tasks-and-implementation-stages-07-09">Happy path B — Tasks and implementation (stages 07 → 09)</a></li><li><a href="#happy-path-c-tests-stages-10-11">Happy path C — Tests (stages 10 → 11)</a></li><li><a href="#happy-path-d-commit-push-merge-stages-12-15-git">Happy path D — Commit, push, merge (stages 12 → 15 + Git)</a></li>  <li><a href="#local-merge-vs-azure-devops-git">Local merge vs Azure DevOps Git</a></li><li><a href="#interfaces-cheat-sheet-same-engine-different-entry">Interfaces cheat sheet (same engine, different entry)</a></li><li><a href="#memory-module-when-they-show-up">Memory & module (when they show up)</a></li><li><a href="#if-something-fails">If something fails</a></li><li><a href="#full-path-dry-run-cli-rehearsal-no-ado-required">Full-path dry run (CLI rehearsal, no ADO required)</a></li><li><a href="#document-ownership">Document ownership</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Happy path: PRD → code → tests → merge (end-to-end)</h1>
 <p><strong>Audience:</strong> Anyone who wants one readable path from “we have a PRD” to “code is merged in Git (including Azure DevOps).”
 <strong>Not replaced elsewhere:</strong> Deep detail stays in <a href="#sdlc_flows">SDLC_Flows</a>, <a href="#commands">Commands</a>, <a href="#quickstart_4tier_stories">QUICKSTART_4TIER_STORIES.md</a> (repo root), <a href="#pr_merge_process">PR_Merge_Process</a>, <a href="#ado_mcp_integration">ADO_MCP_Integration</a>. This page is the <strong>single narrative</strong>.</p>
 <hr>
@@ -1884,12 +2324,15 @@ sdlc story validate ./stories/T-*.md
 <hr>
 <h2 id="document-ownership" tabindex="-1">Document ownership</h2>
 <p>This file is the <strong>only</strong> full <strong>happy-path narrative</strong>. Other manuals link here; do not copy long tables into multiple files. Update this file when <strong>default workflows</strong> or <strong>stage names</strong> change.</p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#canonical_repo_and_interfaces" class="nav-prev">← Canonical Repo</a><a href="#sdlc_flows" class="nav-next">SDLC Flows →</a></nav>
     </article>
-
-    <article id="sdlc_flows" class="doc-card">
-      <div class="doc-header"><h1>🌊 SDLC Flows</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#stage-pipeline-15-stages">Stage Pipeline (15 Stages)</a></li><li><a href="#each-stage-what-typical-i-o-how-to-run-where-it-lands">Each stage — **what**, typical **I/O**, **how** to run, **where** it lands</a></li>  <li><a href="#stages-01-08">Stages 01–08</a></li>  <li><a href="#stages-09-15">Stages 09–15</a></li><li><a href="#gate-protocol-g1-g10">Gate Protocol (G1-G10)</a></li><li><a href="#stage-execution-flow-diagram">Stage execution flow (diagram)</a></li>  <li><a href="#what-one-sentence">What (one sentence)</a></li>  <li><a href="#how-order-of-operations">How (order of operations)</a></li>  <li><a href="#where-paths-to-know">Where (paths to know)</a></li><li><a href="#role-ownership-by-stage">Role Ownership by Stage</a></li><li><a href="#story-pipeline">Story Pipeline</a></li><li><a href="#pre-built-workflows-9">Pre-Built Workflows (9)</a></li><li><a href="#plan-design-implement-mode">Plan → Design → Implement Mode</a></li>  <li><a href="#stack-variants-and-shared-rpi-baseline">Stack variants and shared RPI baseline</a></li><li><a href="#cross-team-context-flow">Cross-Team Context Flow</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>SDLC Flows</h1>
+<article id="sdlc_flows" class="doc-section">
+      <header class="doc-header">
+        <h1>SDLC Flows</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#stage-pipeline-15-stages">Stage Pipeline (15 Stages)</a></li><li><a href="#each-stage-what-typical-i-o-how-to-run-where-it-lands">Each stage — **what**, typical **I/O**, **how** to run, **where** it lands</a></li>  <li><a href="#stages-01-08">Stages 01–08</a></li>  <li><a href="#stages-09-15">Stages 09–15</a></li><li><a href="#gate-protocol-g1-g10">Gate Protocol (G1-G10)</a></li><li><a href="#stage-execution-flow-diagram">Stage execution flow (diagram)</a></li>  <li><a href="#what-one-sentence">What (one sentence)</a></li>  <li><a href="#how-order-of-operations">How (order of operations)</a></li>  <li><a href="#where-paths-to-know">Where (paths to know)</a></li><li><a href="#role-ownership-by-stage">Role Ownership by Stage</a></li><li><a href="#story-pipeline">Story Pipeline</a></li><li><a href="#pre-built-workflows-9">Pre-Built Workflows (9)</a></li><li><a href="#plan-design-implement-mode">Plan → Design → Implement Mode</a></li>  <li><a href="#stack-variants-and-shared-rpi-baseline">Stack variants and shared RPI baseline</a></li><li><a href="#cross-team-context-flow">Cross-Team Context Flow</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>SDLC Flows</h1>
 <p><strong>Readable end-to-end walkthrough (layman, CLI + IDE + NL):</strong> <a href="#happy_path_end_to_end">Happy_Path_End_to_End</a>.</p>
 <h2 id="stage-pipeline-(15-stages)" tabindex="-1">Stage Pipeline (15 Stages)</h2>
 <pre><code>01-requirement-intake → 02-prd-review → 03-pre-grooming → 04-grooming
@@ -2308,12 +2751,15 @@ IMPLEMENT: 08-implementation + 09-code-review + 10/11 tests + 12 commit
 <blockquote>
 <p>For workflow customization, ask: &quot;How do I create a custom workflow?&quot;</p>
 </blockquote>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#happy_path_end_to_end" class="nav-prev">← Happy Path End to End</a><a href="#role_and_stage_playbook" class="nav-next">Role and Stage Playbook →</a></nav>
     </article>
-
-    <article id="role_and_stage_playbook" class="doc-card">
-      <div class="doc-header"><h1>Role and Stage Playbook</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#1-how-to-read-this-playbook">1. How to read this playbook</a></li><li><a href="#2-chain-of-command-principles">2. Chain of command (principles)</a></li><li><a href="#3-roles-primary-stages-chain-handoffs">3. Roles — primary stages, chain, handoffs</a></li>  <li><a href="#3-1-product-sdlc-use-product">3.1 Product (`sdlc use product`)</a></li>  <li><a href="#3-2-tpm-sdlc-use-tpm">3.2 TPM (`sdlc use tpm`)</a></li>  <li><a href="#3-3-backend-sdlc-use-backend-stack-java-or-your-stack">3.3 Backend (`sdlc use backend --stack=java` or your stack)</a></li>  <li><a href="#3-4-frontend-sdlc-use-frontend-stack-react-native-or-stack">3.4 Frontend (`sdlc use frontend --stack=react-native` or stack)</a></li>  <li><a href="#3-5-ui-sdlc-use-ui-stack-figma-design">3.5 UI (`sdlc use ui --stack=figma-design`)</a></li>  <li><a href="#3-6-qa-sdlc-use-qa">3.6 QA (`sdlc use qa`)</a></li>  <li><a href="#3-7-performance-sdlc-use-performance-stack-jmeter">3.7 Performance (`sdlc use performance --stack=jmeter`)</a></li>  <li><a href="#3-8-boss-sdlc-use-boss">3.8 Boss (`sdlc use boss`)</a></li><li><a href="#4-stage-by-stage-chain-of-command">4. Stage-by-stage — chain of command</a></li>  <li><a href="#4-1-01-requirement-intake">4.1 `01-requirement-intake`</a></li>  <li><a href="#4-2-02-prd-review">4.2 `02-prd-review`</a></li>  <li><a href="#4-3-03-pre-grooming">4.3 `03-pre-grooming`</a></li>  <li><a href="#4-4-04-grooming">4.4 `04-grooming`</a></li>  <li><a href="#4-5-05-system-design">4.5 `05-system-design`</a></li>  <li><a href="#4-6-06-design-review">4.6 `06-design-review`</a></li>  <li><a href="#4-7-07-task-breakdown">4.7 `07-task-breakdown`</a></li>  <li><a href="#4-8-08-implementation">4.8 `08-implementation`</a></li>  <li><a href="#4-9-09-code-review">4.9 `09-code-review`</a></li>  <li><a href="#4-10-10-test-design">4.10 `10-test-design`</a></li>  <li><a href="#4-11-11-test-execution">4.11 `11-test-execution`</a></li>  <li><a href="#4-12-12-commit-push">4.12 `12-commit-push`</a></li>  <li><a href="#4-13-13-documentation">4.13 `13-documentation`</a></li>  <li><a href="#4-14-14-release-signoff">4.14 `14-release-signoff`</a></li>  <li><a href="#4-15-15-summary-close">4.15 `15-summary-close`</a></li><li><a href="#5-story-ado-chain-cross-cutting">5. Story & ADO chain (cross-cutting)</a></li><li><a href="#6-related-documents">6. Related documents</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Role &amp; Stage Playbook — Chains of Command</h1>
+<article id="role_and_stage_playbook" class="doc-section">
+      <header class="doc-header">
+        <h1>Role and Stage Playbook</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#1-how-to-read-this-playbook">1. How to read this playbook</a></li><li><a href="#2-chain-of-command-principles">2. Chain of command (principles)</a></li><li><a href="#3-roles-primary-stages-chain-handoffs">3. Roles — primary stages, chain, handoffs</a></li>  <li><a href="#3-1-product-sdlc-use-product">3.1 Product (`sdlc use product`)</a></li>  <li><a href="#3-2-tpm-sdlc-use-tpm">3.2 TPM (`sdlc use tpm`)</a></li>  <li><a href="#3-3-backend-sdlc-use-backend-stack-java-or-your-stack">3.3 Backend (`sdlc use backend --stack=java` or your stack)</a></li>  <li><a href="#3-4-frontend-sdlc-use-frontend-stack-react-native-or-stack">3.4 Frontend (`sdlc use frontend --stack=react-native` or stack)</a></li>  <li><a href="#3-5-ui-sdlc-use-ui-stack-figma-design">3.5 UI (`sdlc use ui --stack=figma-design`)</a></li>  <li><a href="#3-6-qa-sdlc-use-qa">3.6 QA (`sdlc use qa`)</a></li>  <li><a href="#3-7-performance-sdlc-use-performance-stack-jmeter">3.7 Performance (`sdlc use performance --stack=jmeter`)</a></li>  <li><a href="#3-8-boss-sdlc-use-boss">3.8 Boss (`sdlc use boss`)</a></li><li><a href="#4-stage-by-stage-chain-of-command">4. Stage-by-stage — chain of command</a></li>  <li><a href="#4-1-01-requirement-intake">4.1 `01-requirement-intake`</a></li>  <li><a href="#4-2-02-prd-review">4.2 `02-prd-review`</a></li>  <li><a href="#4-3-03-pre-grooming">4.3 `03-pre-grooming`</a></li>  <li><a href="#4-4-04-grooming">4.4 `04-grooming`</a></li>  <li><a href="#4-5-05-system-design">4.5 `05-system-design`</a></li>  <li><a href="#4-6-06-design-review">4.6 `06-design-review`</a></li>  <li><a href="#4-7-07-task-breakdown">4.7 `07-task-breakdown`</a></li>  <li><a href="#4-8-08-implementation">4.8 `08-implementation`</a></li>  <li><a href="#4-9-09-code-review">4.9 `09-code-review`</a></li>  <li><a href="#4-10-10-test-design">4.10 `10-test-design`</a></li>  <li><a href="#4-11-11-test-execution">4.11 `11-test-execution`</a></li>  <li><a href="#4-12-12-commit-push">4.12 `12-commit-push`</a></li>  <li><a href="#4-13-13-documentation">4.13 `13-documentation`</a></li>  <li><a href="#4-14-14-release-signoff">4.14 `14-release-signoff`</a></li>  <li><a href="#4-15-15-summary-close">4.15 `15-summary-close`</a></li><li><a href="#5-story-ado-chain-cross-cutting">5. Story & ADO chain (cross-cutting)</a></li><li><a href="#6-related-documents">6. Related documents</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Role &amp; Stage Playbook — Chains of Command</h1>
 <p><strong>Purpose:</strong> Single place to see <strong>who typically leads</strong>, <strong>what order work happens in</strong>, and <strong>how to run a stage</strong> — without automating or locking behavior. This doc <strong>extends</strong> <a href="#sdlc_flows">SDLC_Flows</a> and points to canonical <strong><code>roles/*.md</code></strong> and <strong><code>stages/*/STAGE.md</code></strong> in the repository.</p>
 <hr>
 <h2 id="1.-how-to-read-this-playbook" tabindex="-1">1. How to read this playbook</h2>
@@ -2837,12 +3283,15 @@ sdlc context                        # Show current role / stack / stage
 </table>
 <hr>
 <p><strong>Summary:</strong> Use this playbook for <strong>who</strong> and <strong>in what order</strong>; use <strong><code>STAGE.md</code></strong> for <strong>exact</strong> steps and skill names; use <strong><code>sdlc</code></strong> for <strong>state</strong> (role + stage). Nothing here replaces <strong>human</strong> approval at gates.</p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#sdlc_flows" class="nav-prev">← SDLC Flows</a><a href="#features_reference" class="nav-next">Features →</a></nav>
     </article>
-
-    <article id="features_reference" class="doc-card">
-      <div class="doc-header"><h1>✨ Features</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#1-platform-shell-and-project-setup">1. Platform shell and project setup</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#what-you-see-on-disk">What you see on disk</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#2-stages-and-sdlc-run">2. Stages and `sdlc run`</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#3-workflows-sdlc-flow">3. Workflows (`sdlc flow`)</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#4-roles-stacks-and-context">4. Roles, stacks, and context</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#5-module-knowledge-base-code-derived">5. Module knowledge base (code-derived)</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#6-semantic-memory-decision-derived">6. Semantic memory (decision-derived)</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#7-stories-four-tiers-prds-and-traceability">7. Stories (four tiers), PRDs, and traceability</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#8-azure-devops-cli-lightweight-scripts-mcp">8. Azure DevOps: CLI, lightweight scripts, MCP</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#9-agents-skills-and-rules">9. Agents, skills, and rules</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#10-token-budgets-and-cost-signals">10. Token budgets and cost signals</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#11-git-hooks-and-auto-sync">11. Git hooks and auto-sync</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#12-documentation-manual-html-and-drift">12. Documentation, `manual.html`, and drift</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#13-extension-qa-orchestrator-and-ci">13. Extension, QA orchestrator, and CI</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#quick-command-map-reminder">Quick command map (reminder)</a></li><li><a href="#v1-v2">V1 → V2</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Features — how they work</h1>
+<article id="features_reference" class="doc-section">
+      <header class="doc-header">
+        <h1>Features</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#1-platform-shell-and-project-setup">1. Platform shell and project setup</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#what-you-see-on-disk">What you see on disk</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#2-stages-and-sdlc-run">2. Stages and `sdlc run`</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#3-workflows-sdlc-flow">3. Workflows (`sdlc flow`)</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#4-roles-stacks-and-context">4. Roles, stacks, and context</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#5-module-knowledge-base-code-derived">5. Module knowledge base (code-derived)</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#6-semantic-memory-decision-derived">6. Semantic memory (decision-derived)</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#7-stories-four-tiers-prds-and-traceability">7. Stories (four tiers), PRDs, and traceability</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#8-azure-devops-cli-lightweight-scripts-mcp">8. Azure DevOps: CLI, lightweight scripts, MCP</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#9-agents-skills-and-rules">9. Agents, skills, and rules</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#10-token-budgets-and-cost-signals">10. Token budgets and cost signals</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#11-git-hooks-and-auto-sync">11. Git hooks and auto-sync</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#12-documentation-manual-html-and-drift">12. Documentation, `manual.html`, and drift</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#13-extension-qa-orchestrator-and-ci">13. Extension, QA orchestrator, and CI</a></li>  <li><a href="#what-it-is">What it is</a></li>  <li><a href="#how-it-works">How it works</a></li>  <li><a href="#read-more">Read more</a></li><li><a href="#quick-command-map-reminder">Quick command map (reminder)</a></li><li><a href="#v1-v2">V1 → V2</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Features — how they work</h1>
 <p>This chapter explains <strong>what each major capability is</strong> and <strong>how it behaves in practice</strong> (files, processes, entry points). It sits <strong>after</strong> <a href="#happy_path_end_to_end">Happy_Path_End_to_End</a>, <a href="#sdlc_flows">SDLC_Flows</a>, and <a href="#role_and_stage_playbook">Role_and_Stage_Playbook</a> so you already know <em>when</em> you use a feature; here you learn <em>what runs under the hood</em>.</p>
 <p>For every command name and flag, the authoritative list is still <a href="#commands">Commands</a>.</p>
 <hr>
@@ -3103,12 +3552,15 @@ sdlc context                        # Show current role / stack / stage
 <hr>
 <h2 id="v1-%E2%86%92-v2" tabindex="-1">V1 → V2</h2>
 <p>If you are migrating an older <strong><code>ai-claude-platform</code></strong> deployment, read <a href="#migrating_from_v1_to_v2">Migrating_From_V1_to_V2</a> and <a href="#v2_improvements_over_v1">V2_Improvements_Over_V1</a> <strong>after</strong> you understand the features above — they focus on deltas, not first principles.</p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#role_and_stage_playbook" class="nav-prev">← Role and Stage Playbook</a><a href="#commands" class="nav-next">Commands →</a></nav>
     </article>
-
-    <article id="commands" class="doc-card">
-      <div class="doc-header"><h1>Commands</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#cli-commands-sdlc">CLI Commands (`sdlc`)</a></li>  <li><a href="#context-management">Context Management</a></li>  <li><a href="#document-ingestion-non-markdown-input">Document Ingestion (non-Markdown input)</a></li>  <li><a href="#story-files-4-tier-ado">Story files (4-tier) + ADO</a></li>  <li><a href="#stage-execution">Stage Execution</a></li>  <li><a href="#ado-windows-no-admin-no-bash">ADO — Windows (no admin, no bash)</a></li>  <li><a href="#ado-macos-linux-no-full-setup">ADO — macOS / Linux (no full setup)</a></li>  <li><a href="#azure-devops-full-sdlc-cli-bash-git-bash-required">Azure DevOps (full sdlc CLI — bash/Git Bash required)</a></li>  <li><a href="#module-system">Module System</a></li>  <li><a href="#auto-sync-module-kb-semantic-memory">Auto-sync (module KB + semantic memory)</a></li>  <li><a href="#memory-budget">Memory & Budget</a></li>  <li><a href="#rpi-workflow">RPI Workflow</a></li>  <li><a href="#qa-orchestrator">QA Orchestrator</a></li>  <li><a href="#test-skip-markers-unit-test-bypass">Test-skip markers (unit-test bypass)</a></li>  <li><a href="#skill-registry-discovery-v2-1-1">Skill Registry & Discovery (v2.1.1)</a></li>  <li><a href="#catalog-diagnostics">Catalog & Diagnostics</a></li>  <li><a href="#error-recovery-cli">Error recovery (CLI)</a></li>  <li><a href="#first-time-setup-clone">First-time setup (clone)</a></li>  <li><a href="#ci-pipelines-no-extra-local-commands">CI (pipelines — no extra local commands)</a></li><li><a href="#ide-slash-commands-router-pattern-v2-1-1">IDE slash commands — router pattern (v2.1.1)</a></li><li><a href="#cross-platform-claude-mirror-sync-v2-1-1">Cross-platform .claude mirror sync (v2.1.1)</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Commands Reference</h1>
+<article id="commands" class="doc-section">
+      <header class="doc-header">
+        <h1>Commands</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#cli-commands-sdlc">CLI Commands (`sdlc`)</a></li>  <li><a href="#context-management">Context Management</a></li>  <li><a href="#document-ingestion-non-markdown-input">Document Ingestion (non-Markdown input)</a></li>  <li><a href="#story-files-4-tier-ado">Story files (4-tier) + ADO</a></li>  <li><a href="#stage-execution">Stage Execution</a></li>  <li><a href="#ado-windows-no-admin-no-bash">ADO — Windows (no admin, no bash)</a></li>  <li><a href="#ado-macos-linux-no-full-setup">ADO — macOS / Linux (no full setup)</a></li>  <li><a href="#azure-devops-full-sdlc-cli-bash-git-bash-required">Azure DevOps (full sdlc CLI — bash/Git Bash required)</a></li>  <li><a href="#module-system">Module System</a></li>  <li><a href="#auto-sync-module-kb-semantic-memory">Auto-sync (module KB + semantic memory)</a></li>  <li><a href="#memory-budget">Memory & Budget</a></li>  <li><a href="#rpi-workflow">RPI Workflow</a></li>  <li><a href="#qa-orchestrator">QA Orchestrator</a></li>  <li><a href="#test-skip-markers-unit-test-bypass">Test-skip markers (unit-test bypass)</a></li>  <li><a href="#skill-registry-discovery-v2-1-1">Skill Registry & Discovery (v2.1.1)</a></li>  <li><a href="#catalog-diagnostics">Catalog & Diagnostics</a></li>  <li><a href="#error-recovery-cli">Error recovery (CLI)</a></li>  <li><a href="#first-time-setup-clone">First-time setup (clone)</a></li>  <li><a href="#ci-pipelines-no-extra-local-commands">CI (pipelines — no extra local commands)</a></li><li><a href="#ide-slash-commands-router-pattern-v2-1-1">IDE slash commands — router pattern (v2.1.1)</a></li><li><a href="#cross-platform-claude-mirror-sync-v2-1-1">Cross-platform .claude mirror sync (v2.1.1)</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Commands Reference</h1>
 <h2 id="cli-commands-(sdlc)" tabindex="-1">CLI Commands (<code>sdlc</code>)</h2>
 <h3 id="context-management" tabindex="-1">Context Management</h3>
 <pre><code class="language-bash">sdlc use &lt;role&gt;                    # Switch role
@@ -3471,12 +3923,15 @@ bash scripts/sync-claude-mirrors.sh --check  # Diff-only (exit 1 on drift)
 </code></pre>
 <p>CI enforces mirror parity via the <code>claude-mirror-drift</code> job (above).</p>
 <p><strong>Same capabilities</strong> in Cursor chat, Claude Code, or natural l</p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#features_reference" class="nav-prev">← Features</a><a href="#guided_execution_and_recovery" class="nav-next">Guided Execution and Recovery →</a></nav>
     </article>
-
-    <article id="guided_execution_and_recovery" class="doc-card">
-      <div class="doc-header"><h1>Guided Execution and Recovery</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#1-surfaces-same-engine-different-ux">1. Surfaces (same engine, different UX)</a></li><li><a href="#2-what-the-cli-and-tooling-already-do">2. What the CLI and tooling already do</a></li><li><a href="#3-recovery-pattern-users">3. Recovery pattern (users)</a></li><li><a href="#4-recovery-pattern-assistants-cursor-claude-code-any-nl-agent">4. Recovery pattern (assistants — Cursor, Claude Code, any NL agent)</a></li><li><a href="#5-common-situations-next-commands">5. Common situations → next commands</a></li><li><a href="#6-what-is-not-automatic-today">6. What is *not* automatic today</a></li><li><a href="#7-related-rules-docs">7. Related rules & docs</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Guided execution &amp; recovery (all surfaces)</h1>
+<article id="guided_execution_and_recovery" class="doc-section">
+      <header class="doc-header">
+        <h1>Guided Execution and Recovery</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#1-surfaces-same-engine-different-ux">1. Surfaces (same engine, different UX)</a></li><li><a href="#2-what-the-cli-and-tooling-already-do">2. What the CLI and tooling already do</a></li><li><a href="#3-recovery-pattern-users">3. Recovery pattern (users)</a></li><li><a href="#4-recovery-pattern-assistants-cursor-claude-code-any-nl-agent">4. Recovery pattern (assistants — Cursor, Claude Code, any NL agent)</a></li><li><a href="#5-common-situations-next-commands">5. Common situations → next commands</a></li><li><a href="#6-what-is-not-automatic-today">6. What is *not* automatic today</a></li><li><a href="#7-related-rules-docs">7. Related rules & docs</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Guided execution &amp; recovery (all surfaces)</h1>
 <p><strong>Goal:</strong> When something is <strong>missing</strong> or a command <strong>cannot run yet</strong>, you get <strong>what to do next</strong>, <strong>exact syntax</strong>, and <strong>step-by-step</strong> options — instead of a bare failure with no path forward.</p>
 <p>This page describes <strong>how the platform is designed to behave</strong> and <strong>what you should expect</strong> from the CLI, from <strong>Cursor / Claude Code chat</strong>, and from <strong>natural-language</strong> requests. It complements <a href="#commands">Commands</a> and <a href="#faq">FAQ</a>.</p>
 <hr>
@@ -3615,12 +4070,15 @@ bash scripts/sync-claude-mirrors.sh --check  # Diff-only (exit 1 on drift)
 </table>
 <hr>
 <p><strong>Summary:</strong> Missing prerequisites should <strong>surface</strong> as <strong>clear messages</strong>, <strong>stepwise</strong> fixes, and <strong>copy-paste-friendly</strong> <code>sdlc</code> syntax — from the CLI when possible, and from <strong>assistants</strong> in chat when the terminal can’t prompt. Use <strong><code>sdlc doctor</code></strong> when in doubt.</p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#commands" class="nav-prev">← Commands</a><a href="#persistent_memory" class="nav-next">Persistent Memory →</a></nav>
     </article>
-
-    <article id="persistent_memory" class="doc-card">
-      <div class="doc-header"><h1>Persistent Memory</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#in-plain-words-memory-vs-knowledge-base">In plain words: memory vs knowledge base</a></li><li><a href="#unified-semantic-long-term-memory">Unified Semantic Long-Term Memory</a></li><li><a href="#cli">CLI</a></li><li><a href="#orchestrator-integration">Orchestrator Integration</a></li><li><a href="#team-sync-git-one-source-of-truth">Team sync (git) — one source of truth</a></li><li><a href="#namespacing-at-scale-many-engineers">Namespacing at scale (many engineers)</a></li><li><a href="#governance-recommendations">Governance Recommendations</a></li><li><a href="#platform-team-memory-cross-team-sync">Platform Team Memory: Cross-Team Sync</a></li>  <li><a href="#architecture-overview">Architecture Overview</a></li>  <li><a href="#how-teams-sync-memory">How Teams Sync Memory</a></li>  <li><a href="#organization-specific-content-pattern">Organization-Specific Content Pattern</a></li>  <li><a href="#for-new-teams-joining-the-platform">For New Teams Joining the Platform</a></li>  <li><a href="#cross-team-discovery">Cross-Team Discovery</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Persistent Memory</h1>
+<article id="persistent_memory" class="doc-section">
+      <header class="doc-header">
+        <h1>Persistent Memory</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#in-plain-words-memory-vs-knowledge-base">In plain words: memory vs knowledge base</a></li><li><a href="#unified-semantic-long-term-memory">Unified Semantic Long-Term Memory</a></li><li><a href="#cli">CLI</a></li><li><a href="#orchestrator-integration">Orchestrator Integration</a></li><li><a href="#team-sync-git-one-source-of-truth">Team sync (git) — one source of truth</a></li><li><a href="#namespacing-at-scale-many-engineers">Namespacing at scale (many engineers)</a></li><li><a href="#governance-recommendations">Governance Recommendations</a></li><li><a href="#platform-team-memory-cross-team-sync">Platform Team Memory: Cross-Team Sync</a></li>  <li><a href="#architecture-overview">Architecture Overview</a></li>  <li><a href="#how-teams-sync-memory">How Teams Sync Memory</a></li>  <li><a href="#organization-specific-content-pattern">Organization-Specific Content Pattern</a></li>  <li><a href="#for-new-teams-joining-the-platform">For New Teams Joining the Platform</a></li>  <li><a href="#cross-team-discovery">Cross-Team Discovery</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Persistent Memory</h1>
 <h2 id="in-plain-words%3A-memory-vs-knowledge-base" tabindex="-1">In plain words: memory vs knowledge base</h2>
 <p>People often mix these up. In AI-SDLC they are <strong>two different things</strong>:</p>
 <table>
@@ -3869,12 +4327,15 @@ grep -r &quot;dev.azure.com&quot; memory/team/
 # Or query via semantic memory
 sdlc memory semantic-query --text=&quot;Family Hub ADO work item&quot;
 </code></pre>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#guided_execution_and_recovery" class="nav-prev">← Guided Execution and Recovery</a><a href="#ado_mcp_integration" class="nav-next">ADO & MCP →</a></nav>
     </article>
-
-    <article id="ado_mcp_integration" class="doc-card">
-      <div class="doc-header"><h1>🔗 ADO &amp; MCP</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#azure-devops-integration">Azure DevOps Integration</a></li>  <li><a href="#three-modes">Three Modes</a></li>  <li><a href="#acceptance-criteria-field-v2-1-4">Acceptance Criteria Field (v2.1.4+)</a></li><li><a href="#acceptance-criteria">Acceptance Criteria</a></li>  <li><a href="#scenario-1">Scenario 1</a></li>  <li><a href="#quick-reference-search-ado-work-items">Quick Reference: Search ADO Work Items</a></li>  <li><a href="#setup">Setup</a></li>  <li><a href="#work-item-types-story-vs-feature-vs-epic">Work Item Types: Story vs Feature vs Epic</a></li>  <li><a href="#ado-work-item-tagging">ADO Work Item Tagging</a></li>  <li><a href="#ado-state-machine">ADO State Machine</a></li>  <li><a href="#auto-linking-on-merge">Auto-Linking on Merge</a></li>  <li><a href="#offline-connectivity-acceptable-behavior">Offline / connectivity (acceptable behavior)</a></li><li><a href="#ado-observer-system-v2-1-1">ADO Observer System (v2.1.1)</a></li>  <li><a href="#what-is-the-ado-observer">What Is the ADO Observer?</a></li>  <li><a href="#how-it-works">How It Works</a></li>  <li><a href="#event-stage-mapping">Event → stage mapping</a></li>  <li><a href="#idempotency-v2-1-1">Idempotency (v2.1.1)</a></li>  <li><a href="#run-modes">Run modes</a></li>  <li><a href="#gate-bypass-and-ado-comments">Gate bypass and ADO comments</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>ADO &amp; MCP Integration</h1>
+<article id="ado_mcp_integration" class="doc-section">
+      <header class="doc-header">
+        <h1>ADO &amp; MCP</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#azure-devops-integration">Azure DevOps Integration</a></li>  <li><a href="#three-modes">Three Modes</a></li>  <li><a href="#acceptance-criteria-field-v2-1-4">Acceptance Criteria Field (v2.1.4+)</a></li><li><a href="#acceptance-criteria">Acceptance Criteria</a></li>  <li><a href="#scenario-1">Scenario 1</a></li>  <li><a href="#quick-reference-search-ado-work-items">Quick Reference: Search ADO Work Items</a></li>  <li><a href="#setup">Setup</a></li>  <li><a href="#work-item-types-story-vs-feature-vs-epic">Work Item Types: Story vs Feature vs Epic</a></li>  <li><a href="#ado-work-item-tagging">ADO Work Item Tagging</a></li>  <li><a href="#ado-state-machine">ADO State Machine</a></li>  <li><a href="#auto-linking-on-merge">Auto-Linking on Merge</a></li>  <li><a href="#offline-connectivity-acceptable-behavior">Offline / connectivity (acceptable behavior)</a></li><li><a href="#ado-observer-system-v2-1-1">ADO Observer System (v2.1.1)</a></li>  <li><a href="#what-is-the-ado-observer">What Is the ADO Observer?</a></li>  <li><a href="#how-it-works">How It Works</a></li>  <li><a href="#event-stage-mapping">Event → stage mapping</a></li>  <li><a href="#idempotency-v2-1-1">Idempotency (v2.1.1)</a></li>  <li><a href="#run-modes">Run modes</a></li>  <li><a href="#gate-bypass-and-ado-comments">Gate bypass and ADO comments</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>ADO &amp; MCP Integration</h1>
 <h2 id="azure-devops-integration" tabindex="-1">Azure DevOps Integration</h2>
 <h3 id="three-modes" tabindex="-1">Three Modes</h3>
 <table>
@@ -4195,12 +4656,15 @@ python3 orchestrator/ado-observer/observer.py --mode=both --port=8080 --interval
 </code></pre>
 <h3 id="gate-bypass-and-ado-comments" tabindex="-1">Gate bypass and ADO comments</h3>
 <p>Per <a href="#enforcement_contract">Enforcement_Contract</a> and <code>rules/gate-enforcement-ide.md</code>, any bypass of a hard gate (e.g., unit-test enforcement, mirror drift) must be recorded as a <strong>comment on the ADO work item</strong>. The observer treats gate-bypass comments as first-class events and records them for audit.</p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#persistent_memory" class="nav-prev">← Persistent Memory</a><a href="#agents_skills_rules" class="nav-next">Agents Skills Rules →</a></nav>
     </article>
-
-    <article id="agents_skills_rules" class="doc-card">
-      <div class="doc-header"><h1>Agents Skills Rules</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#agents-53-total">Agents (53 Total)</a></li>  <li><a href="#what-is-an-agent">What Is an Agent?</a></li>  <li><a href="#agent-tiers">Agent Tiers</a></li>  <li><a href="#agent-registry">Agent Registry</a></li>  <li><a href="#thin-orchestrator-pattern-canonical">THIN Orchestrator Pattern (Canonical)</a></li>  <li><a href="#documentation-governance-agents">Documentation Governance Agents</a></li><li><a href="#skills-v2-1-1-architecture">Skills (v2.1.1 Architecture)</a></li>  <li><a href="#skill-evolution">Skill Evolution</a></li>  <li><a href="#what-is-an-atomic-skill">What Is an Atomic Skill?</a></li>  <li><a href="#what-is-a-composed-skill">What Is a Composed Skill?</a></li>  <li><a href="#skill-registry-v2-1-0">Skill Registry (v2.1.0)</a></li>  <li><a href="#skill-caching-v2-1-0">Skill Caching (v2.1.0)</a></li>  <li><a href="#orchestrators-moved-to-orchestrator">Orchestrators (Moved to orchestrator/)</a></li>  <li><a href="#key-atomic-skills-v2-1-0">Key Atomic Skills (v2.1.0)</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Agents, Skills &amp; Rules</h1>
+<article id="agents_skills_rules" class="doc-section">
+      <header class="doc-header">
+        <h1>Agents Skills Rules</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#agents-53-total">Agents (53 Total)</a></li>  <li><a href="#what-is-an-agent">What Is an Agent?</a></li>  <li><a href="#agent-tiers">Agent Tiers</a></li>  <li><a href="#agent-registry">Agent Registry</a></li>  <li><a href="#thin-orchestrator-pattern-canonical">THIN Orchestrator Pattern (Canonical)</a></li>  <li><a href="#documentation-governance-agents">Documentation Governance Agents</a></li><li><a href="#skills-v2-1-1-architecture">Skills (v2.1.1 Architecture)</a></li>  <li><a href="#skill-evolution">Skill Evolution</a></li>  <li><a href="#what-is-an-atomic-skill">What Is an Atomic Skill?</a></li>  <li><a href="#what-is-a-composed-skill">What Is a Composed Skill?</a></li>  <li><a href="#skill-registry-v2-1-0">Skill Registry (v2.1.0)</a></li>  <li><a href="#skill-caching-v2-1-0">Skill Caching (v2.1.0)</a></li>  <li><a href="#orchestrators-moved-to-orchestrator">Orchestrators (Moved to orchestrator/)</a></li>  <li><a href="#key-atomic-skills-v2-1-0">Key Atomic Skills (v2.1.0)</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Agents, Skills &amp; Rules</h1>
 <h2 id="agents-(53-total)" tabindex="-1">Agents (53 Total)</h2>
 <h3 id="what-is-an-agent%3F" tabindex="-1">What Is an Agent?</h3>
 <p>An AI persona that embodies a role at specific stages. Loads role context + stage context + gates. Invokes skills to perform work. Uses <strong>THIN orchestrator pattern</strong> — delegates to atomic skills, contains no inline logic.</p>
@@ -4544,12 +5008,15 @@ sdlc skills cache clear rpi-research  # Specific skill
 </tr>
 </tbody>
 </table>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#ado_mcp_integration" class="nav-prev">← ADO & MCP</a><a href="#architecture" class="nav-next">Architecture →</a></nav>
     </article>
-
-    <article id="architecture" class="doc-card">
-      <div class="doc-header"><h1>Architecture</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#component-hierarchy">Component Hierarchy</a></li><li><a href="#file-structure-v2-1-1">File Structure (v2.1.1)</a></li><li><a href="#skill-architecture-v2-1-1">Skill Architecture (v2.1.1)</a></li>  <li><a href="#three-tier-skill-system">Three-Tier Skill System</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Architecture</h1>
+<article id="architecture" class="doc-section">
+      <header class="doc-header">
+        <h1>Architecture</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#component-hierarchy">Component Hierarchy</a></li><li><a href="#file-structure-v2-1-1">File Structure (v2.1.1)</a></li><li><a href="#skill-architecture-v2-1-1">Skill Architecture (v2.1.1)</a></li>  <li><a href="#three-tier-skill-system">Three-Tier Skill System</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Architecture</h1>
 <h2 id="component-hierarchy" tabindex="-1">Component Hierarchy</h2>
 <pre><code>Roles → Agents → Skills → Stages
 </code></pre>
@@ -4626,12 +5093,15 @@ sdlc skills cache clear rpi-research  # Specific skill
 │  │  (YAML workflows)   │────→│  (Legacy .md)       │     │
 │  │  rpi-research.yaml  │     │  rpi-research.md    │     │
 │  │  rpi-plan.yaml      │     │  (fallback)    </code></pre>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#agents_skills_rules" class="nav-prev">← Agents Skills Rules</a><a href="#sdlc-stage-role-mapping" class="nav-next">../docs/sdlc-stage-role-mapping →</a></nav>
     </article>
-
-    <article id="sdlc-stage-role-mapping" class="doc-card">
-      <div class="doc-header"><h1>../docs/sdlc-stage-role-mapping</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#quick-navigation">Quick Navigation</a></li><li><a href="#15-stage-pipeline-overview">15-Stage Pipeline Overview</a></li><li><a href="#stage-by-stage-detailed-mapping">Stage-by-Stage Detailed Mapping</a></li>  <li><a href="#stage-01-requirement-intake">Stage 01: Requirement Intake</a></li>  <li><a href="#stage-02-prd-review">Stage 02: PRD Review</a></li>  <li><a href="#stage-03-approvals">Stage 03: Approvals</a></li>  <li><a href="#stage-04-grooming">Stage 04: Grooming</a></li>  <li><a href="#stage-05-system-design">Stage 05: System Design</a></li>  <li><a href="#stage-06-implementation-prep">Stage 06: Implementation Prep</a></li>  <li><a href="#stage-07-sprint-planning">Stage 07: Sprint Planning</a></li>  <li><a href="#stage-08-implementation">Stage 08: Implementation</a></li>  <li><a href="#stage-09-code-review">Stage 09: Code Review</a></li>  <li><a href="#stage-10-test-design">Stage 10: Test Design</a></li>  <li><a href="#stage-11-test-execution">Stage 11: Test Execution</a></li>  <li><a href="#stage-12-15-deployment-release-monitoring-close">Stage 12-15: Deployment, Release, Monitoring, Close</a></li><li><a href="#component-registry">Component Registry</a></li>  <li><a href="#templates">Templates</a></li>  <li><a href="#validators">Validators</a></li>  <li><a href="#rules">Rules</a></li><li><a href="#impact-mapping">Impact Mapping</a></li>  <li><a href="#if-you-change-this-file-these-are-affected">If You Change This File... | These Are Affected</a></li><li><a href="#quick-reference-what-file-to-touch">Quick Reference: What File to Touch</a></li>  <li><a href="#to-add-a-new">To Add a New...</a></li>  <li><a href="#to-update">To Update...</a></li><li><a href="#maintenance-notes">Maintenance Notes</a></li><li><a href="#see-also">See Also</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>AI-SDLC Platform: Stage-Role-Skill-Agent-Validator-Rule Mapping</h1>
+<article id="sdlc-stage-role-mapping" class="doc-section">
+      <header class="doc-header">
+        <h1>../docs/sdlc-stage-role-mapping</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#quick-navigation">Quick Navigation</a></li><li><a href="#15-stage-pipeline-overview">15-Stage Pipeline Overview</a></li><li><a href="#stage-by-stage-detailed-mapping">Stage-by-Stage Detailed Mapping</a></li>  <li><a href="#stage-01-requirement-intake">Stage 01: Requirement Intake</a></li>  <li><a href="#stage-02-prd-review">Stage 02: PRD Review</a></li>  <li><a href="#stage-03-approvals">Stage 03: Approvals</a></li>  <li><a href="#stage-04-grooming">Stage 04: Grooming</a></li>  <li><a href="#stage-05-system-design">Stage 05: System Design</a></li>  <li><a href="#stage-06-implementation-prep">Stage 06: Implementation Prep</a></li>  <li><a href="#stage-07-sprint-planning">Stage 07: Sprint Planning</a></li>  <li><a href="#stage-08-implementation">Stage 08: Implementation</a></li>  <li><a href="#stage-09-code-review">Stage 09: Code Review</a></li>  <li><a href="#stage-10-test-design">Stage 10: Test Design</a></li>  <li><a href="#stage-11-test-execution">Stage 11: Test Execution</a></li>  <li><a href="#stage-12-15-deployment-release-monitoring-close">Stage 12-15: Deployment, Release, Monitoring, Close</a></li><li><a href="#component-registry">Component Registry</a></li>  <li><a href="#templates">Templates</a></li>  <li><a href="#validators">Validators</a></li>  <li><a href="#rules">Rules</a></li><li><a href="#impact-mapping">Impact Mapping</a></li>  <li><a href="#if-you-change-this-file-these-are-affected">If You Change This File... | These Are Affected</a></li><li><a href="#quick-reference-what-file-to-touch">Quick Reference: What File to Touch</a></li>  <li><a href="#to-add-a-new">To Add a New...</a></li>  <li><a href="#to-update">To Update...</a></li><li><a href="#maintenance-notes">Maintenance Notes</a></li><li><a href="#see-also">See Also</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>AI-SDLC Platform: Stage-Role-Skill-Agent-Validator-Rule Mapping</h1>
 <blockquote>
 <p><strong>Purpose:</strong> Single source of truth for understanding what components are involved at each SDLC stage, and which files to modify when making changes.</p>
 </blockquote>
@@ -5712,12 +6182,15 @@ sdlc skills cache clear rpi-research  # Specific skill
 <li><a href="#authoring_standards">Authoring Standards</a></li>
 <li><a href="#ado-html-formatting">ADO HTML Formatting</a></li>
 </ul>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#architecture" class="nav-prev">← Architecture</a><a href="#token_efficiency_and_context_loading" class="nav-next">Token Efficiency and Context Loading →</a></nav>
     </article>
-
-    <article id="token_efficiency_and_context_loading" class="doc-card">
-      <div class="doc-header"><h1>Token Efficiency and Context Loading</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#what-this-is">💡 What this is</a></li><li><a href="#the-problem">🎯 The Problem</a></li><li><a href="#our-solution-smart-loading">🔄 Our Solution: Smart Loading</a></li><li><a href="#how-it-works">🔧 How It Works</a></li>  <li><a href="#1-module-kb-code-facts">1. Module KB (Code Facts)</a></li>  <li><a href="#2-semantic-memory-decisions">2. Semantic Memory (Decisions)</a></li>  <li><a href="#3-tiered-skills">3. Tiered Skills</a></li><li><a href="#savings-breakdown">📊 Savings Breakdown</a></li><li><a href="#budgets-by-role">🎯 Budgets by Role</a></li><li><a href="#what-you-can-do">🔧 What you can do</a></li>  <li><a href="#check-budget">Check budget</a></li>  <li><a href="#load-smart-context">Load smart context</a></li>  <li><a href="#optimize-further">Optimize further</a></li><li><a href="#what-to-do-next">👉 What to do next</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Token Efficiency &amp; Context Loading</h1>
+<article id="token_efficiency_and_context_loading" class="doc-section">
+      <header class="doc-header">
+        <h1>Token Efficiency and Context Loading</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#what-this-is">💡 What this is</a></li><li><a href="#the-problem">🎯 The Problem</a></li><li><a href="#our-solution-smart-loading">🔄 Our Solution: Smart Loading</a></li><li><a href="#how-it-works">🔧 How It Works</a></li>  <li><a href="#1-module-kb-code-facts">1. Module KB (Code Facts)</a></li>  <li><a href="#2-semantic-memory-decisions">2. Semantic Memory (Decisions)</a></li>  <li><a href="#3-tiered-skills">3. Tiered Skills</a></li><li><a href="#savings-breakdown">📊 Savings Breakdown</a></li><li><a href="#budgets-by-role">🎯 Budgets by Role</a></li><li><a href="#what-you-can-do">🔧 What you can do</a></li>  <li><a href="#check-budget">Check budget</a></li>  <li><a href="#load-smart-context">Load smart context</a></li>  <li><a href="#optimize-further">Optimize further</a></li><li><a href="#what-to-do-next">👉 What to do next</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Token Efficiency &amp; Context Loading</h1>
 <h2 id="%F0%9F%92%A1-what-this-is" tabindex="-1">💡 What this is</h2>
 <p>How AI-SDLC saves tokens and loads only what you need.</p>
 <p><strong>Result</strong>: 70-80% fewer tokens vs full codebase loading.</p>
@@ -5732,7 +6205,7 @@ sdlc skills cache clear rpi-research  # Specific skill
 </ul>
 <hr>
 <h2 id="%F0%9F%94%84-our-solution%3A-smart-loading" tabindex="-1">🔄 Our Solution: Smart Loading</h2>
-<pre><code class="language-mermaid">flowchart LR
+<div class="mermaid">flowchart LR
     Q[Query] --&gt; R[Router]
     R --&gt; M1[Load Module&lt;br/&gt;2-3K tokens]
     R --&gt; M2[Load Memory&lt;br/&gt;1K tokens]
@@ -5740,7 +6213,7 @@ sdlc skills cache clear rpi-research  # Specific skill
     M1 --&gt; A[Answer]
     M2 --&gt; A
     M3 --&gt; A
-</code></pre>
+</div>
 <hr>
 <h2 id="%F0%9F%94%A7-how-it-works" tabindex="-1">🔧 How It Works</h2>
 <h3 id="1.-module-kb-(code-facts)" tabindex="-1">1. Module KB (Code Facts)</h3>
@@ -5861,12 +6334,15 @@ sdlc memory semantic-lifecycle  # Clean old entries
 <p><strong>Architecture deep dive</strong> → <a href="#architecture">Architecture</a></p>
 <hr>
 <p><em>For more details, ask: &quot;How do I optimize token usage?&quot; or &quot;What is smart loading?&quot;</em></p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#sdlc-stage-role-mapping" class="nav-prev">← ../docs/sdlc-stage-role-mapping</a><a href="#repository_complexity_explained" class="nav-next">Repository Complexity Explained →</a></nav>
     </article>
-
-    <article id="repository_complexity_explained" class="doc-card">
-      <div class="doc-header"><h1>Repository Complexity Explained</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#addressing-the-660-files-concern">Addressing the "660 Files" Concern</a></li><li><a href="#the-numbers-at-a-glance">The Numbers at a Glance</a></li><li><a href="#the-single-responsibility-principle">The Single-Responsibility Principle</a></li><li><a href="#team-scoped-loading-you-only-see-what-you-need">Team-Scoped Loading: You Only See What You Need</a></li>  <li><a href="#setup-time-filtering">Setup-Time Filtering</a></li>  <li><a href="#role-based-agent-registry">Role-Based Agent Registry</a></li><li><a href="#update-safety-no-cascade-effects">Update Safety: No Cascade Effects</a></li>  <li><a href="#scenario-updating-the-java-backend-agent">Scenario: Updating the Java Backend Agent</a></li>  <li><a href="#version-pinning-per-team">Version Pinning Per Team</a></li><li><a href="#maintainability-by-the-numbers">Maintainability by the Numbers</a></li>  <li><a href="#cognitive-load-comparison">Cognitive Load Comparison</a></li>  <li><a href="#change-frequency-analysis">Change Frequency Analysis</a></li><li><a href="#the-extension-template-system">The Extension Template System</a></li><li><a href="#directory-organization-logical-not-arbitrary">Directory Organization: Logical, Not Arbitrary</a></li><li><a href="#comparison-platform-vs-application-code">Comparison: Platform vs. Application Code</a></li><li><a href="#long-term-sustainability-model">Long-Term Sustainability Model</a></li>  <li><a href="#ownership-structure">Ownership Structure</a></li>  <li><a href="#upgrade-path">Upgrade Path</a></li><li><a href="#addressing-specific-concerns">Addressing Specific Concerns</a></li>  <li><a href="#660-files-is-hard-to-search">"660 files is hard to search"</a></li>  <li><a href="#what-if-someone-deletes-the-wrong-file">"What if someone deletes the wrong file?"</a></li>  <li><a href="#how-do-we-know-what-s-safe-to-change">"How do we know what's safe to change?"</a></li>  <li><a href="#what-about-documentation-drift">"What about documentation drift?"</a></li><li><a href="#summary-why-660-files-is-the-right-design">Summary: Why 660 Files Is the Right Design</a></li><li><a href="#recommended-reading">Recommended Reading</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Repository Complexity Explained</h1>
+<article id="repository_complexity_explained" class="doc-section">
+      <header class="doc-header">
+        <h1>Repository Complexity Explained</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#addressing-the-660-files-concern">Addressing the "660 Files" Concern</a></li><li><a href="#the-numbers-at-a-glance">The Numbers at a Glance</a></li><li><a href="#the-single-responsibility-principle">The Single-Responsibility Principle</a></li><li><a href="#team-scoped-loading-you-only-see-what-you-need">Team-Scoped Loading: You Only See What You Need</a></li>  <li><a href="#setup-time-filtering">Setup-Time Filtering</a></li>  <li><a href="#role-based-agent-registry">Role-Based Agent Registry</a></li><li><a href="#update-safety-no-cascade-effects">Update Safety: No Cascade Effects</a></li>  <li><a href="#scenario-updating-the-java-backend-agent">Scenario: Updating the Java Backend Agent</a></li>  <li><a href="#version-pinning-per-team">Version Pinning Per Team</a></li><li><a href="#maintainability-by-the-numbers">Maintainability by the Numbers</a></li>  <li><a href="#cognitive-load-comparison">Cognitive Load Comparison</a></li>  <li><a href="#change-frequency-analysis">Change Frequency Analysis</a></li><li><a href="#the-extension-template-system">The Extension Template System</a></li><li><a href="#directory-organization-logical-not-arbitrary">Directory Organization: Logical, Not Arbitrary</a></li><li><a href="#comparison-platform-vs-application-code">Comparison: Platform vs. Application Code</a></li><li><a href="#long-term-sustainability-model">Long-Term Sustainability Model</a></li>  <li><a href="#ownership-structure">Ownership Structure</a></li>  <li><a href="#upgrade-path">Upgrade Path</a></li><li><a href="#addressing-specific-concerns">Addressing Specific Concerns</a></li>  <li><a href="#660-files-is-hard-to-search">"660 files is hard to search"</a></li>  <li><a href="#what-if-someone-deletes-the-wrong-file">"What if someone deletes the wrong file?"</a></li>  <li><a href="#how-do-we-know-what-s-safe-to-change">"How do we know what's safe to change?"</a></li>  <li><a href="#what-about-documentation-drift">"What about documentation drift?"</a></li><li><a href="#summary-why-660-files-is-the-right-design">Summary: Why 660 Files Is the Right Design</a></li><li><a href="#recommended-reading">Recommended Reading</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Repository Complexity Explained</h1>
 <h2 id="addressing-the-%22660-files%22-concern" tabindex="-1">Addressing the &quot;660 Files&quot; Concern</h2>
 <p><strong>Question:</strong> <em>With 660 files, 52 agents, 35+ skills, and 100 scripts — isn't this too complex to maintain?</em></p>
 <p><strong>Answer:</strong> No. The apparent complexity is <strong>modular architecture</strong>, not incidental clutter. Each file has a single responsibility. Teams only load what they need. Updates are atomic and don't cascade.</p>
@@ -6359,12 +6835,15 @@ Result: rules/token-optimization.md
 <blockquote>
 <p>For maintainers: See <code>rules/documentation-standards.md</code>, <code>scripts/verify.sh</code></p>
 </blockquote>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#token_efficiency_and_context_loading" class="nav-prev">← Token Efficiency and Context Loading</a><a href="#pr_merge_process" class="nav-next">PR & Merge →</a></nav>
     </article>
-
-    <article id="pr_merge_process" class="doc-card">
-      <div class="doc-header"><h1>🔄 PR &amp; Merge</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#pr-templates">PR Templates</a></li><li><a href="#pre-commit-hooks-hard-block">Pre-Commit Hooks (HARD BLOCK)</a></li><li><a href="#pre-merge-hooks-hard-block">Pre-Merge Hooks (HARD BLOCK)</a></li><li><a href="#pre-merge-advisory-hooks">Pre-Merge Advisory Hooks</a></li><li><a href="#test-bypass-process">Test Bypass Process</a></li><li><a href="#commit-convention-enforced-by-commit-msg-sh">Commit Convention (Enforced by commit-msg.sh)</a></li><li><a href="#branch-naming-enforced-by-branch-name-check-sh">Branch Naming (Enforced by branch-name-check.sh)</a></li><li><a href="#code-review-8-dimensions">Code Review (8 Dimensions)</a></li><li><a href="#merge-automation">Merge Automation</a></li><li><a href="#ci-enforcement-v2-1-1">CI Enforcement (v2.1.1)</a></li>  <li><a href="#bypass-policy">Bypass policy</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>PR &amp; Merge Process</h1>
+<article id="pr_merge_process" class="doc-section">
+      <header class="doc-header">
+        <h1>PR &amp; Merge</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#pr-templates">PR Templates</a></li><li><a href="#pre-commit-hooks-hard-block">Pre-Commit Hooks (HARD BLOCK)</a></li><li><a href="#pre-merge-hooks-hard-block">Pre-Merge Hooks (HARD BLOCK)</a></li><li><a href="#pre-merge-advisory-hooks">Pre-Merge Advisory Hooks</a></li><li><a href="#test-bypass-process">Test Bypass Process</a></li><li><a href="#commit-convention-enforced-by-commit-msg-sh">Commit Convention (Enforced by commit-msg.sh)</a></li><li><a href="#branch-naming-enforced-by-branch-name-check-sh">Branch Naming (Enforced by branch-name-check.sh)</a></li><li><a href="#code-review-8-dimensions">Code Review (8 Dimensions)</a></li><li><a href="#merge-automation">Merge Automation</a></li><li><a href="#ci-enforcement-v2-1-1">CI Enforcement (v2.1.1)</a></li>  <li><a href="#bypass-policy">Bypass policy</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>PR &amp; Merge Process</h1>
 <h2 id="pr-templates" tabindex="-1">PR Templates</h2>
 <p>6 templates in <code>extension-templates/</code> (previously PR-TEMPLATES/) for different change types:</p>
 <table>
@@ -6550,12 +7029,15 @@ release/&lt;version&gt;
 <li>Follow-up to restore CI compliance</li>
 </ul>
 <p>See <a href="#enforcement_contract">Enforcement_Contract</a> and <a href="#traceability_and_governance">Traceability_and_Governance</a> for the full enforcement matrix.</p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#repository_complexity_explained" class="nav-prev">← Repository Complexity Explained</a><a href="#enforcement_contract" class="nav-next">Enforcement Contract →</a></nav>
     </article>
-
-    <article id="enforcement_contract" class="doc-card">
-      <div class="doc-header"><h1>Enforcement Contract</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#two-layers-do-not-confuse-them">Two layers (do not confuse them)</a></li><li><a href="#when-a-gate-is-skipped-or-overridden-audit">When a gate is skipped or overridden (audit)</a></li><li><a href="#unit-tests-and-merge-alignment-with-sdlc-skip-tests">Unit tests and merge (alignment with `sdlc skip-tests`)</a></li><li><a href="#summary">Summary</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Enforcement contract (AI-SDLC vs Azure / CI)</h1>
+<article id="enforcement_contract" class="doc-section">
+      <header class="doc-header">
+        <h1>Enforcement Contract</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#two-layers-do-not-confuse-them">Two layers (do not confuse them)</a></li><li><a href="#when-a-gate-is-skipped-or-overridden-audit">When a gate is skipped or overridden (audit)</a></li><li><a href="#unit-tests-and-merge-alignment-with-sdlc-skip-tests">Unit tests and merge (alignment with `sdlc skip-tests`)</a></li><li><a href="#summary">Summary</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Enforcement contract (AI-SDLC vs Azure / CI)</h1>
 <p><strong>Audience:</strong> Teams who need clarity on what <strong>blocks</strong> work vs what <strong>advises</strong>.<br>
 <strong>Related:</strong> <a href="#merge-and-source-of-truth">merge-and-source-of-truth</a>, <a href="#gate-enforcement">gate-enforcement</a>, <a href="#pre-merge-test-enforcement">pre-merge-test-enforcement</a>.</p>
 <hr>
@@ -6613,12 +7095,15 @@ Risk accepted by: {user or role}
 <li><strong>AI-SDLC</strong> = advise, log, ask-first on destructive operations where implemented.</li>
 <li><strong>Azure DevOps + CI</strong> = where <strong>mandatory</strong> bars belong if the business requires them.</li>
 </ul>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#pr_merge_process" class="nav-prev">← PR & Merge</a><a href="#traceability_and_governance" class="nav-next">Traceability and Governance →</a></nav>
     </article>
-
-    <article id="traceability_and_governance" class="doc-card">
-      <div class="doc-header"><h1>Traceability and Governance</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#1-traceability-contract-prd-code-ado">1. Traceability contract (PRD → code → ADO)</a></li><li><a href="#2-prd-sections-stories-determinism">2. PRD sections → stories (determinism)</a></li><li><a href="#3-ado-sync-and-drift-realistic-posture">3. ADO sync and drift (realistic posture)</a></li><li><a href="#4-ask-first-policy-cli-ide-mcp">4. Ask-first policy (CLI / IDE / MCP)</a></li><li><a href="#5-ci-registry-checks">5. CI / registry checks</a></li><li><a href="#6-semantic-memory-namespacing-scale">6. Semantic memory namespacing (scale)</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Traceability, ADO sync, ask-first, and PRD→story expectations</h1>
+<article id="traceability_and_governance" class="doc-section">
+      <header class="doc-header">
+        <h1>Traceability and Governance</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#1-traceability-contract-prd-code-ado">1. Traceability contract (PRD → code → ADO)</a></li><li><a href="#2-prd-sections-stories-determinism">2. PRD sections → stories (determinism)</a></li><li><a href="#3-ado-sync-and-drift-realistic-posture">3. ADO sync and drift (realistic posture)</a></li><li><a href="#4-ask-first-policy-cli-ide-mcp">4. Ask-first policy (CLI / IDE / MCP)</a></li><li><a href="#5-ci-registry-checks">5. CI / registry checks</a></li><li><a href="#6-semantic-memory-namespacing-scale">6. Semantic memory namespacing (scale)</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Traceability, ADO sync, ask-first, and PRD→story expectations</h1>
 <p><strong>Audience:</strong> Architects, TPMs, and release owners.<br>
 <strong>Related:</strong> <a href="#ado_mcp_integration">ADO_MCP_Integration</a>, <a href="#persistent_memory">Persistent_Memory</a>, <a href="#pr_merge_process">PR_Merge_Process</a>.</p>
 <hr>
@@ -6718,12 +7203,15 @@ Risk accepted by: {user or role}
 <li>Use documented <strong>conflict policies</strong> (<code>reject</code>, <code>last_write_wins</code>, <code>merge_append</code>) for the right <strong>namespace</strong>, not one global default.</li>
 </ul>
 <p>Details: <a href="#persistent_memory">Persistent_Memory</a>.</p>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#enforcement_contract" class="nav-prev">← Enforcement Contract</a><a href="#platform_extension_onboarding" class="nav-next">Platform Extension Onboarding →</a></nav>
     </article>
-
-    <article id="platform_extension_onboarding" class="doc-card">
-      <div class="doc-header"><h1>Platform Extension Onboarding</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#quick-reference">Quick reference</a></li><li><a href="#1-add-an-agent">1. Add an agent</a></li><li><a href="#2-add-a-rule">2. Add a rule</a></li><li><a href="#3-add-a-skill">3. Add a skill</a></li><li><a href="#4-add-a-role-team-e-g-a-new-lane-beside-product-qa-ui">4. Add a role (“team”) — e.g. a new lane beside Product / QA / UI</a></li><li><a href="#5-add-a-tech-stack-e-g-new-mobile-or-backend-flavor">5. Add a tech stack (e.g. new mobile or backend flavor)</a></li><li><a href="#6-add-or-rename-a-stage-sdlc-flow">6. Add or rename a stage / SDLC flow</a></li><li><a href="#7-ci-and-manual">7. CI and manual</a></li><li><a href="#8-publishing-a-public-distribution-snapshot">8. Publishing a public distribution snapshot</a></li><li><a href="#9-full-example-onboarding-the-analytics-team">9. Full Example: Onboarding the Analytics Team</a></li>  <li><a href="#step-1-define-the-analytics-role">Step 1: Define the Analytics Role</a></li><li><a href="#responsibilities">Responsibilities</a></li><li><a href="#constraints">Constraints</a></li><li><a href="#cross-team-impact">Cross-Team Impact</a></li>  <li><a href="#step-2-create-the-analytics-agent">Step 2: Create the Analytics Agent</a></li><li><a href="#core-skills">Core Skills</a></li><li><a href="#ask-first-protocol">Ask-First Protocol</a></li><li><a href="#stage-integration">Stage Integration</a></li>  <li><a href="#step-3-create-analytics-skills">Step 3: Create Analytics Skills</a></li><li><a href="#purpose">Purpose</a></li><li><a href="#output-template">Output Template</a></li><li><a href="#tracking-requirements-for-story-id">Tracking Requirements for [Story ID]</a></li>  <li><a href="#events-to-track">Events to Track</a></li>  <li><a href="#privacy-checklist">Privacy Checklist</a></li>  <li><a href="#cross-team-dependencies">Cross-Team Dependencies</a></li><li><a href="#ask-first-triggers">Ask-First Triggers</a></li><li><a href="#purpose">Purpose</a></li><li><a href="#compliance-checklist">Compliance Checklist</a></li>  <li><a href="#gdpr-eu">GDPR (EU)</a></li>  <li><a href="#ccpa-california">CCPA (California)</a></li><li><a href="#gate-behavior">Gate Behavior</a></li><li><a href="#output">Output</a></li><li><a href="#schema-requirements">Schema Requirements</a></li><li><a href="#validation-rules">Validation Rules</a></li><li><a href="#integration">Integration</a></li>  <li><a href="#step-4-create-cross-cutting-rules">Step 4: Create Cross-Cutting Rules</a></li><li><a href="#rule">Rule</a></li><li><a href="#stage-specific-checks">Stage-Specific Checks</a></li>  <li><a href="#stage-02-prd-review">Stage 02: PRD Review</a></li>  <li><a href="#stage-05-system-design">Stage 05: System Design</a></li>  <li><a href="#stage-08-implementation">Stage 08: Implementation</a></li><li><a href="#violation-handling">Violation Handling</a></li><li><a href="#rule">Rule</a></li><li><a href="#checks">Checks</a></li><li><a href="#skip-conditions">Skip Conditions</a></li><li><a href="#gate-output">Gate Output</a></li><li><a href="#rule">Rule</a></li><li><a href="#quality-metrics">Quality Metrics</a></li><li><a href="#gate-behavior">Gate Behavior</a></li><li><a href="#auto-remediation">Auto-Remediation</a></li><li><a href="#analytics-rules">Analytics Rules</a></li>  <li><a href="#step-5-stage-integration-points">Step 5: Stage Integration Points</a></li><li><a href="#analytics-integration">Analytics Integration</a></li><li><a href="#analytics-implementation">Analytics Implementation</a></li><li><a href="#analytics-testing">Analytics Testing</a></li>  <li><a href="#step-6-team-memory-setup">Step 6: Team Memory Setup</a></li><li><a href="#event-schema-registry">Event Schema Registry</a></li><li><a href="#privacy-decisions-log">Privacy Decisions Log</a></li><li><a href="#tracking-patterns">Tracking Patterns</a></li><li><a href="#metrics-baselines">Metrics Baselines</a></li><li><a href="#team-integration">Team Integration</a></li>  <li><a href="#step-7-cross-team-workflow-example">Step 7: Cross-Team Workflow Example</a></li>  <li><a href="#step-8-validation-testing">Step 8: Validation & Testing</a></li>  <li><a href="#step-9-documentation-updates">Step 9: Documentation Updates</a></li>  <li><a href="#summary-analytics-onboarding-checklist">Summary: Analytics Onboarding Checklist</a></li><li><a href="#see-also">See also</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Platform extension onboarding — agents, rules, skills, roles, stacks, stages</h1>
+<article id="platform_extension_onboarding" class="doc-section">
+      <header class="doc-header">
+        <h1>Platform Extension Onboarding</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#quick-reference">Quick reference</a></li><li><a href="#1-add-an-agent">1. Add an agent</a></li><li><a href="#2-add-a-rule">2. Add a rule</a></li><li><a href="#3-add-a-skill">3. Add a skill</a></li><li><a href="#4-add-a-role-team-e-g-a-new-lane-beside-product-qa-ui">4. Add a role (“team”) — e.g. a new lane beside Product / QA / UI</a></li><li><a href="#5-add-a-tech-stack-e-g-new-mobile-or-backend-flavor">5. Add a tech stack (e.g. new mobile or backend flavor)</a></li><li><a href="#6-add-or-rename-a-stage-sdlc-flow">6. Add or rename a stage / SDLC flow</a></li><li><a href="#7-ci-and-manual">7. CI and manual</a></li><li><a href="#8-publishing-a-public-distribution-snapshot">8. Publishing a public distribution snapshot</a></li><li><a href="#9-full-example-onboarding-the-analytics-team">9. Full Example: Onboarding the Analytics Team</a></li>  <li><a href="#step-1-define-the-analytics-role">Step 1: Define the Analytics Role</a></li><li><a href="#responsibilities">Responsibilities</a></li><li><a href="#constraints">Constraints</a></li><li><a href="#cross-team-impact">Cross-Team Impact</a></li>  <li><a href="#step-2-create-the-analytics-agent">Step 2: Create the Analytics Agent</a></li><li><a href="#core-skills">Core Skills</a></li><li><a href="#ask-first-protocol">Ask-First Protocol</a></li><li><a href="#stage-integration">Stage Integration</a></li>  <li><a href="#step-3-create-analytics-skills">Step 3: Create Analytics Skills</a></li><li><a href="#purpose">Purpose</a></li><li><a href="#output-template">Output Template</a></li><li><a href="#tracking-requirements-for-story-id">Tracking Requirements for [Story ID]</a></li>  <li><a href="#events-to-track">Events to Track</a></li>  <li><a href="#privacy-checklist">Privacy Checklist</a></li>  <li><a href="#cross-team-dependencies">Cross-Team Dependencies</a></li><li><a href="#ask-first-triggers">Ask-First Triggers</a></li><li><a href="#purpose">Purpose</a></li><li><a href="#compliance-checklist">Compliance Checklist</a></li>  <li><a href="#gdpr-eu">GDPR (EU)</a></li>  <li><a href="#ccpa-california">CCPA (California)</a></li><li><a href="#gate-behavior">Gate Behavior</a></li><li><a href="#output">Output</a></li><li><a href="#schema-requirements">Schema Requirements</a></li><li><a href="#validation-rules">Validation Rules</a></li><li><a href="#integration">Integration</a></li>  <li><a href="#step-4-create-cross-cutting-rules">Step 4: Create Cross-Cutting Rules</a></li><li><a href="#rule">Rule</a></li><li><a href="#stage-specific-checks">Stage-Specific Checks</a></li>  <li><a href="#stage-02-prd-review">Stage 02: PRD Review</a></li>  <li><a href="#stage-05-system-design">Stage 05: System Design</a></li>  <li><a href="#stage-08-implementation">Stage 08: Implementation</a></li><li><a href="#violation-handling">Violation Handling</a></li><li><a href="#rule">Rule</a></li><li><a href="#checks">Checks</a></li><li><a href="#skip-conditions">Skip Conditions</a></li><li><a href="#gate-output">Gate Output</a></li><li><a href="#rule">Rule</a></li><li><a href="#quality-metrics">Quality Metrics</a></li><li><a href="#gate-behavior">Gate Behavior</a></li><li><a href="#auto-remediation">Auto-Remediation</a></li><li><a href="#analytics-rules">Analytics Rules</a></li>  <li><a href="#step-5-stage-integration-points">Step 5: Stage Integration Points</a></li><li><a href="#analytics-integration">Analytics Integration</a></li><li><a href="#analytics-implementation">Analytics Implementation</a></li><li><a href="#analytics-testing">Analytics Testing</a></li>  <li><a href="#step-6-team-memory-setup">Step 6: Team Memory Setup</a></li><li><a href="#event-schema-registry">Event Schema Registry</a></li><li><a href="#privacy-decisions-log">Privacy Decisions Log</a></li><li><a href="#tracking-patterns">Tracking Patterns</a></li><li><a href="#metrics-baselines">Metrics Baselines</a></li><li><a href="#team-integration">Team Integration</a></li>  <li><a href="#step-7-cross-team-workflow-example">Step 7: Cross-Team Workflow Example</a></li>  <li><a href="#step-8-validation-testing">Step 8: Validation & Testing</a></li>  <li><a href="#step-9-documentation-updates">Step 9: Documentation Updates</a></li>  <li><a href="#summary-analytics-onboarding-checklist">Summary: Analytics Onboarding Checklist</a></li><li><a href="#see-also">See also</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Platform extension onboarding — agents, rules, skills, roles, stacks, stages</h1>
 <p>Use this checklist when you <strong>add or change</strong> platform behavior so CLI, IDE, NL, and CI stay aligned. Repository layout: <a href="CANONICAL_REPO_AND_INTERFACES.md"><code>CANONICAL_REPO_AND_INTERFACES</code></a>.</p>
 <h2 id="quick-reference" tabindex="-1">Quick reference</h2>
 <table>
@@ -7462,12 +7950,15 @@ node User_Manual/build-manual-html.mjs
 <li><a href="#commands">Commands</a> — CI parity commands</li>
 <li><a href="#new-role">extension-templates/NEW-ROLE.md</a> — role template</li>
 </ul>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#traceability_and_governance" class="nav-prev">← Traceability and Governance</a><a href="#team_onboarding_presentation" class="nav-next">Team Onboarding Presentation →</a></nav>
     </article>
-
-    <article id="team_onboarding_presentation" class="doc-card">
-      <div class="doc-header"><h1>Team Onboarding Presentation</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#table-of-contents">Table of Contents</a></li><li><a href="#1-platform-overview">1. Platform Overview</a></li>  <li><a href="#what-is-ai-sdlc-platform">What is AI-SDLC Platform?</a></li>  <li><a href="#key-components">Key Components</a></li>  <li><a href="#who-uses-it">Who Uses It?</a></li><li><a href="#2-quick-start-first-time-setup">2. Quick Start - First Time Setup</a></li>  <li><a href="#step-1-platform-setup-one-time">Step 1: Platform Setup (One-time)</a></li>  <li><a href="#step-2-configure-azure-devops">Step 2: Configure Azure DevOps</a></li>  <li><a href="#step-3-verify-setup">Step 3: Verify Setup</a></li>  <li><a href="#step-4-choose-your-role">Step 4: Choose Your Role</a></li><li><a href="#3-15-stage-sdlc-flow">3. 15-Stage SDLC Flow</a></li>  <li><a href="#stage-overview">Stage Overview</a></li>  <li><a href="#phase-1-planning-design-stages-01-05">Phase 1: Planning & Design (Stages 01-05)</a></li>  <li><a href="#phase-2-implementation-testing-stages-06-11">Phase 2: Implementation & Testing (Stages 06-11)</a></li>  <li><a href="#phase-3-release-closure-stages-12-15">Phase 3: Release & Closure (Stages 12-15)</a></li><li><a href="#4-memory-management">4. Memory Management</a></li>  <li><a href="#types-of-memory">Types of Memory</a></li>  <li><a href="#when-is-memory-created">When is Memory Created?</a></li>  <li><a href="#memory-commands">Memory Commands</a></li>  <li><a href="#memory-best-practices">Memory Best Practices</a></li><li><a href="#5-git-workflow-integration">5. Git Workflow Integration</a></li>  <li><a href="#branch-naming-convention">Branch Naming Convention</a></li>  <li><a href="#standard-git-workflow">Standard Git Workflow</a></li>  <li><a href="#git-hooks-auto-installed">Git Hooks (Auto-installed)</a></li>  <li><a href="#memory-git-sync">Memory + Git Sync</a></li><li><a href="#6-multi-repo-workflow">6. Multi-Repo Workflow</a></li>  <li><a href="#scenario-cross-repo-dependencies">Scenario: Cross-Repo Dependencies</a></li>  <li><a href="#setup-multi-repo">Setup Multi-Repo</a></li>  <li><a href="#check-impact-before-changes">Check Impact Before Changes</a></li>  <li><a href="#notify-dependent-teams">Notify Dependent Teams</a></li>  <li><a href="#switch-between-repos">Switch Between Repos</a></li><li><a href="#7-common-scenarios">7. Common Scenarios</a></li>  <li><a href="#scenario-1-starting-a-new-feature">Scenario 1: Starting a New Feature</a></li>  <li><a href="#scenario-2-bug-fix">Scenario 2: Bug Fix</a></li>  <li><a href="#scenario-3-working-across-multiple-repos">Scenario 3: Working Across Multiple Repos</a></li>  <li><a href="#scenario-4-qa-team-end-to-end-testing">Scenario 4: QA Team End-to-End Testing</a></li><li><a href="#8-troubleshooting">8. Troubleshooting</a></li>  <li><a href="#issue-sdlc-command-not-found">Issue: "sdlc: command not found"</a></li>  <li><a href="#issue-ado-pat-not-configured">Issue: "ADO_PAT not configured"</a></li>  <li><a href="#issue-no-repos-found">Issue: "No repos found"</a></li>  <li><a href="#issue-memory-not-initialized">Issue: "Memory not initialized"</a></li>  <li><a href="#issue-stage-command-not-found">Issue: "Stage command not found"</a></li><li><a href="#quick-reference-card">Quick Reference Card</a></li>  <li><a href="#essential-commands">Essential Commands</a></li>  <li><a href="#stage-quick-reference">Stage Quick Reference</a></li><li><a href="#conclusion">Conclusion</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>AI-SDLC Platform - Team Onboarding Presentation</h1>
+<article id="team_onboarding_presentation" class="doc-section">
+      <header class="doc-header">
+        <h1>Team Onboarding Presentation</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#table-of-contents">Table of Contents</a></li><li><a href="#1-platform-overview">1. Platform Overview</a></li>  <li><a href="#what-is-ai-sdlc-platform">What is AI-SDLC Platform?</a></li>  <li><a href="#key-components">Key Components</a></li>  <li><a href="#who-uses-it">Who Uses It?</a></li><li><a href="#2-quick-start-first-time-setup">2. Quick Start - First Time Setup</a></li>  <li><a href="#step-1-platform-setup-one-time">Step 1: Platform Setup (One-time)</a></li>  <li><a href="#step-2-configure-azure-devops">Step 2: Configure Azure DevOps</a></li>  <li><a href="#step-3-verify-setup">Step 3: Verify Setup</a></li>  <li><a href="#step-4-choose-your-role">Step 4: Choose Your Role</a></li><li><a href="#3-15-stage-sdlc-flow">3. 15-Stage SDLC Flow</a></li>  <li><a href="#stage-overview">Stage Overview</a></li>  <li><a href="#phase-1-planning-design-stages-01-05">Phase 1: Planning & Design (Stages 01-05)</a></li>  <li><a href="#phase-2-implementation-testing-stages-06-11">Phase 2: Implementation & Testing (Stages 06-11)</a></li>  <li><a href="#phase-3-release-closure-stages-12-15">Phase 3: Release & Closure (Stages 12-15)</a></li><li><a href="#4-memory-management">4. Memory Management</a></li>  <li><a href="#types-of-memory">Types of Memory</a></li>  <li><a href="#when-is-memory-created">When is Memory Created?</a></li>  <li><a href="#memory-commands">Memory Commands</a></li>  <li><a href="#memory-best-practices">Memory Best Practices</a></li><li><a href="#5-git-workflow-integration">5. Git Workflow Integration</a></li>  <li><a href="#branch-naming-convention">Branch Naming Convention</a></li>  <li><a href="#standard-git-workflow">Standard Git Workflow</a></li>  <li><a href="#git-hooks-auto-installed">Git Hooks (Auto-installed)</a></li>  <li><a href="#memory-git-sync">Memory + Git Sync</a></li><li><a href="#6-multi-repo-workflow">6. Multi-Repo Workflow</a></li>  <li><a href="#scenario-cross-repo-dependencies">Scenario: Cross-Repo Dependencies</a></li>  <li><a href="#setup-multi-repo">Setup Multi-Repo</a></li>  <li><a href="#check-impact-before-changes">Check Impact Before Changes</a></li>  <li><a href="#notify-dependent-teams">Notify Dependent Teams</a></li>  <li><a href="#switch-between-repos">Switch Between Repos</a></li><li><a href="#7-common-scenarios">7. Common Scenarios</a></li>  <li><a href="#scenario-1-starting-a-new-feature">Scenario 1: Starting a New Feature</a></li>  <li><a href="#scenario-2-bug-fix">Scenario 2: Bug Fix</a></li>  <li><a href="#scenario-3-working-across-multiple-repos">Scenario 3: Working Across Multiple Repos</a></li>  <li><a href="#scenario-4-qa-team-end-to-end-testing">Scenario 4: QA Team End-to-End Testing</a></li><li><a href="#8-troubleshooting">8. Troubleshooting</a></li>  <li><a href="#issue-sdlc-command-not-found">Issue: "sdlc: command not found"</a></li>  <li><a href="#issue-ado-pat-not-configured">Issue: "ADO_PAT not configured"</a></li>  <li><a href="#issue-no-repos-found">Issue: "No repos found"</a></li>  <li><a href="#issue-memory-not-initialized">Issue: "Memory not initialized"</a></li>  <li><a href="#issue-stage-command-not-found">Issue: "Stage command not found"</a></li><li><a href="#quick-reference-card">Quick Reference Card</a></li>  <li><a href="#essential-commands">Essential Commands</a></li>  <li><a href="#stage-quick-reference">Stage Quick Reference</a></li><li><a href="#conclusion">Conclusion</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>AI-SDLC Platform - Team Onboarding Presentation</h1>
 <p><strong>Complete Guide for Teams | 15-Stage SDLC Flow | Memory &amp; Git Workflows</strong></p>
 <hr>
 <h2 id="table-of-contents" tabindex="-1">Table of Contents</h2>
@@ -8651,12 +9142,15 @@ sdlc doctor
 <li><code>sdlc doctor</code> - Diagnose issues</li>
 <li>User Manual: <code>User_Manual/manual.html</code></li>
 </ul>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#platform_extension_onboarding" class="nav-prev">← Platform Extension Onboarding</a><a href="#documentation_rules" class="nav-next">Documentation Rules →</a></nav>
     </article>
-
-    <article id="documentation_rules" class="doc-card">
-      <div class="doc-header"><h1>Documentation Rules</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#single-source-of-truth">Single Source of Truth</a></li><li><a href="#documentation-style">Documentation Style</a></li><li><a href="#atomic-documentation-principle">Atomic Documentation Principle</a></li><li><a href="#cursor-agent-rule-enforced-in-ide">Cursor / Agent rule (enforced in-IDE)</a></li><li><a href="#offline-manual-manual-html">Offline manual (`manual.html`)</a></li><li><a href="#auto-update-triggers">Auto-Update Triggers</a></li><li><a href="#verifying-documentation-is-complete">Verifying documentation is complete</a></li><li><a href="#pre-merge-documentation-check">Pre-Merge Documentation Check</a></li><li><a href="#change-validation-hooks">Change Validation Hooks</a></li><li><a href="#traceability-map">Traceability Map</a></li><li><a href="#adding-documentation">Adding Documentation</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>Documentation Rules</h1>
+<article id="documentation_rules" class="doc-section">
+      <header class="doc-header">
+        <h1>Documentation Rules</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#single-source-of-truth">Single Source of Truth</a></li><li><a href="#documentation-style">Documentation Style</a></li><li><a href="#atomic-documentation-principle">Atomic Documentation Principle</a></li><li><a href="#cursor-agent-rule-enforced-in-ide">Cursor / Agent rule (enforced in-IDE)</a></li><li><a href="#offline-manual-manual-html">Offline manual (`manual.html`)</a></li><li><a href="#auto-update-triggers">Auto-Update Triggers</a></li><li><a href="#verifying-documentation-is-complete">Verifying documentation is complete</a></li><li><a href="#pre-merge-documentation-check">Pre-Merge Documentation Check</a></li><li><a href="#change-validation-hooks">Change Validation Hooks</a></li><li><a href="#traceability-map">Traceability Map</a></li><li><a href="#adding-documentation">Adding Documentation</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>Documentation Rules</h1>
 <h2 id="single-source-of-truth" tabindex="-1">Single Source of Truth</h2>
 <ul>
 <li><code>/User_Manual/</code> is the ONLY active documentation</li>
@@ -8834,12 +9328,15 @@ sdlc doctor
 <blockquote>
 <p>For doc governance details, ask: &quot;Explain the documentation validation pipeline&quot;</p>
 </blockquote>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#team_onboarding_presentation" class="nav-prev">← Team Onboarding Presentation</a><a href="#faq" class="nav-next">FAQ →</a></nav>
     </article>
-
-    <article id="faq" class="doc-card">
-      <div class="doc-header"><h1>❓ FAQ</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#setup-issues">Setup Issues</a></li><li><a href="#cursor-non-interactive-setup">Cursor & non-interactive setup</a></li><li><a href="#layman-s-guide-by-role">Layman's Guide by Role</a></li>  <li><a href="#i-m-a-backend-developer-what-s-this-for-me">**I'm a Backend Developer — What's This For Me?**</a></li>  <li><a href="#i-m-a-frontend-developer-what-s-this-for-me">**I'm a Frontend Developer — What's This For Me?**</a></li>  <li><a href="#i-m-a-qa-engineer-how-does-this-help">**I'm a QA Engineer — How Does This Help?**</a></li>  <li><a href="#i-m-a-product-manager-what-s-in-it-for-me">**I'm a Product Manager — What's In It For Me?**</a></li>  <li><a href="#i-m-a-tech-lead-how-do-i-manage-my-team">**I'm a Tech Lead — How Do I Manage My Team?**</a></li><li><a href="#layman-s-guide-by-stage">Layman's Guide by Stage</a></li>  <li><a href="#what-are-these-15-stages-in-plain-english">**What Are These 15 Stages (In Plain English)?**</a></li>  <li><a href="#which-stages-do-i-actually-use">**Which Stages Do I Actually Use?**</a></li>  <li><a href="#stage-specific-questions">**Stage-Specific Questions**</a></li><li><a href="#role-context">Role & Context</a></li><li><a href="#stage-execution">Stage Execution</a></li><li><a href="#azure-devops">Azure DevOps</a></li><li><a href="#memory-token-budget">Memory & Token Budget</a></li><li><a href="#module-kb-sdlc-module-init">Module KB (`sdlc module init`)</a></li><li><a href="#diagnostics">Diagnostics</a></li><li><a href="#extending-the-platform">Extending the Platform</a></li><li><a href="#user-manual-html-reader">User Manual (HTML reader)</a></li><li><a href="#stories-tasks-templates">Stories, tasks & templates</a></li><li><a href="#workflows-modes">Workflows & modes</a></li><li><a href="#ide-cursor-claude-code">IDE (Cursor / Claude Code)</a></li><li><a href="#windows-git-bash">Windows & Git Bash</a></li><li><a href="#semantic-memory-module-system">Semantic memory & module system</a></li><li><a href="#azure-devops-mcp">Azure DevOps & MCP</a></li><li><a href="#tokens-cost">Tokens & cost</a></li><li><a href="#pr-merge-traceability">PR, merge & traceability</a></li><li><a href="#documentation-drift">Documentation & drift</a></li><li><a href="#qa-orchestrator">QA orchestrator</a></li><li><a href="#system-integrity-validation">System integrity & validation</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>FAQ &amp; Troubleshooting</h1>
+<article id="faq" class="doc-section">
+      <header class="doc-header">
+        <h1>FAQ</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#setup-issues">Setup Issues</a></li><li><a href="#cursor-non-interactive-setup">Cursor & non-interactive setup</a></li><li><a href="#layman-s-guide-by-role">Layman's Guide by Role</a></li>  <li><a href="#i-m-a-backend-developer-what-s-this-for-me">**I'm a Backend Developer — What's This For Me?**</a></li>  <li><a href="#i-m-a-frontend-developer-what-s-this-for-me">**I'm a Frontend Developer — What's This For Me?**</a></li>  <li><a href="#i-m-a-qa-engineer-how-does-this-help">**I'm a QA Engineer — How Does This Help?**</a></li>  <li><a href="#i-m-a-product-manager-what-s-in-it-for-me">**I'm a Product Manager — What's In It For Me?**</a></li>  <li><a href="#i-m-a-tech-lead-how-do-i-manage-my-team">**I'm a Tech Lead — How Do I Manage My Team?**</a></li><li><a href="#layman-s-guide-by-stage">Layman's Guide by Stage</a></li>  <li><a href="#what-are-these-15-stages-in-plain-english">**What Are These 15 Stages (In Plain English)?**</a></li>  <li><a href="#which-stages-do-i-actually-use">**Which Stages Do I Actually Use?**</a></li>  <li><a href="#stage-specific-questions">**Stage-Specific Questions**</a></li><li><a href="#role-context">Role & Context</a></li><li><a href="#stage-execution">Stage Execution</a></li><li><a href="#azure-devops">Azure DevOps</a></li><li><a href="#memory-token-budget">Memory & Token Budget</a></li><li><a href="#module-kb-sdlc-module-init">Module KB (`sdlc module init`)</a></li><li><a href="#diagnostics">Diagnostics</a></li><li><a href="#extending-the-platform">Extending the Platform</a></li><li><a href="#user-manual-html-reader">User Manual (HTML reader)</a></li><li><a href="#stories-tasks-templates">Stories, tasks & templates</a></li><li><a href="#workflows-modes">Workflows & modes</a></li><li><a href="#ide-cursor-claude-code">IDE (Cursor / Claude Code)</a></li><li><a href="#windows-git-bash">Windows & Git Bash</a></li><li><a href="#semantic-memory-module-system">Semantic memory & module system</a></li><li><a href="#azure-devops-mcp">Azure DevOps & MCP</a></li><li><a href="#tokens-cost">Tokens & cost</a></li><li><a href="#pr-merge-traceability">PR, merge & traceability</a></li><li><a href="#documentation-drift">Documentation & drift</a></li><li><a href="#qa-orchestrator">QA orchestrator</a></li><li><a href="#system-integrity-validation">System integrity & validation</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>FAQ &amp; Troubleshooting</h1>
 <p>Quick jump:</p>
 <ul>
 <li><a href="#setup-issues">Setup issues</a></li>
@@ -9471,12 +9968,15 @@ Agent/skill duplication signals, workflow vs stage alignment, symlink health, <c
 <blockquote>
 <p>For deeper troubleshooting, ask: &quot;Debug [specific issue]&quot;</p>
 </blockquote>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#documentation_rules" class="nav-prev">← Documentation Rules</a><a href="#changelog" class="nav-next">Changelog →</a></nav>
     </article>
-
-    <article id="changelog" class="doc-card">
-      <div class="doc-header"><h1>📝 Changelog</h1><div class="page-toc"><details><summary>📑 Jump to section</summary><ul><li><a href="#versioning-policy">Versioning Policy</a></li><li><a href="#2-1-4-2026-04-22">[2.1.4] - 2026-04-22</a></li>  <li><a href="#added-acceptance-criteria-field-support">Added — Acceptance Criteria Field Support</a></li>  <li><a href="#changed-master-story-guidance">Changed — Master Story Guidance</a></li>  <li><a href="#updated-family-hub-work-items">Updated — Family Hub Work Items</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#2-1-3-2026-04-22">[2.1.3] - 2026-04-22</a></li>  <li><a href="#added-ado-search-commands-cli">Added — ADO Search Commands (CLI)</a></li>  <li><a href="#changed-documentation">Changed — Documentation</a></li>  <li><a href="#why-this-matters">Why This Matters</a></li><li><a href="#2-1-2-2026-04-20">[2.1.2] - 2026-04-20</a></li>  <li><a href="#added-token-optimization-v2-env-knobs-stage-re-run-guard">Added — Token-optimization v2: env knobs + stage re-run guard</a></li>  <li><a href="#changed-tightened-guidance">Changed — tightened guidance</a></li>  <li><a href="#follow-ups">Follow-ups</a></li><li><a href="#2-1-1-2026-04-20">[2.1.1] - 2026-04-20</a></li>  <li><a href="#added-atomic-design-ci-enforcement-ado-observer-idempotency">Added — Atomic design, CI enforcement, ADO observer idempotency</a></li>  <li><a href="#follow-ups">Follow-ups</a></li><li><a href="#unreleased">[Unreleased]</a></li>  <li><a href="#changed-tooling-governance">Changed (tooling & governance)</a></li><li><a href="#2-0-0-2026-04-17">[2.0.0] - 2026-04-17</a></li>  <li><a href="#platform-v2-1-0-architecture-update">Platform v2.1.0 Architecture Update</a></li><li><a href="#1-0-16-2026-04-17">[1.0.16] - 2026-04-17</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-15-2026-04-17">[1.0.15] - 2026-04-17</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-14-2026-04-17">[1.0.14] - 2026-04-17</a></li>  <li><a href="#added">Added</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-13-2026-04-15">[1.0.13] - 2026-04-15</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-12-2026-04-16">[1.0.12] - 2026-04-16</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-11-2026-04-16">[1.0.11] - 2026-04-16</a></li>  <li><a href="#added">Added</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-10-2026-04-16">[1.0.10] - 2026-04-16</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-9-2026-04-15">[1.0.9] - 2026-04-15</a></li>  <li><a href="#added">Added</a></li><li><a href="#1-0-8-2026-04-16">[1.0.8] - 2026-04-16</a></li>  <li><a href="#added">Added</a></li>  <li><a href="#fixed">Fixed</a></li><li><a href="#1-0-7-2026-04-16">[1.0.7] - 2026-04-16</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#1-0-6-2026-04-14">[1.0.6] - 2026-04-14</a></li>  <li><a href="#added">Added</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#1-0-5-2026-04-15">[1.0.5] - 2026-04-15</a></li>  <li><a href="#added-tooling">Added (tooling)</a></li>  <li><a href="#changed-cli-polish">Changed (CLI polish)</a></li>  <li><a href="#tests">Tests</a></li>  <li><a href="#documentation-automation">Documentation automation</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#1-0-4-2026-04-14">[1.0.4] - 2026-04-14</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#1-0-3-2026-04-15">[1.0.3] - 2026-04-15</a></li>  <li><a href="#added">Added</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#1-0-2-2026-04-15">[1.0.2] - 2026-04-15</a></li>  <li><a href="#added">Added</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#1-0-1-2026-04-15">[1.0.1] - 2026-04-15</a></li>  <li><a href="#added">Added</a></li></ul></details></div></div>
-      <div class="doc-content markdown-body"><h1>User Manual Changelog</h1>
+<article id="changelog" class="doc-section">
+      <header class="doc-header">
+        <h1>Changelog</h1>
+        <nav class="page-toc"><details><summary>On this page</summary><ul><li><a href="#versioning-policy">Versioning Policy</a></li><li><a href="#2-1-4-2026-04-22">[2.1.4] - 2026-04-22</a></li>  <li><a href="#added-acceptance-criteria-field-support">Added — Acceptance Criteria Field Support</a></li>  <li><a href="#changed-master-story-guidance">Changed — Master Story Guidance</a></li>  <li><a href="#updated-family-hub-work-items">Updated — Family Hub Work Items</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#2-1-3-2026-04-22">[2.1.3] - 2026-04-22</a></li>  <li><a href="#added-ado-search-commands-cli">Added — ADO Search Commands (CLI)</a></li>  <li><a href="#changed-documentation">Changed — Documentation</a></li>  <li><a href="#why-this-matters">Why This Matters</a></li><li><a href="#2-1-2-2026-04-20">[2.1.2] - 2026-04-20</a></li>  <li><a href="#added-token-optimization-v2-env-knobs-stage-re-run-guard">Added — Token-optimization v2: env knobs + stage re-run guard</a></li>  <li><a href="#changed-tightened-guidance">Changed — tightened guidance</a></li>  <li><a href="#follow-ups">Follow-ups</a></li><li><a href="#2-1-1-2026-04-20">[2.1.1] - 2026-04-20</a></li>  <li><a href="#added-atomic-design-ci-enforcement-ado-observer-idempotency">Added — Atomic design, CI enforcement, ADO observer idempotency</a></li>  <li><a href="#follow-ups">Follow-ups</a></li><li><a href="#unreleased">[Unreleased]</a></li>  <li><a href="#changed-tooling-governance">Changed (tooling & governance)</a></li><li><a href="#2-0-0-2026-04-17">[2.0.0] - 2026-04-17</a></li>  <li><a href="#platform-v2-1-0-architecture-update">Platform v2.1.0 Architecture Update</a></li><li><a href="#1-0-16-2026-04-17">[1.0.16] - 2026-04-17</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-15-2026-04-17">[1.0.15] - 2026-04-17</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-14-2026-04-17">[1.0.14] - 2026-04-17</a></li>  <li><a href="#added">Added</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-13-2026-04-15">[1.0.13] - 2026-04-15</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-12-2026-04-16">[1.0.12] - 2026-04-16</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-11-2026-04-16">[1.0.11] - 2026-04-16</a></li>  <li><a href="#added">Added</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-10-2026-04-16">[1.0.10] - 2026-04-16</a></li>  <li><a href="#changed">Changed</a></li><li><a href="#1-0-9-2026-04-15">[1.0.9] - 2026-04-15</a></li>  <li><a href="#added">Added</a></li><li><a href="#1-0-8-2026-04-16">[1.0.8] - 2026-04-16</a></li>  <li><a href="#added">Added</a></li>  <li><a href="#fixed">Fixed</a></li><li><a href="#1-0-7-2026-04-16">[1.0.7] - 2026-04-16</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#1-0-6-2026-04-14">[1.0.6] - 2026-04-14</a></li>  <li><a href="#added">Added</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#1-0-5-2026-04-15">[1.0.5] - 2026-04-15</a></li>  <li><a href="#added-tooling">Added (tooling)</a></li>  <li><a href="#changed-cli-polish">Changed (CLI polish)</a></li>  <li><a href="#tests">Tests</a></li>  <li><a href="#documentation-automation">Documentation automation</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#1-0-4-2026-04-14">[1.0.4] - 2026-04-14</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#1-0-3-2026-04-15">[1.0.3] - 2026-04-15</a></li>  <li><a href="#added">Added</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#1-0-2-2026-04-15">[1.0.2] - 2026-04-15</a></li>  <li><a href="#added">Added</a></li>  <li><a href="#documentation">Documentation</a></li><li><a href="#1-0-1-2026-04-15">[1.0.1] - 2026-04-15</a></li>  <li><a href="#added">Added</a></li></ul></details></nav>
+      </header>
+      <main class="doc-body"><h1>User Manual Changelog</h1>
 <p>All notable changes to the AI-SDLC User Manual are documented here.</p>
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
@@ -9934,50 +10434,72 @@ section mirrors the canonical rule and links back.</li>
 <li><strong>Migrating_From_V1_to_V2.md</strong> — Step-by-step migration from <code>ai-claude-platform</code> (V1) to <code>ai-sdlc-platform</code> (V2): team→role mapping, setup, memory, ADO, rollback.</li>
 <li><strong>V2_Improvements_Over_V1.md</strong> — Feature and architecture comparison across CLI, stages/workflows, agents/skills/rules, memo</li>
 </ul>
-</div>
+</main>
+      <nav class="doc-nav"><a href="#faq" class="nav-prev">← FAQ</a></nav>
     </article>
-    </main>
-  </div>
+    </section>
+  </main>
 
   <script>
+    // Mermaid diagram initialization
+    mermaid.contentLoaded();
+
+    // Prism syntax highlighting
     document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('pre code').forEach(el => {
-        hljs.highlightElement(el);
-      });
+      Prism.highlightAll();
     });
 
-    const sections = document.querySelectorAll('article');
-    const navLinks = document.querySelectorAll('.nav-link');
-
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          navLinks.forEach(link => link.classList.remove('active'));
-          const activeLink = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
-          if (activeLink) activeLink.classList.add('active');
-        }
-      });
-    }, { rootMargin: '-50px 0px -50% 0px' });
-
-    sections.forEach(section => observer.observe(section));
-
-    const searchInput = document.getElementById('searchInput');
-    const contentDivs = document.querySelectorAll('.doc-content');
+    // Global search
+    const searchInput = document.getElementById('globalSearch');
+    const docSections = document.querySelectorAll('.doc-section');
+    const topicGroups = document.querySelectorAll('.topic-group');
 
     searchInput.addEventListener('input', (e) => {
       const query = e.target.value.toLowerCase();
-      contentDivs.forEach(div => {
-        const article = div.closest('article');
-        const text = div.textContent.toLowerCase();
-        article.style.display = text.includes(query) ? '' : 'none';
+      
+      docSections.forEach(section => {
+        const text = section.textContent.toLowerCase();
+        section.style.display = text.includes(query) ? '' : 'none';
+      });
+
+      topicGroups.forEach(group => {
+        const cards = group.querySelectorAll('.topic-card');
+        let visible = 0;
+        cards.forEach(card => {
+          if (card.textContent.toLowerCase().includes(query)) {
+            card.style.display = '';
+            visible++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        group.style.display = visible > 0 ? '' : 'none';
       });
     });
 
+    // Keyboard shortcut (Cmd+K / Ctrl+K)
     document.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         searchInput.focus();
+        searchInput.select();
       }
+    });
+
+    // Smooth scroll with offset
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        if (link.getAttribute('href') === '#') return;
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) {
+          const offset = 80;
+          window.scrollTo({
+            top: target.getBoundingClientRect().top + window.scrollY - offset,
+            behavior: 'smooth'
+          });
+        }
+      });
     });
   </script>
 </body>
