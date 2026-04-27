@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 /**
- * build-manual-html.mjs (v7.1.0) - SPACING & USABILITY FIXES
+ * build-manual-html.mjs (v7.2.0) - CLEAN UI & LAZY DISCOVERY
  *
- * Fixes from v7.0.0:
- * - Header overlap: reduced scroll-margin-top to match header height
- * - TOC spacing: proper padding/margin when expanded
- * - Card containment: fixed horizontal scroll overflow
- * - Netflix blocks now link to FULL section (not just card preview)
- * - Better vertical rhythm and breathing room
- * - Proper section anchoring without jumping
+ * Major fixes:
+ * - Discovery blocks HIDDEN by default, fade in on scroll
+ * - TOC hidden by default (click to expand)
+ * - Fix hover glitches: overflow clipping, proper shadow containment
+ * - Title/TOC overlap fixed: better spacing
+ * - Action tags don't shift on hover
  */
 
 import fs from 'node:fs';
@@ -286,7 +285,7 @@ function buildHTML(docs) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI-SDLC Platform Manual v7.1.0" />
+  <meta name="description" content="AI-SDLC Platform Manual v7.2.0" />
   <title>AI-SDLC Platform Manual</title>
 
   <!-- Prism.js -->
@@ -339,7 +338,7 @@ body {
   transition: var(--transition);
 }
 
-/* Header - Compact */
+/* Header */
 header {
   position: sticky; top: 0; z-index: 100;
   background: rgba(10, 10, 15, 0.92);
@@ -443,14 +442,23 @@ header {
   line-height: 1.3;
 }
 
-/* Main - Proper spacing */
+/* Main */
 main {
   max-width: 1400px;
   margin: 0 auto;
   padding: 32px 24px;
 }
 
-/* Topic Groups - Better spacing */
+/* Topic Groups - HIDDEN by default, fade in */
+#discovery-container {
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
+}
+
+#discovery-container.visible {
+  opacity: 1;
+}
+
 .topic-group {
   margin-bottom: 40px;
   padding: 28px;
@@ -460,6 +468,7 @@ main {
   border-radius: var(--radius);
   backdrop-filter: blur(10px);
   transition: var(--transition);
+  overflow: hidden;
 }
 
 .topic-group:hover {
@@ -492,7 +501,7 @@ main {
   letter-spacing: 0.5px;
 }
 
-/* Card Scroll - Fixed containment */
+/* Card Scroll */
 .card-scroll {
   display: flex;
   gap: 14px;
@@ -515,7 +524,7 @@ main {
   background: var(--text-secondary);
 }
 
-/* Topic Cards */
+/* Topic Cards - FIX HOVER GLITCHES */
 .topic-card {
   flex: 0 0 280px;
   padding: 18px;
@@ -532,18 +541,26 @@ main {
   flex-direction: column;
   min-height: 160px;
   border: 1px solid var(--border-subtle);
+  will-change: transform, box-shadow, border-color;
 }
 
 .topic-card::before {
   content: '';
   position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(0,217,255,0.1) 0%, transparent 70%);
-  opacity: 0;
-  transition: var(--transition);
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(0,217,255,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+  pointer-events: none;
+}
+
+.topic-card:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .topic-card:hover {
@@ -551,8 +568,6 @@ main {
   box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
   border-color: var(--card-accent);
 }
-
-.topic-card:hover::before { opacity: 1; }
 
 .topic-card h3 {
   font-size: 15px;
@@ -587,7 +602,7 @@ main {
 .action-tag {
   display: inline-block;
   background: rgba(0, 217, 255, 0.1);
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 3px;
   font-size: 10px;
   font-weight: 600;
@@ -596,18 +611,18 @@ main {
   letter-spacing: 0.3px;
   border: 1px solid rgba(0, 217, 255, 0.2);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .topic-card:hover .action-tag {
   background: var(--accent-cyan);
   color: var(--bg);
   border-color: var(--accent-cyan);
-  transform: scale(1.08);
 }
 
 .arrow {
   opacity: 0;
-  transition: var(--transition);
+  transition: opacity 0.3s;
   font-weight: 700;
   color: var(--accent-cyan);
   position: absolute;
@@ -615,13 +630,14 @@ main {
   top: 50%;
   transform: translateY(-50%);
   z-index: 1;
+  flex-shrink: 0;
 }
 
 .topic-card:hover .arrow {
   opacity: 1;
 }
 
-/* Document Sections - Better anchoring */
+/* Document Sections */
 .doc-section {
   max-width: 900px;
   margin: 0 auto;
@@ -630,15 +646,15 @@ main {
 }
 
 .doc-header {
-  margin-bottom: 32px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .doc-header h1 {
   font-size: 40px;
   font-weight: 800;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   letter-spacing: -1px;
   line-height: 1.2;
   background: linear-gradient(90deg, var(--text), var(--text-secondary));
@@ -647,7 +663,7 @@ main {
   background-clip: text;
 }
 
-/* Collapsible TOC - Proper spacing */
+/* Collapsible TOC - HIDDEN by default */
 .toc-collapsible {
   margin: 20px 0;
   padding: 14px 16px;
@@ -889,11 +905,27 @@ a:hover {
   </header>
 
   <main>
-    ${groupBlocks}
+    <div id="discovery-container">
+      ${groupBlocks}
+    </div>
     ${docCards}
   </main>
 
   <script>
+    // Lazy reveal discovery blocks on scroll
+    const discoveryContainer = document.getElementById('discovery-container');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          discoveryContainer.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    observer.observe(discoveryContainer);
+
     // Search
     const searchIndex = ${searchIndex};
     const searchInput = document.getElementById('searchInput');
@@ -954,7 +986,7 @@ function main() {
   fs.writeFileSync(HASH_FILE, hash);
 
   const size = (fs.statSync(OUT).size / 1024).toFixed(1);
-  console.log(`Generated ${OUT} (v7.1.0, ${docs.length} sections, ${size} KB)`);
+  console.log(`Generated ${OUT} (v7.2.0, ${docs.length} sections, ${size} KB)`);
 }
 
 main();
