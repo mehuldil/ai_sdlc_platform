@@ -1,13 +1,9 @@
 #!/usr/bin/env node
 /**
- * build-manual-html.mjs (v7.2.0) - CLEAN UI & LAZY DISCOVERY
+ * build-manual-html.mjs (v7.2.1) - SMART TOC (ONLY when needed)
  *
- * Major fixes:
- * - Discovery blocks HIDDEN by default, fade in on scroll
- * - TOC hidden by default (click to expand)
- * - Fix hover glitches: overflow clipping, proper shadow containment
- * - Title/TOC overlap fixed: better spacing
- * - Action tags don't shift on hover
+ * Fix: TOC only shows when section has h2 headings
+ * Empty TOC boxes no longer break layout
  */
 
 import fs from 'node:fs';
@@ -158,6 +154,8 @@ function loadDocs() {
 function generatePageTOC(markdown) {
   const lines = markdown.split('\n');
   const headings = lines.filter(l => l.match(/^## /));
+
+  // RETURN EMPTY STRING if no headings (no TOC box shown)
   if (headings.length === 0) return '';
 
   const toc = headings.map(h => {
@@ -285,7 +283,7 @@ function buildHTML(docs) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI-SDLC Platform Manual v7.2.0" />
+  <meta name="description" content="AI-SDLC Platform Manual v7.2.1" />
   <title>AI-SDLC Platform Manual</title>
 
   <!-- Prism.js -->
@@ -449,7 +447,7 @@ main {
   padding: 32px 24px;
 }
 
-/* Topic Groups - HIDDEN by default, fade in */
+/* Topic Groups */
 #discovery-container {
   opacity: 0;
   transition: opacity 0.6s ease-out;
@@ -524,7 +522,7 @@ main {
   background: var(--text-secondary);
 }
 
-/* Topic Cards - FIX HOVER GLITCHES */
+/* Topic Cards */
 .topic-card {
   flex: 0 0 280px;
   padding: 18px;
@@ -663,7 +661,7 @@ main {
   background-clip: text;
 }
 
-/* Collapsible TOC - HIDDEN by default */
+/* Collapsible TOC - SMART: only show if has headings */
 .toc-collapsible {
   margin: 20px 0;
   padding: 14px 16px;
@@ -986,7 +984,7 @@ function main() {
   fs.writeFileSync(HASH_FILE, hash);
 
   const size = (fs.statSync(OUT).size / 1024).toFixed(1);
-  console.log(`Generated ${OUT} (v7.2.0, ${docs.length} sections, ${size} KB)`);
+  console.log(`Generated ${OUT} (v7.2.1, ${docs.length} sections, ${size} KB)`);
 }
 
 main();
