@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI-SDLC Platform Manual v6.0.0" />
+  <meta name="description" content="AI-SDLC Platform Manual v7.0.0" />
   <title>AI-SDLC Platform Manual</title>
 
-  <!-- Prism.js with proper theme -->
+  <!-- Prism.js -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
@@ -16,110 +16,99 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
 
-  <!-- Mermaid.js for diagrams -->
+  <!-- Mermaid.js -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script>mermaid.initialize({ startOnLoad: true, theme: 'default' });</script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
 
   <style>
 :root {
-  --bg: #fff;
-  --bg-alt: #f5f5f7;
-  --bg-code: #1e1e1e;
-  --text: #1d1d1d;
-  --text-secondary: #666;
-  --text-tertiary: #999;
-  --accent: #0071e3;
-  --accent-hover: #0077ed;
-  --border: #e5e5e7;
-  --border-subtle: #f0f0f0;
+  --bg: #0a0a0f;
+  --bg-alt: #14141b;
+  --bg-card: #1a1a24;
+  --bg-code: #0f0f13;
+  --text: #e5e5ff;
+  --text-secondary: #a0a0c0;
+  --text-tertiary: #6b6b8e;
+  --accent-cyan: #00d9ff;
+  --accent-magenta: #ff00ff;
+  --accent-purple: #8b5cf6;
+  --border: #2a2a3e;
+  --border-subtle: #1f1f2e;
   --radius: 12px;
   --radius-sm: 8px;
   --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  --font-serif: 'Georgia', 'Garamond', serif;
   --font-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.12);
+  --shadow-sm: 0 2px 8px rgba(0, 217, 255, 0.05);
+  --shadow-md: 0 8px 24px rgba(255, 0, 255, 0.08);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.4);
   --transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #000;
-    --bg-alt: #1d1d1f;
-    --bg-code: #161616;
-    --text: #f5f5f7;
-    --text-secondary: #a1a1a6;
-    --text-tertiary: #727278;
-    --border: #424245;
-    --border-subtle: #2a2a2e;
-    --accent: #0a84ff;
-    --accent-hover: #1296ff;
-  }
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
   font-family: var(--font);
-  background: var(--bg);
+  background: linear-gradient(135deg, var(--bg) 0%, #0f0f18 100%);
   color: var(--text);
   line-height: 1.6;
-  transition: background 0.2s, color 0.2s;
-}
-
-/* Header & Search */
-header {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 0;
   transition: var(--transition);
 }
 
-@media (prefers-color-scheme: dark) {
-  header { background: rgba(0, 0, 0, 0.95); }
+/* Header - Compact */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10, 10, 15, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .header-inner {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
   display: flex;
-  gap: 30px;
+  gap: 24px;
   align-items: center;
+  justify-content: space-between;
 }
 
 .logo {
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: -0.5px;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: -0.8px;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .search {
   flex: 1;
-  max-width: 350px;
+  max-width: 400px;
   position: relative;
 }
 
 .search input {
   width: 100%;
-  padding: 8px 12px;
+  padding: 8px 14px;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg-alt);
+  border-radius: 6px;
+  background: var(--bg-card);
   color: var(--text);
   font-family: var(--font);
-  font-size: 14px;
+  font-size: 13px;
   transition: var(--transition);
 }
 
 .search input:focus {
   outline: none;
-  border-color: var(--accent);
-  background: var(--bg);
-  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.15);
 }
 
 .search-results {
@@ -127,125 +116,117 @@ header {
   top: 100%;
   left: 0;
   right: 0;
-  background: var(--bg);
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-top: none;
-  border-radius: 0 0 8px 8px;
+  border-radius: 0 0 6px 6px;
   max-height: 400px;
   overflow-y: auto;
   display: none;
   z-index: 1000;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
 
-.search-results.active {
-  display: block;
-}
+.search-results.active { display: block; }
 
 .search-result-item {
-  padding: 12px;
+  padding: 10px 14px;
   border-bottom: 1px solid var(--border-subtle);
   cursor: pointer;
   transition: var(--transition);
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
-.search-result-item:last-child {
-  border-bottom: none;
-}
-
-.search-result-item:hover {
-  background: var(--bg-alt);
-}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: var(--bg-alt); }
 
 .search-result-title {
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--accent);
-  margin-bottom: 4px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--accent-cyan);
+  margin-bottom: 3px;
 }
 
 .search-result-snippet {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.4;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  line-height: 1.3;
 }
 
-/* Main */
+/* Main - Compact spacing */
 main {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 60px 20px;
+  padding: 40px 24px;
 }
 
 /* Topic Groups */
 .topic-group {
-  margin-bottom: 60px;
-  padding: 32px;
-  background: var(--bg-alt);
+  margin-bottom: 48px;
+  padding: 28px;
+  background: rgba(26, 26, 36, 0.5);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  border-left: 4px solid;
+  border-left: 3px solid var(--group-color);
+  backdrop-filter: blur(10px);
   transition: var(--transition);
+}
+
+.topic-group:hover {
+  background: rgba(26, 26, 36, 0.8);
+  border-color: var(--group-color);
 }
 
 .group-header {
   display: flex;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   align-items: flex-start;
 }
 
-.group-emoji {
-  font-size: 32px;
-  line-height: 1;
-}
+.group-emoji { font-size: 28px; line-height: 1; }
 
 .group-header h2 {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   letter-spacing: -0.5px;
+  color: var(--text);
 }
 
 .group-desc {
-  font-size: 14px;
+  font-size: 12px;
   color: var(--text-secondary);
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Card Scroll */
 .card-scroll {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   overflow-x: auto;
-  padding-bottom: 12px;
+  padding-bottom: 8px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
 
-.card-scroll::-webkit-scrollbar {
-  height: 6px;
-}
-
-.card-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+.card-scroll::-webkit-scrollbar { height: 4px; }
+.card-scroll::-webkit-scrollbar-track { background: transparent; }
 .card-scroll::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
-  transition: var(--transition);
-}
-
-.card-scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
+  background: var(--text-tertiary);
+  border-radius: 2px;
 }
 
 /* Topic Cards */
 .topic-card {
-  flex: 0 0 300px;
-  padding: 20px;
-  background: var(--bg);
-  border-left: 4px solid;
+  flex: 0 0 280px;
+  padding: 18px;
+  background: var(--bg-card);
+  border-left: 3px solid var(--card-accent);
   border-radius: var(--radius-sm);
   text-decoration: none;
   color: inherit;
@@ -255,260 +236,154 @@ main {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 180px;
-  box-shadow: var(--shadow-sm);
+  min-height: 160px;
+  border: 1px solid var(--border-subtle);
+}
+
+.topic-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0,217,255,0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: var(--transition);
 }
 
 .topic-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+  border-color: var(--card-accent);
 }
 
+.topic-card:hover::before { opacity: 1; }
+
 .topic-card h3 {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   color: var(--text);
   letter-spacing: -0.3px;
+  position: relative;
+  z-index: 1;
 }
 
 .card-preview {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.4;
   flex: 1;
-  margin-bottom: 12px;
-  min-height: 40px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
 }
 
 .card-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 12px;
+  gap: 5px;
   flex-grow: 1;
   align-content: flex-end;
+  position: relative;
+  z-index: 1;
 }
 
 .action-tag {
   display: inline-block;
-  background: var(--bg-alt);
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 11px;
+  background: rgba(0, 217, 255, 0.1);
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 10px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--accent-cyan);
   transition: var(--transition);
   letter-spacing: 0.3px;
+  border: 1px solid rgba(0, 217, 255, 0.2);
 }
 
 .topic-card:hover .action-tag {
-  background: var(--accent);
-  color: white;
-  transform: scale(1.05);
+  background: var(--accent-cyan);
+  color: var(--bg);
+  border-color: var(--accent-cyan);
+  transform: scale(1.08);
 }
 
 .arrow {
   opacity: 0;
   transition: var(--transition);
-  font-weight: 600;
-  color: var(--accent);
+  font-weight: 700;
+  color: var(--accent-cyan);
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .topic-card:hover .arrow {
   opacity: 1;
-  transform: translateX(4px);
 }
 
 /* Document Sections */
 .doc-section {
   max-width: 900px;
   margin: 0 auto;
-  padding: 80px 0;
-  scroll-margin-top: 100px;
+  padding: 60px 0;
+  scroll-margin-top: 80px;
 }
 
 .doc-header {
-  margin-bottom: 40px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid var(--border-subtle);
-}
-
-.doc-header h1 {
-  font-size: 42px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  letter-spacing: -1px;
-  line-height: 1.2;
-}
-
-.doc-body {
-  font-size: 16px;
-  line-height: 1.8;
-  color: var(--text);
-}
-
-.doc-body h2 {
-  font-size: 28px;
-  font-weight: 700;
-  margin: 40px 0 20px;
-  letter-spacing: -0.5px;
-  scroll-margin-top: 100px;
-}
-
-.doc-body h3 {
-  font-size: 22px;
-  font-weight: 600;
-  margin: 32px 0 16px;
-  letter-spacing: -0.3px;
-  scroll-margin-top: 100px;
-}
-
-.doc-body p {
-  margin-bottom: 20px;
-}
-
-.doc-body ul, .doc-body ol {
-  margin: 20px 0 20px 24px;
-}
-
-.doc-body li {
-  margin-bottom: 8px;
-}
-
-/* Code Blocks - Prism Integration */
-.doc-body code {
-  background: var(--bg-alt);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: var(--font-mono);
-  font-size: 14px;
-  color: var(--accent);
-}
-
-.doc-body pre {
-  background: var(--bg-code);
-  padding: 16px;
-  border-radius: var(--radius-sm);
-  overflow-x: auto;
-  margin: 24px 0;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
-  transition: var(--transition);
-}
-
-.doc-body pre:hover {
-  border-color: var(--accent);
-}
-
-.doc-body pre code {
-  background: none;
-  padding: 0;
-  color: inherit;
-}
-
-/* Prism.js Styles */
-code[class*="language-"],
-pre[class*="language-"] {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.5;
-  color: #c5c8c6;
-}
-
-pre[class*="language-"] {
-  color: #c5c8c6;
-}
-
-/* Mermaid Diagrams */
-.mermaid {
-  display: flex;
-  justify-content: center;
-  margin: 24px 0;
-}
-
-/* Tables */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 24px 0;
-  font-size: 14px;
-}
-
-table th, table td {
-  padding: 12px;
-  text-align: left;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--border);
 }
 
-table th {
-  background: var(--bg-alt);
-  font-weight: 700;
+.doc-header h1 {
+  font-size: 40px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  background: linear-gradient(90deg, var(--text), var(--text-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-table tr:hover {
-  background: var(--bg-alt);
-}
-
-/* Blockquotes */
-blockquote {
-  border-left: 4px solid var(--accent);
-  padding-left: 20px;
-  margin: 24px 0;
-  color: var(--text-secondary);
-  font-style: italic;
-}
-
-/* Links */
-a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: var(--transition);
-}
-
-a:hover {
-  color: var(--accent-hover);
-  text-decoration: underline;
-}
-
-/* Navigation */
-.doc-nav {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  margin-top: 60px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-}
-
-.nav-prev, .nav-next {
+/* Collapsible TOC */
+.toc-collapsible {
+  margin: 16px 0;
   padding: 12px 16px;
-  background: var(--bg-alt);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
   transition: var(--transition);
 }
 
-.nav-prev:hover {
-  background: var(--accent);
-  color: white;
-  transform: translateX(-4px);
-}
-
-.nav-next:hover {
-  background: var(--accent);
-  color: white;
-  transform: translateX(4px);
-}
-
-/* TOC */
-.toc {
-  margin: 20px 0;
-  padding: 16px 20px;
+.toc-collapsible:hover {
   background: var(--bg-alt);
-  border-radius: var(--radius-sm);
+  border-color: var(--accent-cyan);
+}
+
+.toc-collapsible summary {
+  font-weight: 700;
   font-size: 13px;
+  color: var(--accent-cyan);
+  outline: none;
+  cursor: pointer;
+}
+
+.toc-collapsible summary::-webkit-details-marker {
+  color: var(--accent-cyan);
+}
+
+.toc {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .toc ul {
@@ -521,39 +396,191 @@ a:hover {
 }
 
 .toc a {
-  color: var(--accent);
+  color: var(--text-secondary);
+  font-size: 12px;
+  transition: var(--transition);
+}
+
+.toc a:hover {
+  color: var(--accent-cyan);
+}
+
+/* Body Content */
+.doc-body {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.doc-body h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 36px 0 16px;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+.doc-body h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 28px 0 12px;
+  letter-spacing: -0.3px;
+}
+
+.doc-body p {
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+}
+
+.doc-body ul, .doc-body ol {
+  margin: 16px 0 16px 24px;
+}
+
+.doc-body li {
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+}
+
+/* Code */
+.doc-body code {
+  background: var(--bg-card);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent-cyan);
+}
+
+.doc-body pre {
+  background: var(--bg-code);
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  margin: 20px 0;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.doc-body pre:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(0, 217, 255, 0.1);
+}
+
+.doc-body pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 13px;
+}
+
+table th, table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+table th {
+  background: var(--bg-card);
+  font-weight: 700;
+  color: var(--accent-cyan);
+}
+
+table tr:hover {
+  background: rgba(0, 217, 255, 0.05);
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 3px solid var(--accent-magenta);
+  padding-left: 16px;
+  margin: 20px 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Links */
+a {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--accent-magenta);
+}
+
+/* Navigation */
+.doc-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.nav-prev, .nav-next {
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  transition: var(--transition);
+}
+
+.nav-prev:hover {
+  background: var(--accent-cyan);
+  color: var(--bg);
+  border-color: var(--accent-cyan);
+}
+
+.nav-next:hover {
+  background: var(--accent-magenta);
+  color: var(--bg);
+  border-color: var(--accent-magenta);
+}
+
+/* Mermaid */
+.mermaid {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.1));
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  main { padding: 40px 16px; }
-  .header-inner { flex-direction: column; gap: 16px; }
+  main { padding: 24px 16px; }
+  .header-inner { flex-direction: column; gap: 12px; }
   .search { max-width: none; }
-  .doc-header h1 { font-size: 32px; }
-  .doc-body h2 { font-size: 24px; }
-  .card-scroll { gap: 12px; }
-  .topic-card { flex: 0 0 280px; }
+  .doc-header h1 { font-size: 28px; }
+  .doc-body h2 { font-size: 22px; }
+  .topic-card { flex: 0 0 240px; }
 }
   </style>
 </head>
 <body>
   <header>
     <div class="header-inner">
-      <div class="logo">📖 AI-SDLC Manual</div>
+      <div class="logo">⚡ AI-SDLC</div>
       <div class="search">
-        <input type="text" id="searchInput" placeholder="Search documentation..." />
+        <input type="text" id="searchInput" placeholder="Search docs..." />
         <div class="search-results" id="searchResults"></div>
       </div>
     </div>
   </header>
 
   <main>
-    <section id="index" class="doc-section" style="border-bottom: 2px solid var(--border-subtle); padding-bottom: 60px;">
-      <h1 style="font-size: 48px; margin-bottom: 24px;">AI-SDLC Platform Manual</h1>
-      <p style="font-size: 18px; color: var(--text-secondary); margin-bottom: 40px;">Master the complete AI-SDLC workflow from setup to execution. Start here or jump to any topic below.</p>
-    </section>
-
-    <section class="topic-group" style="border-color: #FF6B35">
+    <section class="topic-group" style="--group-color: #00d9ff">
       <div class="group-header">
         <span class="group-emoji">🚀</span>
         <div>
@@ -561,35 +588,35 @@ a:hover {
           <p class="group-desc">Begin your AI-SDLC journey</p>
         </div>
       </div>
-      <div class="card-scroll"><a href="#readme" class="topic-card" style="border-left: 4px solid #FF6B35" data-title="Home" data-keywords="Welcome. This manual is written for **everyone** on the team: develope">
+      <div class="card-scroll"><a href="#readme" class="topic-card" style="--card-accent: #00d9ff" data-title="Home" data-keywords="Welcome. This manual is written for **everyone** on the team: develope">
         <h3>Home</h3>
         <p class="card-preview">Welcome. This manual is written for **everyone** on the team: develope</p>
         <div class="card-actions">
           <span class="action-tag">Learn what AI-SDLC is</span><span class="action-tag">Understand the platform benefits</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#index" class="topic-card" style="border-left: 4px solid #FF6B35" data-title="Index" data-keywords="This page is the **map of the manual**. The **order below matches the">
+      </a><a href="#index" class="topic-card" style="--card-accent: #00d9ff" data-title="Index" data-keywords="This page is the **map of the manual**. The **order below matches the">
         <h3>Index</h3>
         <p class="card-preview">This page is the **map of the manual**. The **order below matches the</p>
         <div class="card-actions">
           <span class="action-tag">Browse all topics</span><span class="action-tag">Find your starting point</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#prerequisites" class="topic-card" style="border-left: 4px solid #FF6B35" data-title="Prerequisites" data-keywords="Install these **before** running `./setup.sh` or `sdlc setup`. The set">
+      </a><a href="#prerequisites" class="topic-card" style="--card-accent: #00d9ff" data-title="Prerequisites" data-keywords="Install these **before** running `./setup.sh` or `sdlc setup`. The set">
         <h3>Prerequisites</h3>
         <p class="card-preview">Install these **before** running `./setup.sh` or `sdlc setup`. The set</p>
         <div class="card-actions">
           <span class="action-tag">Check system requirements</span><span class="action-tag">Verify dependencies</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#getting_started" class="topic-card" style="border-left: 4px solid #FF6B35" data-title="Getting Started" data-keywords="- **Required:** Bash, Git, Node.js 18+, npm (see [Prerequisites](Prere">
+      </a><a href="#getting_started" class="topic-card" style="--card-accent: #00d9ff" data-title="Getting Started" data-keywords="- **Required:** Bash, Git, Node.js 18+, npm (see [Prerequisites](Prere">
         <h3>Getting Started</h3>
         <p class="card-preview">- **Required:** Bash, Git, Node.js 18+, npm (see [Prerequisites](Prere</p>
         <div class="card-actions">
           <span class="action-tag">Run setup.sh</span><span class="action-tag">Configure your environment</span>
         </div>
         <span class="arrow">→</span>
-      </a></div></section><section class="topic-group" style="border-color: #004E89">
+      </a></div></section><section class="topic-group" style="--group-color: #ff00ff">
       <div class="group-header">
         <span class="group-emoji">🎯</span>
         <div>
@@ -597,28 +624,28 @@ a:hover {
           <p class="group-desc">Master the fundamentals</p>
         </div>
       </div>
-      <div class="card-scroll"><a href="#system_overview" class="topic-card" style="border-left: 4px solid #004E89" data-title="System Overview" data-keywords="AI-SDLC is an AI-native orchestration platform that manages the full s">
+      <div class="card-scroll"><a href="#system_overview" class="topic-card" style="--card-accent: #ff00ff" data-title="System Overview" data-keywords="AI-SDLC is an AI-native orchestration platform that manages the full s">
         <h3>System Overview</h3>
         <p class="card-preview">AI-SDLC is an AI-native orchestration platform that manages the full s</p>
         <div class="card-actions">
           <span class="action-tag">Understand architecture</span><span class="action-tag">See how it works</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#canonical_repo_and_interfaces" class="topic-card" style="border-left: 4px solid #004E89" data-title="Canonical Repo" data-keywords="**Repository root:** `ai_sdlc_platform/` in this workspace — all agent">
+      </a><a href="#canonical_repo_and_interfaces" class="topic-card" style="--card-accent: #ff00ff" data-title="Canonical Repo" data-keywords="**Repository root:** `ai_sdlc_platform/` in this workspace — all agent">
         <h3>Canonical Repo</h3>
         <p class="card-preview">**Repository root:** `ai_sdlc_platform/` in this workspace — all agent</p>
         <div class="card-actions">
           <span class="action-tag">Clone the repository</span><span class="action-tag">Set up CLI access</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#architecture" class="topic-card" style="border-left: 4px solid #004E89" data-title="Architecture" data-keywords="```">
+      </a><a href="#architecture" class="topic-card" style="--card-accent: #ff00ff" data-title="Architecture" data-keywords="```">
         <h3>Architecture</h3>
         <p class="card-preview">```</p>
         <div class="card-actions">
           <span class="action-tag">Study system design</span><span class="action-tag">Review components</span>
         </div>
         <span class="arrow">→</span>
-      </a></div></section><section class="topic-group" style="border-color: #1B998B">
+      </a></div></section><section class="topic-group" style="--group-color: #00d9ff">
       <div class="group-header">
         <span class="group-emoji">🛠️</span>
         <div>
@@ -626,42 +653,42 @@ a:hover {
           <p class="group-desc">Run your workflows</p>
         </div>
       </div>
-      <div class="card-scroll"><a href="#sdlc_flows" class="topic-card" style="border-left: 4px solid #1B998B" data-title="SDLC Flows" data-keywords="**Readable end-to-end walkthrough (layman, CLI + IDE + NL):** [Happy_P">
+      <div class="card-scroll"><a href="#sdlc_flows" class="topic-card" style="--card-accent: #00d9ff" data-title="SDLC Flows" data-keywords="**Readable end-to-end walkthrough (layman, CLI + IDE + NL):** [Happy_P">
         <h3>SDLC Flows</h3>
         <p class="card-preview">**Readable end-to-end walkthrough (layman, CLI + IDE + NL):** [Happy_P</p>
         <div class="card-actions">
           <span class="action-tag">Learn 15-stage process</span><span class="action-tag">Understand workflows</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#happy_path_end_to_end" class="topic-card" style="border-left: 4px solid #1B998B" data-title="Happy Path End to End" data-keywords="**Audience:** Anyone who wants one readable path from “we have a PRD”">
+      </a><a href="#happy_path_end_to_end" class="topic-card" style="--card-accent: #00d9ff" data-title="Happy Path End to End" data-keywords="**Audience:** Anyone who wants one readable path from “we have a PRD”">
         <h3>Happy Path End to End</h3>
         <p class="card-preview">**Audience:** Anyone who wants one readable path from “we have a PRD”</p>
         <div class="card-actions">
           <span class="action-tag">Follow a complete example</span><span class="action-tag">Build end-to-end</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#role_and_stage_playbook" class="topic-card" style="border-left: 4px solid #1B998B" data-title="Role and Stage Playbook" data-keywords="**Purpose:** Single place to see **who typically leads**, **what order">
+      </a><a href="#role_and_stage_playbook" class="topic-card" style="--card-accent: #00d9ff" data-title="Role and Stage Playbook" data-keywords="**Purpose:** Single place to see **who typically leads**, **what order">
         <h3>Role and Stage Playbook</h3>
         <p class="card-preview">**Purpose:** Single place to see **who typically leads**, **what order</p>
         <div class="card-actions">
           <span class="action-tag">Find your role</span><span class="action-tag">See stage-by-stage guide</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#commands" class="topic-card" style="border-left: 4px solid #1B998B" data-title="Commands" data-keywords="```bash">
+      </a><a href="#commands" class="topic-card" style="--card-accent: #00d9ff" data-title="Commands" data-keywords="```bash">
         <h3>Commands</h3>
         <p class="card-preview">```bash</p>
         <div class="card-actions">
           <span class="action-tag">See all CLI commands</span><span class="action-tag">Learn command syntax</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#guided_execution_and_recovery" class="topic-card" style="border-left: 4px solid #1B998B" data-title="Guided Execution and Recovery" data-keywords="**Goal:** When something is **missing** or a command **cannot run yet*">
+      </a><a href="#guided_execution_and_recovery" class="topic-card" style="--card-accent: #00d9ff" data-title="Guided Execution and Recovery" data-keywords="**Goal:** When something is **missing** or a command **cannot run yet*">
         <h3>Guided Execution and Recovery</h3>
         <p class="card-preview">**Goal:** When something is **missing** or a command **cannot run yet*</p>
         <div class="card-actions">
           <span class="action-tag">Handle errors gracefully</span><span class="action-tag">Recover from failures</span>
         </div>
         <span class="arrow">→</span>
-      </a></div></section><section class="topic-group" style="border-color: #F77F00">
+      </a></div></section><section class="topic-group" style="--group-color: #ff00ff">
       <div class="group-header">
         <span class="group-emoji">✨</span>
         <div>
@@ -669,35 +696,35 @@ a:hover {
           <p class="group-desc">Advanced capabilities</p>
         </div>
       </div>
-      <div class="card-scroll"><a href="#features_reference" class="topic-card" style="border-left: 4px solid #F77F00" data-title="Features" data-keywords="This chapter explains **what each major capability is** and **how it b">
+      <div class="card-scroll"><a href="#features_reference" class="topic-card" style="--card-accent: #ff00ff" data-title="Features" data-keywords="This chapter explains **what each major capability is** and **how it b">
         <h3>Features</h3>
         <p class="card-preview">This chapter explains **what each major capability is** and **how it b</p>
         <div class="card-actions">
           <span class="action-tag">Explore all features</span><span class="action-tag">Understand capabilities</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#persistent_memory" class="topic-card" style="border-left: 4px solid #F77F00" data-title="Persistent Memory" data-keywords="People often mix these up. In AI-SDLC they are **two different things*">
+      </a><a href="#persistent_memory" class="topic-card" style="--card-accent: #ff00ff" data-title="Persistent Memory" data-keywords="People often mix these up. In AI-SDLC they are **two different things*">
         <h3>Persistent Memory</h3>
         <p class="card-preview">People often mix these up. In AI-SDLC they are **two different things*</p>
         <div class="card-actions">
           <span class="action-tag">Manage team memory</span><span class="action-tag">Store decisions</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#ado_mcp_integration" class="topic-card" style="border-left: 4px solid #F77F00" data-title="ADO &amp; MCP" data-keywords="| Mode | Interface | How It Works | Best For |">
+      </a><a href="#ado_mcp_integration" class="topic-card" style="--card-accent: #ff00ff" data-title="ADO &amp; MCP" data-keywords="| Mode | Interface | How It Works | Best For |">
         <h3>ADO &amp; MCP</h3>
         <p class="card-preview">| Mode | Interface | How It Works | Best For |</p>
         <div class="card-actions">
           <span class="action-tag">Connect Azure DevOps</span><span class="action-tag">Sync with MCP</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#token_efficiency_and_context_loading" class="topic-card" style="border-left: 4px solid #F77F00" data-title="Token Efficiency and Context Loading" data-keywords="How AI-SDLC saves tokens and loads only what you need.">
+      </a><a href="#token_efficiency_and_context_loading" class="topic-card" style="--card-accent: #ff00ff" data-title="Token Efficiency and Context Loading" data-keywords="How AI-SDLC saves tokens and loads only what you need.">
         <h3>Token Efficiency and Context Loading</h3>
         <p class="card-preview">How AI-SDLC saves tokens and loads only what you need.</p>
         <div class="card-actions">
           <span class="action-tag">Optimize token usage</span><span class="action-tag">Manage budget</span>
         </div>
         <span class="arrow">→</span>
-      </a></div></section><section class="topic-group" style="border-color: #A23B72">
+      </a></div></section><section class="topic-group" style="--group-color: #00d9ff">
       <div class="group-header">
         <span class="group-emoji">📚</span>
         <div>
@@ -705,28 +732,28 @@ a:hover {
           <p class="group-desc">Complex topics</p>
         </div>
       </div>
-      <div class="card-scroll"><a href="#agents_skills_rules" class="topic-card" style="border-left: 4px solid #A23B72" data-title="Agents Skills Rules" data-keywords="An AI persona that embodies a role at specific stages. Loads role cont">
+      <div class="card-scroll"><a href="#agents_skills_rules" class="topic-card" style="--card-accent: #00d9ff" data-title="Agents Skills Rules" data-keywords="An AI persona that embodies a role at specific stages. Loads role cont">
         <h3>Agents Skills Rules</h3>
         <p class="card-preview">An AI persona that embodies a role at specific stages. Loads role cont</p>
         <div class="card-actions">
           <span class="action-tag">Define custom agents</span><span class="action-tag">Create skills</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#repository_complexity_explained" class="topic-card" style="border-left: 4px solid #A23B72" data-title="Repository Complexity Explained" data-keywords="**Question:** *With 660 files, 52 agents, 35+ skills, and 100 scripts">
+      </a><a href="#repository_complexity_explained" class="topic-card" style="--card-accent: #00d9ff" data-title="Repository Complexity Explained" data-keywords="**Question:** *With 660 files, 52 agents, 35+ skills, and 100 scripts">
         <h3>Repository Complexity Explained</h3>
         <p class="card-preview">**Question:** *With 660 files, 52 agents, 35+ skills, and 100 scripts</p>
         <div class="card-actions">
           <span class="action-tag">Understand mono/multi-repo</span><span class="action-tag">Plan your setup</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#sdlc-stage-role-mapping" class="topic-card" style="border-left: 4px solid #A23B72" data-title="../docs/sdlc-stage-role-mapping" data-keywords="&gt; **Purpose:** Single source of truth for understanding what component">
+      </a><a href="#sdlc-stage-role-mapping" class="topic-card" style="--card-accent: #00d9ff" data-title="../docs/sdlc-stage-role-mapping" data-keywords="&gt; **Purpose:** Single source of truth for understanding what component">
         <h3>../docs/sdlc-stage-role-mapping</h3>
         <p class="card-preview">&gt; **Purpose:** Single source of truth for understanding what component</p>
         <div class="card-actions">
           <span class="action-tag">Read full documentation</span>
         </div>
         <span class="arrow">→</span>
-      </a></div></section><section class="topic-group" style="border-color: #C1121F">
+      </a></div></section><section class="topic-group" style="--group-color: #ff00ff">
       <div class="group-header">
         <span class="group-emoji">🔒</span>
         <div>
@@ -734,28 +761,28 @@ a:hover {
           <p class="group-desc">Ensure compliance</p>
         </div>
       </div>
-      <div class="card-scroll"><a href="#pr_merge_process" class="topic-card" style="border-left: 4px solid #C1121F" data-title="PR &amp; Merge" data-keywords="6 templates in `extension-templates/` (previously PR-TEMPLATES/) for d">
+      <div class="card-scroll"><a href="#pr_merge_process" class="topic-card" style="--card-accent: #ff00ff" data-title="PR &amp; Merge" data-keywords="6 templates in `extension-templates/` (previously PR-TEMPLATES/) for d">
         <h3>PR &amp; Merge</h3>
         <p class="card-preview">6 templates in `extension-templates/` (previously PR-TEMPLATES/) for d</p>
         <div class="card-actions">
           <span class="action-tag">Review PR workflow</span><span class="action-tag">Manage gates</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#enforcement_contract" class="topic-card" style="border-left: 4px solid #C1121F" data-title="Enforcement Contract" data-keywords="**Audience:** Teams who need clarity on what **blocks** work vs what *">
+      </a><a href="#enforcement_contract" class="topic-card" style="--card-accent: #ff00ff" data-title="Enforcement Contract" data-keywords="**Audience:** Teams who need clarity on what **blocks** work vs what *">
         <h3>Enforcement Contract</h3>
         <p class="card-preview">**Audience:** Teams who need clarity on what **blocks** work vs what *</p>
         <div class="card-actions">
           <span class="action-tag">Learn enforcement rules</span><span class="action-tag">Define contracts</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#traceability_and_governance" class="topic-card" style="border-left: 4px solid #C1121F" data-title="Traceability and Governance" data-keywords="**Audience:** Architects, TPMs, and release owners.">
+      </a><a href="#traceability_and_governance" class="topic-card" style="--card-accent: #ff00ff" data-title="Traceability and Governance" data-keywords="**Audience:** Architects, TPMs, and release owners.">
         <h3>Traceability and Governance</h3>
         <p class="card-preview">**Audience:** Architects, TPMs, and release owners.</p>
         <div class="card-actions">
           <span class="action-tag">Track changes</span><span class="action-tag">Audit decisions</span>
         </div>
         <span class="arrow">→</span>
-      </a></div></section><section class="topic-group" style="border-color: #6A4C93">
+      </a></div></section><section class="topic-group" style="--group-color: #00d9ff">
       <div class="group-header">
         <span class="group-emoji">🔧</span>
         <div>
@@ -763,28 +790,28 @@ a:hover {
           <p class="group-desc">Extend & customize</p>
         </div>
       </div>
-      <div class="card-scroll"><a href="#platform_extension_onboarding" class="topic-card" style="border-left: 4px solid #6A4C93" data-title="Platform Extension Onboarding" data-keywords="Use this checklist when you **add or change** platform behavior so CLI">
+      <div class="card-scroll"><a href="#platform_extension_onboarding" class="topic-card" style="--card-accent: #00d9ff" data-title="Platform Extension Onboarding" data-keywords="Use this checklist when you **add or change** platform behavior so CLI">
         <h3>Platform Extension Onboarding</h3>
         <p class="card-preview">Use this checklist when you **add or change** platform behavior so CLI</p>
         <div class="card-actions">
           <span class="action-tag">Extend platform</span><span class="action-tag">Add custom tools</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#team_onboarding_presentation" class="topic-card" style="border-left: 4px solid #6A4C93" data-title="Team Onboarding Presentation" data-keywords="**Complete Guide for Teams | 15-Stage SDLC Flow | Memory &amp; Git Workflo">
+      </a><a href="#team_onboarding_presentation" class="topic-card" style="--card-accent: #00d9ff" data-title="Team Onboarding Presentation" data-keywords="**Complete Guide for Teams | 15-Stage SDLC Flow | Memory &amp; Git Workflo">
         <h3>Team Onboarding Presentation</h3>
         <p class="card-preview">**Complete Guide for Teams | 15-Stage SDLC Flow | Memory &amp; Git Workflo</p>
         <div class="card-actions">
           <span class="action-tag">Present to team</span><span class="action-tag">Get buy-in</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#documentation_rules" class="topic-card" style="border-left: 4px solid #6A4C93" data-title="Documentation Rules" data-keywords="- `/User_Manual/` is the ONLY active documentation">
+      </a><a href="#documentation_rules" class="topic-card" style="--card-accent: #00d9ff" data-title="Documentation Rules" data-keywords="- `/User_Manual/` is the ONLY active documentation">
         <h3>Documentation Rules</h3>
         <p class="card-preview">- `/User_Manual/` is the ONLY active documentation</p>
         <div class="card-actions">
           <span class="action-tag">Keep docs in sync</span><span class="action-tag">Follow standards</span>
         </div>
         <span class="arrow">→</span>
-      </a></div></section><section class="topic-group" style="border-color: #1D3557">
+      </a></div></section><section class="topic-group" style="--group-color: #ff00ff">
       <div class="group-header">
         <span class="group-emoji">📖</span>
         <div>
@@ -792,14 +819,14 @@ a:hover {
           <p class="group-desc">Lookup & updates</p>
         </div>
       </div>
-      <div class="card-scroll"><a href="#faq" class="topic-card" style="border-left: 4px solid #1D3557" data-title="FAQ" data-keywords="Quick jump:">
+      <div class="card-scroll"><a href="#faq" class="topic-card" style="--card-accent: #ff00ff" data-title="FAQ" data-keywords="Quick jump:">
         <h3>FAQ</h3>
         <p class="card-preview">Quick jump:</p>
         <div class="card-actions">
           <span class="action-tag">Find common answers</span><span class="action-tag">Solve problems</span>
         </div>
         <span class="arrow">→</span>
-      </a><a href="#changelog" class="topic-card" style="border-left: 4px solid #1D3557" data-title="Changelog" data-keywords="All notable changes to the AI-SDLC User Manual are documented here.">
+      </a><a href="#changelog" class="topic-card" style="--card-accent: #ff00ff" data-title="Changelog" data-keywords="All notable changes to the AI-SDLC User Manual are documented here.">
         <h3>Changelog</h3>
         <p class="card-preview">All notable changes to the AI-SDLC User Manual are documented here.</p>
         <div class="card-actions">
@@ -807,17 +834,16 @@ a:hover {
         </div>
         <span class="arrow">→</span>
       </a></div></section>
-
     <article id="readme" class="doc-section">
       <header class="doc-header">
         <h1>Home</h1>
-        <nav class="toc"><ul><li><a href="#what-is-this">What is this?</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#what-is-this">What is this?</a></li>
 <li><a href="#the-three-fastest-ways-to-read">The three fastest ways to read</a></li>
 <li><a href="#get-the-platform-source">Get the platform source</a></li>
 <li><a href="#short-navigation-same-order-as-manualhtml-sidebar">Short navigation (same order as `manual.html` sidebar)</a></li>
 <li><a href="#how-search-in-manualhtml-works">How search in `manual.html` works</a></li>
 <li><a href="#principles-short">Principles (short)</a></li>
-<li><a href="#older-documentation">Older documentation</a></li></ul></nav>
+<li><a href="#older-documentation">Older documentation</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="ai-sdlc-platform--user-manual-home" tabindex="-1">AI-SDLC Platform — User Manual (home)</h1>
 <p>Welcome. This manual is written for <strong>everyone</strong> on the team: developers, testers, product owners, and leads. You do <strong>not</strong> need to know how the AI works internally to get value — in <strong><code>manual.html</code></strong>, read the <strong>sidebar top to bottom</strong> (that order is intentional), or open <strong><a href="INDEX.md">INDEX</a></strong> for the numbered list and glossary.</p>
@@ -994,12 +1020,12 @@ cd ai_sdlc_platform
 <article id="index" class="doc-section">
       <header class="doc-header">
         <h1>Index</h1>
-        <nav class="toc"><ul><li><a href="#how-to-use-the-offline-manual-manualhtml">How to use the offline manual (`manual.html`)</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#how-to-use-the-offline-manual-manualhtml">How to use the offline manual (`manual.html`)</a></li>
 <li><a href="#manual-order-same-as-sidebar--read-down-this-list">Manual order (same as sidebar — read down this list)</a></li>
 <li><a href="#start-here-by-goal--still-jump-in-anywhere">Start here (by goal — still jump in anywhere)</a></li>
 <li><a href="#lookup-all-pages-by-title-az">Lookup: all pages by title (A–Z)</a></li>
 <li><a href="#glossary-short">Glossary (short)</a></li>
-<li><a href="#cursor-agent-note-setup-without-a-tty">Cursor agent note (setup without a TTY)</a></li></ul></nav>
+<li><a href="#cursor-agent-note-setup-without-a-tty">Cursor agent note (setup without a TTY)</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="index--reading-guide" tabindex="-1">Index &amp; reading guide</h1>
 <p>This page is the <strong>map of the manual</strong>. The <strong>order below matches the sidebar</strong> in <code>manual.html</code> (see <code>User_Manual/build-manual-html.mjs</code> → <code>ORDER</code>): read <strong>top to bottom</strong> for a linear path from “what is this?” to “how do I extend or troubleshoot?”</p>
@@ -1349,7 +1375,7 @@ cd ai_sdlc_platform
 <article id="system_overview" class="doc-section">
       <header class="doc-header">
         <h1>System Overview</h1>
-        <nav class="toc"><ul><li><a href="#1-what-this-system-is">1. What This System Is</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#1-what-this-system-is">1. What This System Is</a></li>
 <li><a href="#2-what-it-does-end-to-end">2. What It Does (End-to-End)</a></li>
 <li><a href="#2a-where-it-runs--what-how-where">2a. Where it runs — **what**, **how**, **where**</a></li>
 <li><a href="#2b-how-this-overview-fits-the-rest-of-the-manual">2b. How this overview fits the rest of the manual</a></li>
@@ -1358,7 +1384,7 @@ cd ai_sdlc_platform
 <li><a href="#5-why-it-is-effective">5. Why It Is Effective</a></li>
 <li><a href="#6-design-principles">6. Design Principles</a></li>
 <li><a href="#7-component-inventory-current">7. Component Inventory (Current)</a></li>
-<li><a href="#8-enforcement-summary">8. Enforcement Summary</a></li></ul></nav>
+<li><a href="#8-enforcement-summary">8. Enforcement Summary</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="system-overview" tabindex="-1">System Overview</h1>
 <h2 id="1-what-this-system-is" tabindex="-1">1. What This System Is</h2>
@@ -1674,14 +1700,14 @@ cd ai_sdlc_platform
 <article id="prerequisites" class="doc-section">
       <header class="doc-header">
         <h1>Prerequisites</h1>
-        <nav class="toc"><ul><li><a href="#required-for-setupsh-platform-bootstrap">Required for `./setup.sh` (platform bootstrap)</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#required-for-setupsh-platform-bootstrap">Required for `./setup.sh` (platform bootstrap)</a></li>
 <li><a href="#strongly-recommended-cli-and-diagnostics">Strongly recommended (CLI and diagnostics)</a></li>
 <li><a href="#recommended-for-full-platform-features">Recommended for full platform features</a></li>
 <li><a href="#optional-specific-subsystems">Optional (specific subsystems)</a></li>
 <li><a href="#windows-without-admin-no-wsl-no-git-bash">Windows without admin (no WSL, no Git Bash)</a></li>
 <li><a href="#macos--linux-without-full-sdlc-setup">macOS / Linux (without full sdlc setup)</a></li>
 <li><a href="#verify-after-install">Verify after install</a></li>
-<li><a href="#confirm-all-documentation-is-up-to-date">Confirm all documentation is up to date</a></li></ul></nav>
+<li><a href="#confirm-all-documentation-is-up-to-date">Confirm all documentation is up to date</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="prerequisites-before-setup" tabindex="-1">Prerequisites (before <code>setup</code>)</h1>
 <p>Install these <strong>before</strong> running <code>./setup.sh</code> or <code>sdlc setup</code>. The setup scripts assume a Unix-style shell (Bash) and will validate some of them automatically.</p>
@@ -1861,13 +1887,13 @@ sdlc doctor --verbose    # show validator script output
 <article id="getting_started" class="doc-section">
       <header class="doc-header">
         <h1>Getting Started</h1>
-        <nav class="toc"><ul><li><a href="#prerequisites">Prerequisites</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#prerequisites">Prerequisites</a></li>
 <li><a href="#setup-1-command">Setup (1 Command)</a></li>
 <li><a href="#post-setup">Post-Setup</a></li>
 <li><a href="#many-microservice-repositories">Many microservice repositories</a></li>
 <li><a href="#first-run">First Run</a></li>
 <li><a href="#role-selection">Role Selection</a></li>
-<li><a href="#validation">Validation</a></li></ul></nav>
+<li><a href="#validation">Validation</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="getting-started" tabindex="-1">Getting Started</h1>
 <h2 id="prerequisites" tabindex="-1">Prerequisites</h2>
@@ -1966,9 +1992,9 @@ bash cli/tests/smoke.sh   # Smoke tests
 <article id="canonical_repo_and_interfaces" class="doc-section">
       <header class="doc-header">
         <h1>Canonical Repo</h1>
-        <nav class="toc"><ul><li><a href="#single-source-of-truth-natural-language--sdlc">Single source of truth (natural language + SDLC)</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#single-source-of-truth-natural-language--sdlc">Single source of truth (natural language + SDLC)</a></li>
 <li><a href="#how-the-same-flows-run-everywhere">How the same flows run everywhere</a></li>
-<li><a href="#ask-first--advisory-gates">Ask-first + advisory gates</a></li></ul></nav>
+<li><a href="#ask-first--advisory-gates">Ask-first + advisory gates</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="canonical-nl-engine--interfaces" tabindex="-1">Canonical NL engine &amp; interfaces</h1>
 <h2 id="single-source-of-truth-natural-language--sdlc" tabindex="-1">Single source of truth (natural language + SDLC)</h2>
@@ -2022,7 +2048,7 @@ bash cli/tests/smoke.sh   # Smoke tests
 <article id="happy_path_end_to_end" class="doc-section">
       <header class="doc-header">
         <h1>Happy Path End to End</h1>
-        <nav class="toc"><ul><li><a href="#one-time-before-you-start">One-time: before you start</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#one-time-before-you-start">One-time: before you start</a></li>
 <li><a href="#map-of-the-15-stages-layman-labels">Map of the 15 stages (layman labels)</a></li>
 <li><a href="#happy-path-a--from-prd-to-design-stages-01--06">Happy path A — From PRD to design (stages 01 → 06)</a></li>
 <li><a href="#happy-path-b--tasks-and-implementation-stages-07--09">Happy path B — Tasks and implementation (stages 07 → 09)</a></li>
@@ -2032,7 +2058,7 @@ bash cli/tests/smoke.sh   # Smoke tests
 <li><a href="#memory--module-when-they-show-up">Memory &amp; module (when they show up)</a></li>
 <li><a href="#if-something-fails">If something fails</a></li>
 <li><a href="#full-path-dry-run-cli-rehearsal-no-ado-required">Full-path dry run (CLI rehearsal, no ADO required)</a></li>
-<li><a href="#document-ownership">Document ownership</a></li></ul></nav>
+<li><a href="#document-ownership">Document ownership</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="happy-path-prd--code--tests--merge-end-to-end" tabindex="-1">Happy path: PRD → code → tests → merge (end-to-end)</h1>
 <p><strong>Audience:</strong> Anyone who wants one readable path from “we have a PRD” to “code is merged in Git (including Azure DevOps).”
@@ -2549,7 +2575,7 @@ sdlc story validate ./stories/T-*.md
 <article id="sdlc_flows" class="doc-section">
       <header class="doc-header">
         <h1>SDLC Flows</h1>
-        <nav class="toc"><ul><li><a href="#stage-pipeline-15-stages">Stage Pipeline (15 Stages)</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#stage-pipeline-15-stages">Stage Pipeline (15 Stages)</a></li>
 <li><a href="#each-stage--what-typical-io-how-to-run-where-it-lands">Each stage — **what**, typical **I/O**, **how** to run, **where** it lands</a></li>
 <li><a href="#gate-protocol-g1-g10">Gate Protocol (G1-G10)</a></li>
 <li><a href="#stage-execution-flow-diagram">Stage execution flow (diagram)</a></li>
@@ -2557,7 +2583,7 @@ sdlc story validate ./stories/T-*.md
 <li><a href="#story-pipeline">Story Pipeline</a></li>
 <li><a href="#pre-built-workflows-9">Pre-Built Workflows (9)</a></li>
 <li><a href="#plan--design--implement-mode">Plan → Design → Implement Mode</a></li>
-<li><a href="#cross-team-context-flow">Cross-Team Context Flow</a></li></ul></nav>
+<li><a href="#cross-team-context-flow">Cross-Team Context Flow</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="sdlc-flows" tabindex="-1">SDLC Flows</h1>
 <p><strong>Readable end-to-end walkthrough (layman, CLI + IDE + NL):</strong> <a href="Happy_Path_End_to_End.md">Happy_Path_End_to_End</a>.</p>
@@ -2984,12 +3010,12 @@ IMPLEMENT: 08-implementation + 09-code-review + 10/11 tests + 12 commit
 <article id="role_and_stage_playbook" class="doc-section">
       <header class="doc-header">
         <h1>Role and Stage Playbook</h1>
-        <nav class="toc"><ul><li><a href="#1-how-to-read-this-playbook">1. How to read this playbook</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#1-how-to-read-this-playbook">1. How to read this playbook</a></li>
 <li><a href="#2-chain-of-command-principles">2. Chain of command (principles)</a></li>
 <li><a href="#3-roles--primary-stages-chain-handoffs">3. Roles — primary stages, chain, handoffs</a></li>
 <li><a href="#4-stage-by-stage--chain-of-command">4. Stage-by-stage — chain of command</a></li>
 <li><a href="#5-story--ado-chain-cross-cutting">5. Story &amp; ADO chain (cross-cutting)</a></li>
-<li><a href="#6-related-documents">6. Related documents</a></li></ul></nav>
+<li><a href="#6-related-documents">6. Related documents</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="role--stage-playbook--chains-of-command" tabindex="-1">Role &amp; Stage Playbook — Chains of Command</h1>
 <p><strong>Purpose:</strong> Single place to see <strong>who typically leads</strong>, <strong>what order work happens in</strong>, and <strong>how to run a stage</strong> — without automating or locking behavior. This doc <strong>extends</strong> <a href="SDLC_Flows.md">SDLC_Flows</a> and points to canonical <strong><code>roles/*.md</code></strong> and <strong><code>stages/*/STAGE.md</code></strong> in the repository.</p>
@@ -3521,7 +3547,7 @@ sdlc context                        # Show current role / stack / stage
 <article id="features_reference" class="doc-section">
       <header class="doc-header">
         <h1>Features</h1>
-        <nav class="toc"><ul><li><a href="#1-platform-shell-and-project-setup">1. Platform shell and project setup</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#1-platform-shell-and-project-setup">1. Platform shell and project setup</a></li>
 <li><a href="#2-stages-and-sdlc-run">2. Stages and `sdlc run`</a></li>
 <li><a href="#3-workflows-sdlc-flow">3. Workflows (`sdlc flow`)</a></li>
 <li><a href="#4-roles-stacks-and-context">4. Roles, stacks, and context</a></li>
@@ -3535,7 +3561,7 @@ sdlc context                        # Show current role / stack / stage
 <li><a href="#12-documentation-manualhtml-and-drift">12. Documentation, `manual.html`, and drift</a></li>
 <li><a href="#13-extension-qa-orchestrator-and-ci">13. Extension, QA orchestrator, and CI</a></li>
 <li><a href="#quick-command-map-reminder">Quick command map (reminder)</a></li>
-<li><a href="#v1--v2">V1 → V2</a></li></ul></nav>
+<li><a href="#v1--v2">V1 → V2</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="features--how-they-work" tabindex="-1">Features — how they work</h1>
 <p>This chapter explains <strong>what each major capability is</strong> and <strong>how it behaves in practice</strong> (files, processes, entry points). It sits <strong>after</strong> <a href="Happy_Path_End_to_End.md">Happy_Path_End_to_End</a>, <a href="SDLC_Flows.md">SDLC_Flows</a>, and <a href="Role_and_Stage_Playbook.md">Role_and_Stage_Playbook</a> so you already know <em>when</em> you use a feature; here you learn <em>what runs under the hood</em>.</p>
@@ -3804,9 +3830,9 @@ sdlc context                        # Show current role / stack / stage
 <article id="commands" class="doc-section">
       <header class="doc-header">
         <h1>Commands</h1>
-        <nav class="toc"><ul><li><a href="#cli-commands-sdlc">CLI Commands (`sdlc`)</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#cli-commands-sdlc">CLI Commands (`sdlc`)</a></li>
 <li><a href="#ide-slash-commands--router-pattern-v211">IDE slash commands — router pattern (v2.1.1)</a></li>
-<li><a href="#cross-platform-claude-mirror-sync-v211">Cross-platform .claude mirror sync (v2.1.1)</a></li></ul></nav>
+<li><a href="#cross-platform-claude-mirror-sync-v211">Cross-platform .claude mirror sync (v2.1.1)</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="commands-reference" tabindex="-1">Commands Reference</h1>
 <h2 id="cli-commands-sdlc" tabindex="-1">CLI Commands (<code>sdlc</code>)</h2>
@@ -4177,13 +4203,13 @@ bash scripts/sync-claude-mirrors.sh --check  # Diff-only (exit 1 on drift)
 <article id="guided_execution_and_recovery" class="doc-section">
       <header class="doc-header">
         <h1>Guided Execution and Recovery</h1>
-        <nav class="toc"><ul><li><a href="#1-surfaces-same-engine-different-ux">1. Surfaces (same engine, different UX)</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#1-surfaces-same-engine-different-ux">1. Surfaces (same engine, different UX)</a></li>
 <li><a href="#2-what-the-cli-and-tooling-already-do">2. What the CLI and tooling already do</a></li>
 <li><a href="#3-recovery-pattern-users">3. Recovery pattern (users)</a></li>
 <li><a href="#4-recovery-pattern-assistants--cursor-claude-code-any-nl-agent">4. Recovery pattern (assistants — Cursor, Claude Code, any NL agent)</a></li>
 <li><a href="#5-common-situations--next-commands">5. Common situations → next commands</a></li>
 <li><a href="#6-what-is-not-automatic-today">6. What is *not* automatic today</a></li>
-<li><a href="#7-related-rules--docs">7. Related rules &amp; docs</a></li></ul></nav>
+<li><a href="#7-related-rules--docs">7. Related rules &amp; docs</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="guided-execution--recovery-all-surfaces" tabindex="-1">Guided execution &amp; recovery (all surfaces)</h1>
 <p><strong>Goal:</strong> When something is <strong>missing</strong> or a command <strong>cannot run yet</strong>, you get <strong>what to do next</strong>, <strong>exact syntax</strong>, and <strong>step-by-step</strong> options — instead of a bare failure with no path forward.</p>
@@ -4330,14 +4356,14 @@ bash scripts/sync-claude-mirrors.sh --check  # Diff-only (exit 1 on drift)
 <article id="persistent_memory" class="doc-section">
       <header class="doc-header">
         <h1>Persistent Memory</h1>
-        <nav class="toc"><ul><li><a href="#in-plain-words-memory-vs-knowledge-base">In plain words: memory vs knowledge base</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#in-plain-words-memory-vs-knowledge-base">In plain words: memory vs knowledge base</a></li>
 <li><a href="#unified-semantic-long-term-memory">Unified Semantic Long-Term Memory</a></li>
 <li><a href="#cli">CLI</a></li>
 <li><a href="#orchestrator-integration">Orchestrator Integration</a></li>
 <li><a href="#team-sync-git--one-source-of-truth">Team sync (git) — one source of truth</a></li>
 <li><a href="#namespacing-at-scale-many-engineers">Namespacing at scale (many engineers)</a></li>
 <li><a href="#governance-recommendations">Governance Recommendations</a></li>
-<li><a href="#platform-team-memory-cross-team-sync">Platform Team Memory: Cross-Team Sync</a></li></ul></nav>
+<li><a href="#platform-team-memory-cross-team-sync">Platform Team Memory: Cross-Team Sync</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="persistent-memory" tabindex="-1">Persistent Memory</h1>
 <h2 id="in-plain-words-memory-vs-knowledge-base" tabindex="-1">In plain words: memory vs knowledge base</h2>
@@ -4594,9 +4620,9 @@ sdlc memory semantic-query --text=&quot;Family Hub ADO work item&quot;
 <article id="ado_mcp_integration" class="doc-section">
       <header class="doc-header">
         <h1>ADO &amp; MCP</h1>
-        <nav class="toc"><ul><li><a href="#azure-devops-integration">Azure DevOps Integration</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#azure-devops-integration">Azure DevOps Integration</a></li>
 <li><a href="#acceptance-criteria">Acceptance Criteria</a></li>
-<li><a href="#ado-observer-system-v211">ADO Observer System (v2.1.1)</a></li></ul></nav>
+<li><a href="#ado-observer-system-v211">ADO Observer System (v2.1.1)</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="ado--mcp-integration" tabindex="-1">ADO &amp; MCP Integration</h1>
 <h2 id="azure-devops-integration" tabindex="-1">Azure DevOps Integration</h2>
@@ -4925,8 +4951,8 @@ python3 orchestrator/ado-observer/observer.py --mode=both --port=8080 --interval
 <article id="agents_skills_rules" class="doc-section">
       <header class="doc-header">
         <h1>Agents Skills Rules</h1>
-        <nav class="toc"><ul><li><a href="#agents-53-total">Agents (53 Total)</a></li>
-<li><a href="#skills-v211-architecture">Skills (v2.1.1 Architecture)</a></li></ul></nav>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#agents-53-total">Agents (53 Total)</a></li>
+<li><a href="#skills-v211-architecture">Skills (v2.1.1 Architecture)</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="agents-skills--rules" tabindex="-1">Agents, Skills &amp; Rules</h1>
 <h2 id="agents-53-total" tabindex="-1">Agents (53 Total)</h2>
@@ -5278,9 +5304,9 @@ sdlc skills cache clear rpi-research  # Specific skill
 <article id="architecture" class="doc-section">
       <header class="doc-header">
         <h1>Architecture</h1>
-        <nav class="toc"><ul><li><a href="#component-hierarchy">Component Hierarchy</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#component-hierarchy">Component Hierarchy</a></li>
 <li><a href="#file-structure-v211">File Structure (v2.1.1)</a></li>
-<li><a href="#skill-architecture-v211">Skill Architecture (v2.1.1)</a></li></ul></nav>
+<li><a href="#skill-architecture-v211">Skill Architecture (v2.1.1)</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="architecture" tabindex="-1">Architecture</h1>
 <h2 id="component-hierarchy" tabindex="-1">Component Hierarchy</h2>
@@ -5365,14 +5391,14 @@ sdlc skills cache clear rpi-research  # Specific skill
 <article id="sdlc-stage-role-mapping" class="doc-section">
       <header class="doc-header">
         <h1>../docs/sdlc-stage-role-mapping</h1>
-        <nav class="toc"><ul><li><a href="#quick-navigation">Quick Navigation</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#quick-navigation">Quick Navigation</a></li>
 <li><a href="#15-stage-pipeline-overview">15-Stage Pipeline Overview</a></li>
 <li><a href="#stage-by-stage-detailed-mapping">Stage-by-Stage Detailed Mapping</a></li>
 <li><a href="#component-registry">Component Registry</a></li>
 <li><a href="#impact-mapping">Impact Mapping</a></li>
 <li><a href="#quick-reference-what-file-to-touch">Quick Reference: What File to Touch</a></li>
 <li><a href="#maintenance-notes">Maintenance Notes</a></li>
-<li><a href="#see-also">See Also</a></li></ul></nav>
+<li><a href="#see-also">See Also</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="ai-sdlc-platform-stage-role-skill-agent-validator-rule-mapping" tabindex="-1">AI-SDLC Platform: Stage-Role-Skill-Agent-Validator-Rule Mapping</h1>
 <blockquote>
@@ -6461,14 +6487,14 @@ sdlc skills cache clear rpi-research  # Specific skill
 <article id="token_efficiency_and_context_loading" class="doc-section">
       <header class="doc-header">
         <h1>Token Efficiency and Context Loading</h1>
-        <nav class="toc"><ul><li><a href="#-what-this-is">💡 What this is</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#-what-this-is">💡 What this is</a></li>
 <li><a href="#-the-problem">🎯 The Problem</a></li>
 <li><a href="#-our-solution-smart-loading">🔄 Our Solution: Smart Loading</a></li>
 <li><a href="#-how-it-works">🔧 How It Works</a></li>
 <li><a href="#-savings-breakdown">📊 Savings Breakdown</a></li>
 <li><a href="#-budgets-by-role">🎯 Budgets by Role</a></li>
 <li><a href="#-what-you-can-do">🔧 What you can do</a></li>
-<li><a href="#-what-to-do-next">👉 What to do next</a></li></ul></nav>
+<li><a href="#-what-to-do-next">👉 What to do next</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="token-efficiency--context-loading" tabindex="-1">Token Efficiency &amp; Context Loading</h1>
 <h2 id="-what-this-is" tabindex="-1">💡 What this is</h2>
@@ -6620,7 +6646,7 @@ sdlc memory semantic-lifecycle  # Clean old entries
 <article id="repository_complexity_explained" class="doc-section">
       <header class="doc-header">
         <h1>Repository Complexity Explained</h1>
-        <nav class="toc"><ul><li><a href="#addressing-the-660-files-concern">Addressing the &quot;660 Files&quot; Concern</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#addressing-the-660-files-concern">Addressing the &quot;660 Files&quot; Concern</a></li>
 <li><a href="#the-numbers-at-a-glance">The Numbers at a Glance</a></li>
 <li><a href="#the-single-responsibility-principle">The Single-Responsibility Principle</a></li>
 <li><a href="#team-scoped-loading-you-only-see-what-you-need">Team-Scoped Loading: You Only See What You Need</a></li>
@@ -6632,7 +6658,7 @@ sdlc memory semantic-lifecycle  # Clean old entries
 <li><a href="#long-term-sustainability-model">Long-Term Sustainability Model</a></li>
 <li><a href="#addressing-specific-concerns">Addressing Specific Concerns</a></li>
 <li><a href="#summary-why-660-files-is-the-right-design">Summary: Why 660 Files Is the Right Design</a></li>
-<li><a href="#recommended-reading">Recommended Reading</a></li></ul></nav>
+<li><a href="#recommended-reading">Recommended Reading</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="repository-complexity-explained" tabindex="-1">Repository Complexity Explained</h1>
 <h2 id="addressing-the-660-files-concern" tabindex="-1">Addressing the “660 Files” Concern</h2>
@@ -7133,7 +7159,7 @@ Result: rules/token-optimization.md
 <article id="pr_merge_process" class="doc-section">
       <header class="doc-header">
         <h1>PR &amp; Merge</h1>
-        <nav class="toc"><ul><li><a href="#pr-templates">PR Templates</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#pr-templates">PR Templates</a></li>
 <li><a href="#pre-commit-hooks-hard-block">Pre-Commit Hooks (HARD BLOCK)</a></li>
 <li><a href="#pre-merge-hooks-hard-block">Pre-Merge Hooks (HARD BLOCK)</a></li>
 <li><a href="#pre-merge-advisory-hooks">Pre-Merge Advisory Hooks</a></li>
@@ -7142,7 +7168,7 @@ Result: rules/token-optimization.md
 <li><a href="#branch-naming-enforced-by-branch-name-checksh">Branch Naming (Enforced by branch-name-check.sh)</a></li>
 <li><a href="#code-review-8-dimensions">Code Review (8 Dimensions)</a></li>
 <li><a href="#merge-automation">Merge Automation</a></li>
-<li><a href="#ci-enforcement-v211">CI Enforcement (v2.1.1)</a></li></ul></nav>
+<li><a href="#ci-enforcement-v211">CI Enforcement (v2.1.1)</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="pr--merge-process" tabindex="-1">PR &amp; Merge Process</h1>
 <h2 id="pr-templates" tabindex="-1">PR Templates</h2>
@@ -7336,10 +7362,10 @@ release/&lt;version&gt;
 <article id="enforcement_contract" class="doc-section">
       <header class="doc-header">
         <h1>Enforcement Contract</h1>
-        <nav class="toc"><ul><li><a href="#two-layers-do-not-confuse-them">Two layers (do not confuse them)</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#two-layers-do-not-confuse-them">Two layers (do not confuse them)</a></li>
 <li><a href="#when-a-gate-is-skipped-or-overridden-audit">When a gate is skipped or overridden (audit)</a></li>
 <li><a href="#unit-tests-and-merge-alignment-with-sdlc-skip-tests">Unit tests and merge (alignment with `sdlc skip-tests`)</a></li>
-<li><a href="#summary">Summary</a></li></ul></nav>
+<li><a href="#summary">Summary</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="enforcement-contract-ai-sdlc-vs-azure--ci" tabindex="-1">Enforcement contract (AI-SDLC vs Azure / CI)</h1>
 <p><strong>Audience:</strong> Teams who need clarity on what <strong>blocks</strong> work vs what <strong>advises</strong>.<br>
@@ -7405,12 +7431,12 @@ Risk accepted by: {user or role}
 <article id="traceability_and_governance" class="doc-section">
       <header class="doc-header">
         <h1>Traceability and Governance</h1>
-        <nav class="toc"><ul><li><a href="#1-traceability-contract-prd--code--ado">1. Traceability contract (PRD → code → ADO)</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#1-traceability-contract-prd--code--ado">1. Traceability contract (PRD → code → ADO)</a></li>
 <li><a href="#2-prd-sections--stories-determinism">2. PRD sections → stories (determinism)</a></li>
 <li><a href="#3-ado-sync-and-drift-realistic-posture">3. ADO sync and drift (realistic posture)</a></li>
 <li><a href="#4-ask-first-policy-cli--ide--mcp">4. Ask-first policy (CLI / IDE / MCP)</a></li>
 <li><a href="#5-ci--registry-checks">5. CI / registry checks</a></li>
-<li><a href="#6-semantic-memory-namespacing-scale">6. Semantic memory namespacing (scale)</a></li></ul></nav>
+<li><a href="#6-semantic-memory-namespacing-scale">6. Semantic memory namespacing (scale)</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="traceability-ado-sync-ask-first-and-prdstory-expectations" tabindex="-1">Traceability, ADO sync, ask-first, and PRD→story expectations</h1>
 <p><strong>Audience:</strong> Architects, TPMs, and release owners.<br>
@@ -7518,7 +7544,7 @@ Risk accepted by: {user or role}
 <article id="platform_extension_onboarding" class="doc-section">
       <header class="doc-header">
         <h1>Platform Extension Onboarding</h1>
-        <nav class="toc"><ul><li><a href="#quick-reference">Quick reference</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#quick-reference">Quick reference</a></li>
 <li><a href="#1-add-an-agent">1. Add an agent</a></li>
 <li><a href="#2-add-a-rule">2. Add a rule</a></li>
 <li><a href="#3-add-a-skill">3. Add a skill</a></li>
@@ -7565,7 +7591,7 @@ Risk accepted by: {user or role}
 <li><a href="#tracking-patterns">Tracking Patterns</a></li>
 <li><a href="#metrics-baselines">Metrics Baselines</a></li>
 <li><a href="#team-integration">Team Integration</a></li>
-<li><a href="#see-also">See also</a></li></ul></nav>
+<li><a href="#see-also">See also</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="platform-extension-onboarding--agents-rules-skills-roles-stacks-stages" tabindex="-1">Platform extension onboarding — agents, rules, skills, roles, stacks, stages</h1>
 <p>Use this checklist when you <strong>add or change</strong> platform behavior so CLI, IDE, NL, and CI stay aligned. Repository layout: <a href="CANONICAL_REPO_AND_INTERFACES.md"><code>CANONICAL_REPO_AND_INTERFACES</code></a>.</p>
@@ -8312,7 +8338,7 @@ node User_Manual/build-manual-html.mjs
 <article id="team_onboarding_presentation" class="doc-section">
       <header class="doc-header">
         <h1>Team Onboarding Presentation</h1>
-        <nav class="toc"><ul><li><a href="#table-of-contents">Table of Contents</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#table-of-contents">Table of Contents</a></li>
 <li><a href="#1-platform-overview">1. Platform Overview</a></li>
 <li><a href="#2-quick-start---first-time-setup">2. Quick Start - First Time Setup</a></li>
 <li><a href="#3-15-stage-sdlc-flow">3. 15-Stage SDLC Flow</a></li>
@@ -8322,7 +8348,7 @@ node User_Manual/build-manual-html.mjs
 <li><a href="#7-common-scenarios">7. Common Scenarios</a></li>
 <li><a href="#8-troubleshooting">8. Troubleshooting</a></li>
 <li><a href="#quick-reference-card">Quick Reference Card</a></li>
-<li><a href="#conclusion">Conclusion</a></li></ul></nav>
+<li><a href="#conclusion">Conclusion</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="ai-sdlc-platform---team-onboarding-presentation" tabindex="-1">AI-SDLC Platform - Team Onboarding Presentation</h1>
 <p><strong>Complete Guide for Teams | 15-Stage SDLC Flow | Memory &amp; Git Workflows</strong></p>
@@ -9514,7 +9540,7 @@ sdlc doctor
 <article id="documentation_rules" class="doc-section">
       <header class="doc-header">
         <h1>Documentation Rules</h1>
-        <nav class="toc"><ul><li><a href="#single-source-of-truth">Single Source of Truth</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#single-source-of-truth">Single Source of Truth</a></li>
 <li><a href="#documentation-style">Documentation Style</a></li>
 <li><a href="#atomic-documentation-principle">Atomic Documentation Principle</a></li>
 <li><a href="#cursor--agent-rule-enforced-in-ide">Cursor / Agent rule (enforced in-IDE)</a></li>
@@ -9524,7 +9550,7 @@ sdlc doctor
 <li><a href="#pre-merge-documentation-check">Pre-Merge Documentation Check</a></li>
 <li><a href="#change-validation-hooks">Change Validation Hooks</a></li>
 <li><a href="#traceability-map">Traceability Map</a></li>
-<li><a href="#adding-documentation">Adding Documentation</a></li></ul></nav>
+<li><a href="#adding-documentation">Adding Documentation</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="documentation-rules" tabindex="-1">Documentation Rules</h1>
 <h2 id="single-source-of-truth" tabindex="-1">Single Source of Truth</h2>
@@ -9710,7 +9736,7 @@ sdlc doctor
 <article id="faq" class="doc-section">
       <header class="doc-header">
         <h1>FAQ</h1>
-        <nav class="toc"><ul><li><a href="#setup-issues">Setup Issues</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#setup-issues">Setup Issues</a></li>
 <li><a href="#cursor--non-interactive-setup">Cursor &amp; non-interactive setup</a></li>
 <li><a href="#laymans-guide-by-role">Layman's Guide by Role</a></li>
 <li><a href="#laymans-guide-by-stage">Layman's Guide by Stage</a></li>
@@ -9732,7 +9758,7 @@ sdlc doctor
 <li><a href="#pr-merge--traceability">PR, merge &amp; traceability</a></li>
 <li><a href="#documentation--drift">Documentation &amp; drift</a></li>
 <li><a href="#qa-orchestrator">QA orchestrator</a></li>
-<li><a href="#system-integrity--validation">System integrity &amp; validation</a></li></ul></nav>
+<li><a href="#system-integrity--validation">System integrity &amp; validation</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="faq--troubleshooting" tabindex="-1">FAQ &amp; Troubleshooting</h1>
 <p>Quick jump:</p>
@@ -10372,7 +10398,7 @@ Agent/skill duplication signals, workflow vs stage alignment, symlink health, <c
 <article id="changelog" class="doc-section">
       <header class="doc-header">
         <h1>Changelog</h1>
-        <nav class="toc"><ul><li><a href="#versioning-policy">Versioning Policy</a></li>
+        <details class="toc-collapsible"><summary>📑 Table of Contents</summary><nav class="toc"><ul><li><a href="#versioning-policy">Versioning Policy</a></li>
 <li><a href="#214---2026-04-22">[2.1.4] - 2026-04-22</a></li>
 <li><a href="#213---2026-04-22">[2.1.3] - 2026-04-22</a></li>
 <li><a href="#212---2026-04-20">[2.1.2] - 2026-04-20</a></li>
@@ -10394,7 +10420,7 @@ Agent/skill duplication signals, workflow vs stage alignment, symlink health, <c
 <li><a href="#104---2026-04-14">[1.0.4] - 2026-04-14</a></li>
 <li><a href="#103---2026-04-15">[1.0.3] - 2026-04-15</a></li>
 <li><a href="#102---2026-04-15">[1.0.2] - 2026-04-15</a></li>
-<li><a href="#101---2026-04-15">[1.0.1] - 2026-04-15</a></li></ul></nav>
+<li><a href="#101---2026-04-15">[1.0.1] - 2026-04-15</a></li></ul></nav></details>
       </header>
       <main class="doc-body"><h1 id="user-manual-changelog" tabindex="-1">User Manual Changelog</h1>
 <p>All notable changes to the AI-SDLC User Manual are documented here.</p>
@@ -10860,7 +10886,7 @@ section mirrors the canonical rule and links back.</li>
   </main>
 
   <script>
-    // Search implementation
+    // Search
     const searchIndex = [{"slug":"readme","title":"Home","content":" AI-SDLC Platform — User Manual (home)\n\nWelcome. This manual is written for **everyone** on the team: developers, testers, product owners, and leads. You do **not** need to know how the AI works internally to get value — in **`manual.html`**, read the **sidebar top to bottom** (that order is intentional), or open **[INDEX](INDEX.md)** for the numbered list and glossary.\n\n What is this?\n\n**AI-SDLC** is a **workflow + documentation + tooling** layer around your normal Git and Azure DevOps habits. "},{"slug":"index","title":"Index","content":" Index & reading guide\n\nThis page is the **map of the manual**. The **order below matches the sidebar** in `manual.html` (see `User_Manual/build-manual-html.mjs` → `ORDER`): read **top to bottom** for a linear path from “what is this?” to “how do I extend or troubleshoot?”\n\n How to use the offline manual (`manual.html`)\n\n1. Open **`User_Manual/manual.html`** in Chrome or Edge (double-click the file, or drag it into the browser).\n2. **Search** — type in the search box (top) or press **Ctrl+K** / "},{"slug":"system_overview","title":"System Overview","content":" System Overview\n\n 1. What This System Is\n\nAI-SDLC is an AI-native orchestration platform that manages the full software development lifecycle — from requirement intake to release — across multiple teams, roles, and tech stacks.\n\nIt runs inside your IDE (Cursor, Claude Code) or terminal. One command sets it up. Natural language drives execution.\n\n 2. What It Does (End-to-End)\n\n```\nPRD → Stories → Tasks → Design → Code → Review → Test → PR → Merge → Deploy → Docs → ADO Sync\n```\n\n**Story files:** "},{"slug":"prerequisites","title":"Prerequisites","content":" Prerequisites (before `setup`)\n\nInstall these **before** running `./setup.sh` or `sdlc setup`. The setup scripts assume a Unix-style shell (Bash) and will validate some of them automatically.\n\n**Get the platform:** clone from Azure DevOps — see **[Getting_Started — Get the platform source](Getting_Started.mdget-the-platform-source)** (canonical URL).\n\n Required for `./setup.sh` (platform bootstrap)\n\n| Software | Version / notes | Why |\n|----------|-----------------|-----|\n| **Bash** | 4.x+ typi"},{"slug":"getting_started","title":"Getting Started","content":" Getting Started\n\n Prerequisites\n\n- **Required:** Bash, Git, Node.js 18+, npm (see [Prerequisites](Prerequisites.md) for full list and optional tools)\n- **IDE:** Cursor or Claude Code (recommended) or terminal-only\n\n**End-to-end path (PRD → merge):** see **[Happy_Path_End_to_End](Happy_Path_End_to_End.md)** — single layman-friendly guide with CLI, slash commands, and NL.\n\n Setup (1 Command)\n\n```bash\n./setup.sh /path/to/your/project\n```\n\nThis does everything:\n1. Validates prerequisites\n2. Creates"},{"slug":"canonical_repo_and_interfaces","title":"Canonical Repo","content":" Canonical NL engine & interfaces\n\n Single source of truth (natural language + SDLC)\n\n**Repository root:** `ai_sdlc_platform/` in this workspace — all agents, skills, rules, orchestrators, CLI, hooks, and the IDE plugin under `plugins/ide-plugin/` live here.\n\n- **Do not** maintain a second copy of the same orchestrators or skills in another repo. If you have `ai-sdlc-ide-plugin` (or similar) elsewhere, treat it as **legacy** and **migrate** consumers to:\n  - **Submodule**, **npm/git dependency**"},{"slug":"happy_path_end_to_end","title":"Happy Path End to End","content":" Happy path: PRD → code → tests → merge (end-to-end)\n\n**Audience:** Anyone who wants one readable path from “we have a PRD” to “code is merged in Git (including Azure DevOps).”\n**Not replaced elsewhere:** Deep detail stays in [SDLC_Flows](SDLC_Flows.md), [Commands](Commands.md), [QUICKSTART_4TIER_STORIES.md](../../QUICKSTART_4TIER_STORIES.md) (repo root), [PR_Merge_Process](PR_Merge_Process.md), [ADO_MCP_Integration](ADO_MCP_Integration.md). This page is the **single narrative**.\n\n---\n\n One-time"},{"slug":"sdlc_flows","title":"SDLC Flows","content":" SDLC Flows\n\n**Readable end-to-end walkthrough (layman, CLI + IDE + NL):** [Happy_Path_End_to_End](Happy_Path_End_to_End.md).\n\n Stage Pipeline (15 Stages)\n\n```\n01-requirement-intake → 02-prd-review → 03-pre-grooming → 04-grooming\n→ 05-system-design → 06-design-review → 07-task-breakdown\n→ 08-implementation → 09-code-review → 10-test-design → 11-test-execution\n→ 12-commit-push → 13-documentation → 14-release-signoff → 15-summary-close\n```\n\n Each stage — **what**, typical **I/O**, **how** to run, "},{"slug":"role_and_stage_playbook","title":"Role and Stage Playbook","content":" Role & Stage Playbook — Chains of Command\n\n**Purpose:** Single place to see **who typically leads**, **what order work happens in**, and **how to run a stage** — without automating or locking behavior. This doc **extends** [SDLC_Flows](SDLC_Flows.md) and points to canonical **`roles/*.md`** and **`stages/*/STAGE.md`** in the repository.\n\n---\n\n 1. How to read this playbook\n\n| Concept | Meaning |\n|---------|---------|\n| **Primary owner** | Role most often **accountable** for that stage’s outcome "},{"slug":"features_reference","title":"Features","content":" Features — how they work\n\nThis chapter explains **what each major capability is** and **how it behaves in practice** (files, processes, entry points). It sits **after** [Happy_Path_End_to_End](Happy_Path_End_to_End.md), [SDLC_Flows](SDLC_Flows.md), and [Role_and_Stage_Playbook](Role_and_Stage_Playbook.md) so you already know *when* you use a feature; here you learn *what runs under the hood*.\n\nFor every command name and flag, the authoritative list is still [Commands](Commands.md).\n\n---\n\n 1. Pl"},{"slug":"commands","title":"Commands","content":" Commands Reference\n\n CLI Commands (`sdlc`)\n\n Context Management\n```bash\nsdlc use <role>                     Switch role\nsdlc use backend --stack=java   Role + stack\nsdlc context                        Show current role/stack/stage\nsdlc init                           Initialize context\n```\n\n Document Ingestion (non-Markdown input)\n```bash\nsdlc doc convert <file|dir>               docx/xlsx/pptx/html/pdf → .sdlc/import/*.extracted.md\nsdlc doc convert <file> --output-dir ./   Custom output directo"},{"slug":"guided_execution_and_recovery","title":"Guided Execution and Recovery","content":" Guided execution & recovery (all surfaces)\n\n**Goal:** When something is **missing** or a command **cannot run yet**, you get **what to do next**, **exact syntax**, and **step-by-step** options — instead of a bare failure with no path forward.\n\nThis page describes **how the platform is designed to behave** and **what you should expect** from the CLI, from **Cursor / Claude Code chat**, and from **natural-language** requests. It complements [Commands](Commands.md) and [FAQ](FAQ.md).\n\n---\n\n 1. Sur"},{"slug":"persistent_memory","title":"Persistent Memory","content":" Persistent Memory\n\n In plain words: memory vs knowledge base\n\nPeople often mix these up. In AI-SDLC they are **two different things**:\n\n| | **Semantic memory** (“persistence”) | **Module / knowledge base** (“KB”) |\n|---|-------------------------------------|-------------------------------------|\n| **Stores** | Decisions, rationales, QA notes, long-lived facts you **write** or tools **upsert**. | Facts **extracted from your repository**: APIs, contracts, dependencies, layout. |\n| **Lives in** | "},{"slug":"ado_mcp_integration","title":"ADO & MCP","content":" ADO & MCP Integration\n\n Azure DevOps Integration\n\n Three Modes\n\n| Mode | Interface | How It Works | Best For |\n|------|-----------|-------------|----------|\n| **MCP Mode** | IDE (Cursor, Claude Code) | `mcp.json` → `@azure-devops/mcp` → ADO API | Interactive queries, rich context |\n| **CLI Mode** | Terminal | `sdlc ado` → `curl` → ADO REST API v7.0 | Scripts, offline workflows, automation |\n| **Observer Mode** (v2.1.1) | Background | ADO → Webhook/Polling → Platform triggers | Real-time sync, e"},{"slug":"agents_skills_rules","title":"Agents Skills Rules","content":" Agents, Skills & Rules\n\n Agents (53 Total)\n\n What Is an Agent?\nAn AI persona that embodies a role at specific stages. Loads role context + stage context + gates. Invokes skills to perform work. Uses **THIN orchestrator pattern** — delegates to atomic skills, contains no inline logic.\n\n Agent Tiers\n\n| Tier | Count | Purpose | Examples |\n|------|-------|---------|---------|\n| Tier 1 (Universal) | 6 | Cross-role infrastructure | context-guard, smart-routing, auto-documentation-guardian, etc. |\n| T"},{"slug":"architecture","title":"Architecture","content":" Architecture\n\n Component Hierarchy\n\n```\nRoles → Agents → Skills → Stages\n```\n\n- **Role** — Job function, capabilities, token budget (e.g., `roles/backend-engineer.md`)\n- **Agent** — AI persona that embodies a role at specific stages (e.g., `agents/backend/backend-engineer-agent.md`)\n- **Skill** — Reusable AI capability invoked by agents (e.g., `skills/product/prd-gap-analyzer.md`)\n  - **Atomic Skills** — Single-responsibility building blocks (~50 lines each)\n  - **Composed Skills** — Declarativ"},{"slug":"sdlc-stage-role-mapping","title":"../docs/sdlc-stage-role-mapping","content":" AI-SDLC Platform: Stage-Role-Skill-Agent-Validator-Rule Mapping\n\n> **Purpose:** Single source of truth for understanding what components are involved at each SDLC stage, and which files to modify when making changes.\n\n---\n\n Quick Navigation\n\n| If you want to... | See Section |\n|-------------------|-------------|\n| Understand stage flow | [15-Stage Pipeline](15-stage-pipeline-overview) |\n| Know which role does what | [Roles by Stage](roles-by-stage) |\n| Find which skill to invoke | [Skills by St"},{"slug":"token_efficiency_and_context_loading","title":"Token Efficiency and Context Loading","content":" Token Efficiency & Context Loading\n\n 💡 What this is\n\nHow AI-SDLC saves tokens and loads only what you need.\n\n**Result**: 70-80% fewer tokens vs full codebase loading.\n\n---\n\n 🎯 The Problem\n\nLoading entire codebase wastes tokens:\n- 10K+ lines = 3,000+ tokens\n- Slow responses\n- High costs\n- Lost context\n\n---\n\n 🔄 Our Solution: Smart Loading\n\n```mermaid\nflowchart LR\n    Q[Query] --> R[Router]\n    R --> M1[Load Module<br/>2-3K tokens]\n    R --> M2[Load Memory<br/>1K tokens]\n    R --> M3[Load Skill"},{"slug":"repository_complexity_explained","title":"Repository Complexity Explained","content":" Repository Complexity Explained\n\n Addressing the \"660 Files\" Concern\n\n**Question:** *With 660 files, 52 agents, 35+ skills, and 100 scripts — isn't this too complex to maintain?*\n\n**Answer:** No. The apparent complexity is **modular architecture**, not incidental clutter. Each file has a single responsibility. Teams only load what they need. Updates are atomic and don't cascade.\n\nThis document explains why the file count is a **feature, not a bug** — and how it enables long-term sustainability."},{"slug":"pr_merge_process","title":"PR & Merge","content":" PR & Merge Process\n\n PR Templates\n\n6 templates in `extension-templates/` (previously PR-TEMPLATES/) for different change types:\n\n| Template | When to Use |\n|----------|------------|\n| `STACK-PR-TEMPLATE.md` | Adding new tech stack |\n| `WORKFLOW-PR-TEMPLATE.md` | New workflow creation |\n| `STAGE-PR-TEMPLATE.md` | Stage additions |\n| `SKILL-PR-TEMPLATE.md` | New skill creation |\n| `AGENT-PR-TEMPLATE.md` | New agent definition |\n| `RULE-PR-TEMPLATE.md` | Enforcement rule creation |\n\n Pre-Commit Ho"},{"slug":"enforcement_contract","title":"Enforcement Contract","content":" Enforcement contract (AI-SDLC vs Azure / CI)\n\n**Audience:** Teams who need clarity on what **blocks** work vs what **advises**.  \n**Related:** [merge-and-source-of-truth](../rules/merge-and-source-of-truth.md), [gate-enforcement](../rules/gate-enforcement.md), [pre-merge-test-enforcement](../rules/pre-merge-test-enforcement.md).\n\n---\n\n Two layers (do not confuse them)\n\n| Layer | Where it lives | Blocks merge / push? |\n|-------|------------------|----------------------|\n| **Soft gates (G1–G10)**"},{"slug":"traceability_and_governance","title":"Traceability and Governance","content":" Traceability, ADO sync, ask-first, and PRD→story expectations\n\n**Audience:** Architects, TPMs, and release owners.  \n**Related:** [ADO_MCP_Integration](ADO_MCP_Integration.md), [Persistent_Memory](Persistent_Memory.md), [PR_Merge_Process](PR_Merge_Process.md).\n\n---\n\n 1. Traceability contract (PRD → code → ADO)\n\n**Goal:** One unbroken chain of identifiers you can query without guessing.\n\n| Link | Minimum practice |\n|------|------------------|\n| **PRD ↔ stories** | Stable **requirement or feature"},{"slug":"platform_extension_onboarding","title":"Platform Extension Onboarding","content":" Platform extension onboarding — agents, rules, skills, roles, stacks, stages\n\nUse this checklist when you **add or change** platform behavior so CLI, IDE, NL, and CI stay aligned. Repository layout: [`CANONICAL_REPO_AND_INTERFACES`](CANONICAL_REPO_AND_INTERFACES.md).\n\n Quick reference\n\n| You add… | Primary locations | Must update / run |\n|----------|-------------------|-------------------|\n| **Agent** | `agents/<domain>/*.md`, [`agents/agent-registry.json`](../agents/agent-registry.json) | Regi"},{"slug":"team_onboarding_presentation","title":"Team Onboarding Presentation","content":" AI-SDLC Platform - Team Onboarding Presentation\n\n**Complete Guide for Teams | 15-Stage SDLC Flow | Memory & Git Workflows**\n\n---\n\n Table of Contents\n\n1. [Platform Overview](1-platform-overview)\n2. [Quick Start - First Time Setup](2-quick-start---first-time-setup)\n3. [15-Stage SDLC Flow](3-15-stage-sdlc-flow)\n   - Stages 01-05: Planning & Design\n   - Stages 06-10: Implementation & Testing\n   - Stages 11-15: Release & Closure\n4. [Memory Management](4-memory-management)\n5. [Git Workflow Integratio"},{"slug":"documentation_rules","title":"Documentation Rules","content":" Documentation Rules\n\n Single Source of Truth\n\n- `/User_Manual/` is the ONLY active documentation\n- All previous docs (94 files) available in git history\n- Each concept defined **once** — other docs cross-reference\n\n Documentation Style\n\n- Concise, bullet-first\n- No long paragraphs\n- No duplication across files\n- Tables over prose where possible\n- Add \"ask for details\" prompts instead of over-explaining\n\n Atomic Documentation Principle\n\n| Rule | Meaning |\n|------|---------|\n| Single definition |"},{"slug":"faq","title":"FAQ","content":" FAQ & Troubleshooting\n\nQuick jump:\n\n- [Setup issues](setup-issues)\n- [Cursor & non-interactive setup](cursor--non-interactive-setup)\n- [Role & context](role--context)\n- [Stage execution](stage-execution)\n- [Azure DevOps](azure-devops)\n- [Memory & token budget](memory--token-budget)\n- [Module KB](module-kb-sdlc-module-init)\n- [Diagnostics](diagnostics)\n- [Extending the platform](extending-the-platform)\n- [User Manual (HTML reader)](user-manual-html-reader)\n- [Stories, tasks & templates](stories-"},{"slug":"changelog","title":"Changelog","content":" User Manual Changelog\n\nAll notable changes to the AI-SDLC User Manual are documented here.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n\n Versioning Policy\n\n- **MAJOR** (X.0.0): Breaking changes to pipelines, stages, commands, roles, or fundamental architecture\n  - Example: Stage renamed, command signature changed, workflow restructured\n  - User action required: Review ch"}];
     const searchInput = document.getElementById('searchInput');
     const searchResults = document.getElementById('searchResults');
@@ -10878,12 +10904,12 @@ section mirrors the canonical rule and links back.</li>
       ).slice(0, 8);
 
       if (results.length === 0) {
-        searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
+        searchResults.innerHTML = '<div class="search-result-item">No results</div>';
       } else {
         searchResults.innerHTML = results.map(r => `
           <a href="#${r.slug}" class="search-result-item">
             <div class="search-result-title">${r.title}</div>
-            <div class="search-result-snippet">${r.content.substring(0, 100)}...</div>
+            <div class="search-result-snippet">${r.content.substring(0, 80)}...</div>
           </a>
         `).join('');
       }
@@ -10895,14 +10921,10 @@ section mirrors the canonical rule and links back.</li>
       setTimeout(() => searchResults.classList.remove('active'), 200);
     });
 
-    // Prism.js activation
+    // Prism
     document.addEventListener('DOMContentLoaded', () => {
-      if (typeof Prism !== 'undefined') {
-        Prism.highlightAll();
-      }
-      if (typeof mermaid !== 'undefined') {
-        mermaid.contentLoaded();
-      }
+      if (typeof Prism !== 'undefined') Prism.highlightAll();
+      if (typeof mermaid !== 'undefined') mermaid.contentLoaded();
     });
   </script>
 </body>
