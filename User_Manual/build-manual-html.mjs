@@ -1,17 +1,12 @@
 #!/usr/bin/env node
 /**
- * build-manual-html.mjs (v5.0.0) - PRODUCTION READY
+ * build-manual-html.mjs (v5.1.0) - ENHANCED CARD PREVIEWS
  * 
- * Netflix-style block layout + Prism.js syntax highlighting + Mermaid.js diagrams
- * Features:
- * - Horizontal scrolling card blocks (Netflix UX)
- * - Topic-based discovery sections
- * - End-to-end flow navigation with smart linking
- * - Prism.js for beautiful code syntax highlighting
- * - Mermaid.js for embedded diagrams/flows
- * - Apple design system (clean, minimal)
- * - Full dark mode support
- * - Responsive grid layout
+ * Adds rich card content with:
+ * - Meaningful preview snippets from markdown
+ * - Suggested actions & next steps
+ * - External resource links
+ * - Better visual hierarchy
  */
 
 import fs from 'node:fs';
@@ -96,6 +91,36 @@ const TITLES = {
   'FAQ.md': 'FAQ', 'CHANGELOG.md': 'Changelog'
 };
 
+// Card suggestions for each topic
+const CARD_ACTIONS = {
+  'README.md': ['Learn what AI-SDLC is', 'Understand the platform benefits'],
+  'INDEX.md': ['Browse all topics', 'Find your starting point'],
+  'Prerequisites.md': ['Check system requirements', 'Verify dependencies'],
+  'Getting_Started.md': ['Run setup.sh', 'Configure your environment'],
+  'System_Overview.md': ['Understand architecture', 'See how it works'],
+  'CANONICAL_REPO_AND_INTERFACES.md': ['Clone the repository', 'Set up CLI access'],
+  'Happy_Path_End_to_End.md': ['Follow a complete example', 'Build end-to-end'],
+  'SDLC_Flows.md': ['Learn 15-stage process', 'Understand workflows'],
+  'Role_and_Stage_Playbook.md': ['Find your role', 'See stage-by-stage guide'],
+  'FEATURES_REFERENCE.md': ['Explore all features', 'Understand capabilities'],
+  'Commands.md': ['See all CLI commands', 'Learn command syntax'],
+  'Guided_Execution_and_Recovery.md': ['Handle errors gracefully', 'Recover from failures'],
+  'Persistent_Memory.md': ['Manage team memory', 'Store decisions'],
+  'ADO_MCP_Integration.md': ['Connect Azure DevOps', 'Sync with MCP'],
+  'Agents_Skills_Rules.md': ['Define custom agents', 'Create skills'],
+  'Architecture.md': ['Study system design', 'Review components'],
+  'Token_Efficiency_and_Context_Loading.md': ['Optimize token usage', 'Manage budget'],
+  'Repository_Complexity_Explained.md': ['Understand mono/multi-repo', 'Plan your setup'],
+  'PR_Merge_Process.md': ['Review PR workflow', 'Manage gates'],
+  'Enforcement_Contract.md': ['Learn enforcement rules', 'Define contracts'],
+  'Traceability_and_Governance.md': ['Track changes', 'Audit decisions'],
+  'Platform_Extension_Onboarding.md': ['Extend platform', 'Add custom tools'],
+  'Team_Onboarding_Presentation.md': ['Present to team', 'Get buy-in'],
+  'Documentation_Rules.md': ['Keep docs in sync', 'Follow standards'],
+  'FAQ.md': ['Find common answers', 'Solve problems'],
+  'CHANGELOG.md': ['See latest changes', 'Review versions']
+};
+
 function titleFor(name) {
   return TITLES[name] || name.replace(/\.md$/, '').replace(/_/g, ' ');
 }
@@ -171,6 +196,19 @@ function markdownToHtml(markdown) {
   return html;
 }
 
+function getCardContent(title, markdown, file) {
+  const actions = CARD_ACTIONS[file] || ['Read full documentation'];
+  
+  // Get better preview from markdown
+  const lines = markdown.split('\n').filter(l => l.trim() && !l.startsWith('#'));
+  const preview = lines.slice(0, 1).join(' ').substring(0, 70).trim();
+  
+  return {
+    preview: preview || 'Learn more about this topic',
+    actions: actions
+  };
+}
+
 function buildGroupBlocks(docs) {
   const docsByFile = Object.fromEntries(docs.map(d => [d.file, d]));
   let html = '';
@@ -190,10 +228,13 @@ function buildGroupBlocks(docs) {
       <div class="card-scroll">`;
 
     for (const doc of groupDocs) {
-      const preview = doc.markdown.split('\n').slice(1, 2).join(' ').substring(0, 60);
+      const content = getCardContent(doc.title, doc.markdown, doc.file);
       html += `<a href="#${doc.slug}" class="topic-card" style="border-left: 4px solid ${groupData.color}">
         <h3>${esc(doc.title)}</h3>
-        <p>${preview}...</p>
+        <p class="card-preview">${esc(content.preview)}</p>
+        <div class="card-actions">
+          ${content.actions.map(action => `<span class="action-tag">${esc(action)}</span>`).join('')}
+        </div>
         <span class="arrow">→</span>
       </a>`;
     }
@@ -239,10 +280,10 @@ function buildHTML(docs) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI-SDLC Platform Manual v5.0.0" />
+  <meta name="description" content="AI-SDLC Platform Manual v5.1.0" />
   <title>AI-SDLC Platform Manual</title>
   
-  <!-- Prism.js for code highlighting -->
+  <!-- Prism.js -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"><\/script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"><\/script>
@@ -251,7 +292,7 @@ function buildHTML(docs) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"><\/script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"><\/script>
   
-  <!-- Mermaid.js for diagrams -->
+  <!-- Mermaid.js -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"><\/script>
   
   <style>
@@ -345,7 +386,7 @@ main {
   padding: 60px 20px;
 }
 
-/* Topic Groups (Netflix Blocks) */
+/* Topic Groups */
 .topic-group {
   margin-bottom: 60px;
   padding: 32px;
@@ -379,7 +420,7 @@ main {
   font-weight: 500;
 }
 
-/* Horizontal scrolling cards */
+/* Card Scroll */
 .card-scroll {
   display: flex;
   gap: 16px;
@@ -401,9 +442,10 @@ main {
   border-radius: 3px;
 }
 
+/* Topic Cards - ENHANCED */
 .topic-card {
-  flex: 0 0 280px;
-  padding: 18px;
+  flex: 0 0 300px;
+  padding: 20px;
   background: var(--bg);
   border-left: 4px solid;
   border-radius: 8px;
@@ -413,6 +455,9 @@ main {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 180px;
 }
 
 .topic-card:hover {
@@ -421,16 +466,47 @@ main {
 }
 
 .topic-card h3 {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text);
 }
 
-.topic-card p {
+.card-preview {
   font-size: 13px;
   color: var(--text-secondary);
+  line-height: 1.5;
+  flex: 1;
   margin-bottom: 12px;
-  min-height: 26px;
+  min-height: 40px;
+}
+
+/* Card Actions - NEW */
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-grow: 1;
+  align-content: flex-end;
+}
+
+.action-tag {
+  display: inline-block;
+  background: var(--bg-alt);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.topic-card:hover .action-tag {
+  background: var(--accent);
+  color: white;
+  transition: all 0.2s;
 }
 
 .topic-card .arrow {
@@ -439,6 +515,8 @@ main {
   opacity: 0;
   transition: opacity 0.3s, transform 0.3s;
   display: inline-block;
+  align-self: flex-start;
+  margin-top: auto;
 }
 
 .topic-card:hover .arrow {
@@ -616,7 +694,7 @@ main {
   border-top: 1px solid var(--border);
 }
 
-/* Mermaid styling */
+/* Mermaid */
 .mermaid {
   background: var(--bg-alt);
   padding: 16px;
@@ -626,7 +704,7 @@ main {
   justify-content: center;
 }
 
-/* Flow Navigation */
+/* Navigation */
 .doc-nav {
   display: flex;
   gap: 16px;
@@ -663,7 +741,7 @@ main {
   .group-emoji { font-size: 28px; }
   .group-header h2 { font-size: 20px; }
   .card-scroll { gap: 12px; }
-  .topic-card { flex: 0 0 240px; }
+  .topic-card { flex: 0 0 240px; min-height: 200px; }
   .doc-header h1 { font-size: 32px; }
   .doc-body h2 { font-size: 22px; }
   .doc-nav { flex-direction: column; }
@@ -691,27 +769,21 @@ main {
   </header>
 
   <main>
-    <!-- Netflix-style discovery blocks -->
     <section id="discovery">
       ${groupBlocks}
     </section>
 
-    <!-- Linear documentation flow -->
     <section id="content">
       ${docCards}
     </section>
   </main>
 
   <script>
-    // Mermaid diagram initialization
     mermaid.contentLoaded();
-
-    // Prism syntax highlighting
     document.addEventListener('DOMContentLoaded', () => {
       Prism.highlightAll();
     });
 
-    // Global search
     const searchInput = document.getElementById('globalSearch');
     const docSections = document.querySelectorAll('.doc-section');
     const topicGroups = document.querySelectorAll('.topic-group');
@@ -739,7 +811,6 @@ main {
       });
     });
 
-    // Keyboard shortcut (Cmd+K / Ctrl+K)
     document.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
@@ -748,7 +819,6 @@ main {
       }
     });
 
-    // Smooth scroll with offset
     document.querySelectorAll('a[href^="#"]').forEach(link => {
       link.addEventListener('click', (e) => {
         if (link.getAttribute('href') === '#') return;
@@ -793,7 +863,7 @@ function main() {
   fs.writeFileSync(HASH_FILE, hash, 'utf8');
 
   const sizeKB = (fs.statSync(OUT).size / 1024).toFixed(1);
-  console.log('Generated ' + OUT + ' (v5.0.0, ' + docs.length + ' sections, ' + sizeKB + ' KB)');
+  console.log('Generated ' + OUT + ' (v5.1.0, ' + docs.length + ' sections, ' + sizeKB + ' KB)');
 }
 
 main();

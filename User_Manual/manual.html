@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI-SDLC Platform Manual v5.0.0" />
+  <meta name="description" content="AI-SDLC Platform Manual v5.1.0" />
   <title>AI-SDLC Platform Manual</title>
   
-  <!-- Prism.js for code highlighting -->
+  <!-- Prism.js -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
@@ -15,7 +15,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
   
-  <!-- Mermaid.js for diagrams -->
+  <!-- Mermaid.js -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   
   <style>
@@ -109,7 +109,7 @@ main {
   padding: 60px 20px;
 }
 
-/* Topic Groups (Netflix Blocks) */
+/* Topic Groups */
 .topic-group {
   margin-bottom: 60px;
   padding: 32px;
@@ -143,7 +143,7 @@ main {
   font-weight: 500;
 }
 
-/* Horizontal scrolling cards */
+/* Card Scroll */
 .card-scroll {
   display: flex;
   gap: 16px;
@@ -165,9 +165,10 @@ main {
   border-radius: 3px;
 }
 
+/* Topic Cards - ENHANCED */
 .topic-card {
-  flex: 0 0 280px;
-  padding: 18px;
+  flex: 0 0 300px;
+  padding: 20px;
   background: var(--bg);
   border-left: 4px solid;
   border-radius: 8px;
@@ -177,6 +178,9 @@ main {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 180px;
 }
 
 .topic-card:hover {
@@ -185,16 +189,47 @@ main {
 }
 
 .topic-card h3 {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text);
 }
 
-.topic-card p {
+.card-preview {
   font-size: 13px;
   color: var(--text-secondary);
+  line-height: 1.5;
+  flex: 1;
   margin-bottom: 12px;
-  min-height: 26px;
+  min-height: 40px;
+}
+
+/* Card Actions - NEW */
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-grow: 1;
+  align-content: flex-end;
+}
+
+.action-tag {
+  display: inline-block;
+  background: var(--bg-alt);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.topic-card:hover .action-tag {
+  background: var(--accent);
+  color: white;
+  transition: all 0.2s;
 }
 
 .topic-card .arrow {
@@ -203,6 +238,8 @@ main {
   opacity: 0;
   transition: opacity 0.3s, transform 0.3s;
   display: inline-block;
+  align-self: flex-start;
+  margin-top: auto;
 }
 
 .topic-card:hover .arrow {
@@ -380,7 +417,7 @@ main {
   border-top: 1px solid var(--border);
 }
 
-/* Mermaid styling */
+/* Mermaid */
 .mermaid {
   background: var(--bg-alt);
   padding: 16px;
@@ -390,7 +427,7 @@ main {
   justify-content: center;
 }
 
-/* Flow Navigation */
+/* Navigation */
 .doc-nav {
   display: flex;
   gap: 16px;
@@ -427,7 +464,7 @@ main {
   .group-emoji { font-size: 28px; }
   .group-header h2 { font-size: 20px; }
   .card-scroll { gap: 12px; }
-  .topic-card { flex: 0 0 240px; }
+  .topic-card { flex: 0 0 240px; min-height: 200px; }
   .doc-header h1 { font-size: 32px; }
   .doc-body h2 { font-size: 22px; }
   .doc-nav { flex-direction: column; }
@@ -455,7 +492,6 @@ main {
   </header>
 
   <main>
-    <!-- Netflix-style discovery blocks -->
     <section id="discovery">
       <section class="topic-group" style="border-color: #FF6B35">
       <div class="group-header">
@@ -467,19 +503,31 @@ main {
       </div>
       <div class="card-scroll"><a href="#readme" class="topic-card" style="border-left: 4px solid #FF6B35">
         <h3>Home</h3>
-        <p>...</p>
+        <p class="card-preview">Welcome. This manual is written for **everyone** on the team: develope</p>
+        <div class="card-actions">
+          <span class="action-tag">Learn what AI-SDLC is</span><span class="action-tag">Understand the platform benefits</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#index" class="topic-card" style="border-left: 4px solid #FF6B35">
         <h3>Index</h3>
-        <p>...</p>
+        <p class="card-preview">This page is the **map of the manual**. The **order below matches the</p>
+        <div class="card-actions">
+          <span class="action-tag">Browse all topics</span><span class="action-tag">Find your starting point</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#prerequisites" class="topic-card" style="border-left: 4px solid #FF6B35">
         <h3>Prerequisites</h3>
-        <p>...</p>
+        <p class="card-preview">Install these **before** running `./setup.sh` or `sdlc setup`. The set</p>
+        <div class="card-actions">
+          <span class="action-tag">Check system requirements</span><span class="action-tag">Verify dependencies</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#getting_started" class="topic-card" style="border-left: 4px solid #FF6B35">
         <h3>Getting Started</h3>
-        <p>...</p>
+        <p class="card-preview">- **Required:** Bash, Git, Node.js 18+, npm (see [Prerequisites](Prere</p>
+        <div class="card-actions">
+          <span class="action-tag">Run setup.sh</span><span class="action-tag">Configure your environment</span>
+        </div>
         <span class="arrow">→</span>
       </a></div></section><section class="topic-group" style="border-color: #004E89">
       <div class="group-header">
@@ -491,15 +539,24 @@ main {
       </div>
       <div class="card-scroll"><a href="#system_overview" class="topic-card" style="border-left: 4px solid #004E89">
         <h3>System Overview</h3>
-        <p>...</p>
+        <p class="card-preview">AI-SDLC is an AI-native orchestration platform that manages the full s</p>
+        <div class="card-actions">
+          <span class="action-tag">Understand architecture</span><span class="action-tag">See how it works</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#canonical_repo_and_interfaces" class="topic-card" style="border-left: 4px solid #004E89">
         <h3>Canonical Repo</h3>
-        <p>...</p>
+        <p class="card-preview">**Repository root:** `ai_sdlc_platform/` in this workspace — all agent</p>
+        <div class="card-actions">
+          <span class="action-tag">Clone the repository</span><span class="action-tag">Set up CLI access</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#architecture" class="topic-card" style="border-left: 4px solid #004E89">
         <h3>Architecture</h3>
-        <p>...</p>
+        <p class="card-preview">```</p>
+        <div class="card-actions">
+          <span class="action-tag">Study system design</span><span class="action-tag">Review components</span>
+        </div>
         <span class="arrow">→</span>
       </a></div></section><section class="topic-group" style="border-color: #1B998B">
       <div class="group-header">
@@ -511,23 +568,38 @@ main {
       </div>
       <div class="card-scroll"><a href="#sdlc_flows" class="topic-card" style="border-left: 4px solid #1B998B">
         <h3>SDLC Flows</h3>
-        <p>...</p>
+        <p class="card-preview">**Readable end-to-end walkthrough (layman, CLI + IDE + NL):** [Happy_P</p>
+        <div class="card-actions">
+          <span class="action-tag">Learn 15-stage process</span><span class="action-tag">Understand workflows</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#happy_path_end_to_end" class="topic-card" style="border-left: 4px solid #1B998B">
         <h3>Happy Path End to End</h3>
-        <p>...</p>
+        <p class="card-preview">**Audience:** Anyone who wants one readable path from “we have a PRD”</p>
+        <div class="card-actions">
+          <span class="action-tag">Follow a complete example</span><span class="action-tag">Build end-to-end</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#role_and_stage_playbook" class="topic-card" style="border-left: 4px solid #1B998B">
         <h3>Role and Stage Playbook</h3>
-        <p>...</p>
+        <p class="card-preview">**Purpose:** Single place to see **who typically leads**, **what order</p>
+        <div class="card-actions">
+          <span class="action-tag">Find your role</span><span class="action-tag">See stage-by-stage guide</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#commands" class="topic-card" style="border-left: 4px solid #1B998B">
         <h3>Commands</h3>
-        <p>...</p>
+        <p class="card-preview">```bash</p>
+        <div class="card-actions">
+          <span class="action-tag">See all CLI commands</span><span class="action-tag">Learn command syntax</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#guided_execution_and_recovery" class="topic-card" style="border-left: 4px solid #1B998B">
         <h3>Guided Execution and Recovery</h3>
-        <p>...</p>
+        <p class="card-preview">**Goal:** When something is **missing** or a command **cannot run yet*</p>
+        <div class="card-actions">
+          <span class="action-tag">Handle errors gracefully</span><span class="action-tag">Recover from failures</span>
+        </div>
         <span class="arrow">→</span>
       </a></div></section><section class="topic-group" style="border-color: #F77F00">
       <div class="group-header">
@@ -539,19 +611,31 @@ main {
       </div>
       <div class="card-scroll"><a href="#features_reference" class="topic-card" style="border-left: 4px solid #F77F00">
         <h3>Features</h3>
-        <p>...</p>
+        <p class="card-preview">This chapter explains **what each major capability is** and **how it b</p>
+        <div class="card-actions">
+          <span class="action-tag">Explore all features</span><span class="action-tag">Understand capabilities</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#persistent_memory" class="topic-card" style="border-left: 4px solid #F77F00">
         <h3>Persistent Memory</h3>
-        <p>...</p>
+        <p class="card-preview">People often mix these up. In AI-SDLC they are **two different things*</p>
+        <div class="card-actions">
+          <span class="action-tag">Manage team memory</span><span class="action-tag">Store decisions</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#ado_mcp_integration" class="topic-card" style="border-left: 4px solid #F77F00">
         <h3>ADO &amp; MCP</h3>
-        <p>...</p>
+        <p class="card-preview">| Mode | Interface | How It Works | Best For |</p>
+        <div class="card-actions">
+          <span class="action-tag">Connect Azure DevOps</span><span class="action-tag">Sync with MCP</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#token_efficiency_and_context_loading" class="topic-card" style="border-left: 4px solid #F77F00">
         <h3>Token Efficiency and Context Loading</h3>
-        <p>...</p>
+        <p class="card-preview">How AI-SDLC saves tokens and loads only what you need.</p>
+        <div class="card-actions">
+          <span class="action-tag">Optimize token usage</span><span class="action-tag">Manage budget</span>
+        </div>
         <span class="arrow">→</span>
       </a></div></section><section class="topic-group" style="border-color: #A23B72">
       <div class="group-header">
@@ -563,15 +647,24 @@ main {
       </div>
       <div class="card-scroll"><a href="#agents_skills_rules" class="topic-card" style="border-left: 4px solid #A23B72">
         <h3>Agents Skills Rules</h3>
-        <p>...</p>
+        <p class="card-preview">An AI persona that embodies a role at specific stages. Loads role cont</p>
+        <div class="card-actions">
+          <span class="action-tag">Define custom agents</span><span class="action-tag">Create skills</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#repository_complexity_explained" class="topic-card" style="border-left: 4px solid #A23B72">
         <h3>Repository Complexity Explained</h3>
-        <p>...</p>
+        <p class="card-preview">**Question:** *With 660 files, 52 agents, 35+ skills, and 100 scripts</p>
+        <div class="card-actions">
+          <span class="action-tag">Understand mono/multi-repo</span><span class="action-tag">Plan your setup</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#sdlc-stage-role-mapping" class="topic-card" style="border-left: 4px solid #A23B72">
         <h3>../docs/sdlc-stage-role-mapping</h3>
-        <p>...</p>
+        <p class="card-preview">&gt; **Purpose:** Single source of truth for understanding what component</p>
+        <div class="card-actions">
+          <span class="action-tag">Read full documentation</span>
+        </div>
         <span class="arrow">→</span>
       </a></div></section><section class="topic-group" style="border-color: #C1121F">
       <div class="group-header">
@@ -583,15 +676,24 @@ main {
       </div>
       <div class="card-scroll"><a href="#pr_merge_process" class="topic-card" style="border-left: 4px solid #C1121F">
         <h3>PR &amp; Merge</h3>
-        <p>...</p>
+        <p class="card-preview">6 templates in `extension-templates/` (previously PR-TEMPLATES/) for d</p>
+        <div class="card-actions">
+          <span class="action-tag">Review PR workflow</span><span class="action-tag">Manage gates</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#enforcement_contract" class="topic-card" style="border-left: 4px solid #C1121F">
         <h3>Enforcement Contract</h3>
-        <p>...</p>
+        <p class="card-preview">**Audience:** Teams who need clarity on what **blocks** work vs what *</p>
+        <div class="card-actions">
+          <span class="action-tag">Learn enforcement rules</span><span class="action-tag">Define contracts</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#traceability_and_governance" class="topic-card" style="border-left: 4px solid #C1121F">
         <h3>Traceability and Governance</h3>
-        <p>...</p>
+        <p class="card-preview">**Audience:** Architects, TPMs, and release owners.</p>
+        <div class="card-actions">
+          <span class="action-tag">Track changes</span><span class="action-tag">Audit decisions</span>
+        </div>
         <span class="arrow">→</span>
       </a></div></section><section class="topic-group" style="border-color: #6A4C93">
       <div class="group-header">
@@ -603,15 +705,24 @@ main {
       </div>
       <div class="card-scroll"><a href="#platform_extension_onboarding" class="topic-card" style="border-left: 4px solid #6A4C93">
         <h3>Platform Extension Onboarding</h3>
-        <p>...</p>
+        <p class="card-preview">Use this checklist when you **add or change** platform behavior so CLI</p>
+        <div class="card-actions">
+          <span class="action-tag">Extend platform</span><span class="action-tag">Add custom tools</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#team_onboarding_presentation" class="topic-card" style="border-left: 4px solid #6A4C93">
         <h3>Team Onboarding Presentation</h3>
-        <p>...</p>
+        <p class="card-preview">**Complete Guide for Teams | 15-Stage SDLC Flow | Memory &amp; Git Workflo</p>
+        <div class="card-actions">
+          <span class="action-tag">Present to team</span><span class="action-tag">Get buy-in</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#documentation_rules" class="topic-card" style="border-left: 4px solid #6A4C93">
         <h3>Documentation Rules</h3>
-        <p>...</p>
+        <p class="card-preview">- `/User_Manual/` is the ONLY active documentation</p>
+        <div class="card-actions">
+          <span class="action-tag">Keep docs in sync</span><span class="action-tag">Follow standards</span>
+        </div>
         <span class="arrow">→</span>
       </a></div></section><section class="topic-group" style="border-color: #1D3557">
       <div class="group-header">
@@ -623,16 +734,21 @@ main {
       </div>
       <div class="card-scroll"><a href="#faq" class="topic-card" style="border-left: 4px solid #1D3557">
         <h3>FAQ</h3>
-        <p>...</p>
+        <p class="card-preview">Quick jump:</p>
+        <div class="card-actions">
+          <span class="action-tag">Find common answers</span><span class="action-tag">Solve problems</span>
+        </div>
         <span class="arrow">→</span>
       </a><a href="#changelog" class="topic-card" style="border-left: 4px solid #1D3557">
         <h3>Changelog</h3>
-        <p>...</p>
+        <p class="card-preview">All notable changes to the AI-SDLC User Manual are documented here.</p>
+        <div class="card-actions">
+          <span class="action-tag">See latest changes</span><span class="action-tag">Review versions</span>
+        </div>
         <span class="arrow">→</span>
       </a></div></section>
     </section>
 
-    <!-- Linear documentation flow -->
     <section id="content">
       <article id="readme" class="doc-section">
       <header class="doc-header">
@@ -10441,15 +10557,11 @@ section mirrors the canonical rule and links back.</li>
   </main>
 
   <script>
-    // Mermaid diagram initialization
     mermaid.contentLoaded();
-
-    // Prism syntax highlighting
     document.addEventListener('DOMContentLoaded', () => {
       Prism.highlightAll();
     });
 
-    // Global search
     const searchInput = document.getElementById('globalSearch');
     const docSections = document.querySelectorAll('.doc-section');
     const topicGroups = document.querySelectorAll('.topic-group');
@@ -10477,7 +10589,6 @@ section mirrors the canonical rule and links back.</li>
       });
     });
 
-    // Keyboard shortcut (Cmd+K / Ctrl+K)
     document.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
@@ -10486,7 +10597,6 @@ section mirrors the canonical rule and links back.</li>
       }
     });
 
-    // Smooth scroll with offset
     document.querySelectorAll('a[href^="#"]').forEach(link => {
       link.addEventListener('click', (e) => {
         if (link.getAttribute('href') === '#') return;
