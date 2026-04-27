@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * build-manual-html.mjs (v7.4.0) - FIX CARD HOVER OVERLAP
+ * build-manual-html.mjs (v7.5.0) - ADD GO TO TOP BUTTON
  *
  * Changes:
- * - Remove lazy loading of discovery blocks (show immediately)
- * - Fix card hover: no transform that causes overlap
- * - Keep discovery blocks visible, clean layout
- * - Fix Prism.js highlighting
+ * - Add floating "Go to TOP" button
+ * - Shows when scrolled down 300px
+ * - Click to smooth scroll to top
+ * - Stylish with neon accent
  */
 
 import fs from 'node:fs';
@@ -268,7 +268,7 @@ function buildHTML(docs) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI-SDLC Platform Manual v7.4.0" />
+  <meta name="description" content="AI-SDLC Platform Manual v7.5.0" />
   <title>AI-SDLC Platform Manual</title>
 
   <!-- Prism.js -->
@@ -425,6 +425,47 @@ header {
   line-height: 1.3;
 }
 
+/* Go to Top Button */
+#go-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  z-index: 99;
+  box-shadow: var(--shadow-lg);
+  transition: var(--transition);
+  opacity: 0;
+}
+
+#go-to-top.visible {
+  display: flex;
+  opacity: 1;
+}
+
+#go-to-top:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 30px rgba(0, 217, 255, 0.4);
+}
+
+@media (max-width: 768px) {
+  #go-to-top {
+    bottom: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+}
+
 /* Main */
 main {
   max-width: 1400px;
@@ -498,7 +539,7 @@ main {
   background: var(--text-secondary);
 }
 
-/* Topic Cards - NO TRANSFORM */
+/* Topic Cards */
 .topic-card {
   flex: 0 0 280px;
   padding: 18px;
@@ -819,6 +860,8 @@ a:hover {
   </style>
 </head>
 <body>
+  <button id="go-to-top" title="Go to top">⬆</button>
+
   <header>
     <div class="header-inner">
       <div class="logo">⚡ AI-SDLC</div>
@@ -835,6 +878,21 @@ a:hover {
   </main>
 
   <script>
+    // Go to top button
+    const goToTopBtn = document.getElementById('go-to-top');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        goToTopBtn.classList.add('visible');
+      } else {
+        goToTopBtn.classList.remove('visible');
+      }
+    });
+
+    goToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
     // Search
     const searchIndex = ${searchIndex};
     const searchInput = document.getElementById('searchInput');
@@ -907,7 +965,7 @@ function main() {
   fs.writeFileSync(HASH_FILE, hash);
 
   const size = (fs.statSync(OUT).size / 1024).toFixed(1);
-  console.log(`Generated ${OUT} (v7.4.0, ${docs.length} sections, ${size} KB)`);
+  console.log(`Generated ${OUT} (v7.5.0, ${docs.length} sections, ${size} KB)`);
 }
 
 main();
