@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /**
- * build-manual-html.mjs (v7.3.0) - NO TOC + FIX PRISM.JS
+ * build-manual-html.mjs (v7.4.0) - FIX CARD HOVER OVERLAP
  *
  * Changes:
- * - Remove TOC completely from all pages
- * - Fix Prism.js: ensure proper language detection and highlighting
- * - Force Prism to run after DOM is ready
+ * - Remove lazy loading of discovery blocks (show immediately)
+ * - Fix card hover: no transform that causes overlap
+ * - Keep discovery blocks visible, clean layout
+ * - Fix Prism.js highlighting
  */
 
 import fs from 'node:fs';
@@ -159,7 +160,6 @@ function markdownToHtml(markdown) {
     linkify: true,
     typographer: true,
     highlight: function(str, lang) {
-      // CRITICAL: return proper <pre><code> with language class for Prism.js
       if (lang) {
         return `<pre class="language-${lang}"><code class="language-${lang}">${esc(str)}</code></pre>`;
       }
@@ -268,10 +268,10 @@ function buildHTML(docs) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI-SDLC Platform Manual v7.3.0" />
+  <meta name="description" content="AI-SDLC Platform Manual v7.4.0" />
   <title>AI-SDLC Platform Manual</title>
 
-  <!-- Prism.js with all language support -->
+  <!-- Prism.js -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"><\/script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"><\/script>
@@ -319,7 +319,6 @@ body {
   background: linear-gradient(135deg, var(--bg) 0%, #0f0f18 100%);
   color: var(--text);
   line-height: 1.6;
-  transition: var(--transition);
 }
 
 /* Header */
@@ -434,15 +433,6 @@ main {
 }
 
 /* Topic Groups */
-#discovery-container {
-  opacity: 0;
-  transition: opacity 0.6s ease-out;
-}
-
-#discovery-container.visible {
-  opacity: 1;
-}
-
 .topic-group {
   margin-bottom: 40px;
   padding: 28px;
@@ -452,7 +442,7 @@ main {
   border-radius: var(--radius);
   backdrop-filter: blur(10px);
   transition: var(--transition);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .topic-group:hover {
@@ -490,7 +480,7 @@ main {
   display: flex;
   gap: 14px;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
   padding-bottom: 8px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
@@ -508,7 +498,7 @@ main {
   background: var(--text-secondary);
 }
 
-/* Topic Cards */
+/* Topic Cards - NO TRANSFORM */
 .topic-card {
   flex: 0 0 280px;
   padding: 18px;
@@ -517,7 +507,7 @@ main {
   border-radius: var(--radius-sm);
   text-decoration: none;
   color: inherit;
-  transition: var(--transition);
+  transition: box-shadow 0.3s, border-color 0.3s, background 0.3s;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -525,7 +515,6 @@ main {
   flex-direction: column;
   min-height: 160px;
   border: 1px solid var(--border-subtle);
-  will-change: transform, box-shadow, border-color;
 }
 
 .topic-card::before {
@@ -548,9 +537,9 @@ main {
 }
 
 .topic-card:hover {
-  transform: translateY(-4px);
   box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
   border-color: var(--card-accent);
+  background: rgba(26, 26, 36, 0.9);
 }
 
 .topic-card h3 {
@@ -685,7 +674,7 @@ main {
   color: var(--text-secondary);
 }
 
-/* Code - PRISM.JS SUPPORT */
+/* Code */
 .doc-body code {
   background: var(--bg-card);
   padding: 2px 6px;
@@ -720,7 +709,7 @@ main {
   font-size: 13px;
 }
 
-/* Prism.js Theme Overrides */
+/* Prism.js Theme */
 code[class*="language-"],
 pre[class*="language-"] {
   font-family: var(--font-mono);
@@ -841,25 +830,11 @@ a:hover {
   </header>
 
   <main>
-    <div id="discovery-container">
-      ${groupBlocks}
-    </div>
+    ${groupBlocks}
     ${docCards}
   </main>
 
   <script>
-    // Lazy reveal discovery blocks on scroll
-    const discoveryContainer = document.getElementById('discovery-container');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          discoveryContainer.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    observer.observe(discoveryContainer);
-
     // Search
     const searchIndex = ${searchIndex};
     const searchInput = document.getElementById('searchInput');
@@ -895,7 +870,7 @@ a:hover {
       setTimeout(() => searchResults.classList.remove('active'), 200);
     });
 
-    // PRISM.JS - Force highlight after DOM ready
+    // Prism
     function initPrism() {
       if (typeof Prism !== 'undefined') {
         Prism.highlightAll();
@@ -905,14 +880,12 @@ a:hover {
       }
     }
 
-    // Run on DOM ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initPrism);
     } else {
       initPrism();
     }
 
-    // Also run when content might be lazy-loaded
     setTimeout(initPrism, 100);
   </script>
 </body>
@@ -934,7 +907,7 @@ function main() {
   fs.writeFileSync(HASH_FILE, hash);
 
   const size = (fs.statSync(OUT).size / 1024).toFixed(1);
-  console.log(`Generated ${OUT} (v7.3.0, ${docs.length} sections, ${size} KB)`);
+  console.log(`Generated ${OUT} (v7.4.0, ${docs.length} sections, ${size} KB)`);
 }
 
 main();
