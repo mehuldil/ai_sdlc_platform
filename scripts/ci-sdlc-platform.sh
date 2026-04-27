@@ -37,7 +37,12 @@ _lint_shell_and_python() {
   fi
   if command -v node &>/dev/null && node -v &>/dev/null; then
     echo "=== User_Manual/manual.html --check ==="
-    node User_Manual/build-manual-html.mjs --check
+    cd User_Manual
+    if ! npm ci --prefer-offline --no-audit 2>/dev/null; then
+      npm install --legacy-peer-deps 2>/dev/null || true
+    fi
+    node build-manual-html.mjs --check
+    cd "$ROOT"
   else
     echo "=== skip manual.html --check (node not on PATH) ==="
   fi
@@ -71,7 +76,12 @@ bash cli/tests/smoke.sh
 
 if command -v node &>/dev/null; then
   echo "=== User_Manual/manual.html --check (full) ==="
-  node User_Manual/build-manual-html.mjs --check
+  cd User_Manual
+  if ! npm ci --prefer-offline --no-audit 2>/dev/null; then
+    npm install --legacy-peer-deps 2>/dev/null || true
+  fi
+  node build-manual-html.mjs --check
+  cd "$ROOT"
 fi
 
 echo "=== ci-sdlc-platform (full) OK ==="
