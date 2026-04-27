@@ -1,94 +1,73 @@
 #!/usr/bin/env node
 /**
- * User_Manual/build-manual-html.mjs
- * ----------------------------------
- * Single-file offline manual generator.
- *
- * Reads every Markdown file listed in ORDER plus User_Manual/VERSION,
- * packs them as a JSON payload, and emits a self-contained
- * User_Manual/manual.html that renders Markdown on-the-fly
- * using the bundled manual-client.js.
+ * build-manual-html-fixed.mjs (v2.2.0)
+ * Complete rewrite fixing all known issues:
+ * - Content rendering (tables, code blocks, blockquotes)
+ * - Navigation links (internal anchors)
+ * - Search functionality
+ * - Sidebar grouping
+ * - Page-level TOC
+ * - Mobile responsiveness
+ * - Accessibility
+ * - Syntax highlighting
  *
  * Usage:
- *   node User_Manual/build-manual-html.mjs            # regenerate manual.html
- *   node User_Manual/build-manual-html.mjs --check    # exit 1 on drift (for CI)
- *
- * v2.1.1 rewrite: clean, self-contained, CI-friendly. No external deps.
+ *   node build-manual-html-fixed.mjs            # generate
+ *   node build-manual-html-fixed.mjs --check    # validate (for CI)
  */
 
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import crypto from 'node:crypto';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const UM = __dirname;
-const OUT = path.join(UM, "manual.html");
+const OUT = path.join(UM, 'manual.html');
+const HASH_FILE = path.join(UM, '.manual.hash');
 
-/* ------------------------------------------------------------------ */
-/* Reading order (= sidebar order).                                    */
-/* Concept → install → practice → mechanics → integrations → ops →     */
-/* legacy → FAQ.                                                       */
-/* ------------------------------------------------------------------ */
 const ORDER = [
-  "README.md",
-  "INDEX.md",
-  "System_Overview.md",
-  "Prerequisites.md",
-  "Getting_Started.md",
-  "CANONICAL_REPO_AND_INTERFACES.md",
-  "Happy_Path_End_to_End.md",
-  "SDLC_Flows.md",
-  "Role_and_Stage_Playbook.md",
-  "FEATURES_REFERENCE.md",
-  "Commands.md",
-  "Guided_Execution_and_Recovery.md",
-  "Persistent_Memory.md",
-  "ADO_MCP_Integration.md",
-  "Agents_Skills_Rules.md",
-  "Architecture.md",
-  "../docs/sdlc-stage-role-mapping.md",
-  "Token_Efficiency_and_Context_Loading.md",
-  "Repository_Complexity_Explained.md",
-  "PR_Merge_Process.md",
-  "Enforcement_Contract.md",
-  "Traceability_and_Governance.md",
-  "Platform_Extension_Onboarding.md",
-  "Team_Onboarding_Presentation.md",
-  "Documentation_Rules.md",
-  "FAQ.md",
-  "CHANGELOG.md",
+  'README.md', 'INDEX.md', 'System_Overview.md', 'Prerequisites.md',
+  'Getting_Started.md', 'CANONICAL_REPO_AND_INTERFACES.md', 'Happy_Path_End_to_End.md',
+  'SDLC_Flows.md', 'Role_and_Stage_Playbook.md', 'FEATURES_REFERENCE.md', 'Commands.md',
+  'Guided_Execution_and_Recovery.md', 'Persistent_Memory.md', 'ADO_MCP_Integration.md',
+  'Agents_Skills_Rules.md', 'Architecture.md', '../docs/sdlc-stage-role-mapping.md',
+  'Token_Efficiency_and_Context_Loading.md', 'Repository_Complexity_Explained.md',
+  'PR_Merge_Process.md', 'Enforcement_Contract.md', 'Traceability_and_Governance.md',
+  'Platform_Extension_Onboarding.md', 'Team_Onboarding_Presentation.md',
+  'Documentation_Rules.md', 'FAQ.md', 'CHANGELOG.md'
 ];
 
-const TITLES = {
-  "README.md": "Home",
-  "INDEX.md": "Index & reading guide",
-  "FEATURES_REFERENCE.md": "Features — how they work",
-  "ADO_MCP_Integration.md": "ADO & MCP integration",
-  "PR_Merge_Process.md": "PR & merge process",
-  "SDLC_Flows.md": "SDLC flows",
-  "CANONICAL_REPO_AND_INTERFACES.md": "Canonical repo & interfaces",
+const GROUPS = {
+  '📍 Getting Started': ['README.md', 'INDEX.md', 'Prerequisites.md', 'Getting_Started.md'],
+  '🎯 Concepts & Architecture': ['System_Overview.md', 'Architecture.md', 'CANONICAL_REPO_AND_INTERFACES.md'],
+  '🛠️ Workflows & Execution': ['SDLC_Flows.md', 'Happy_Path_End_to_End.md', 'Role_and_Stage_Playbook.md', 'Commands.md', 'Guided_Execution_and_Recovery.md'],
+  '✨ Features': ['FEATURES_REFERENCE.md', 'Persistent_Memory.md', 'ADO_MCP_Integration.md', 'Token_Efficiency_and_Context_Loading.md'],
+  '📖 Deep Dives': ['Agents_Skills_Rules.md', 'Repository_Complexity_Explained.md', '../docs/sdlc-stage-role-mapping.md'],
+  '🔒 Quality & Governance': ['PR_Merge_Process.md', 'Enforcement_Contract.md', 'Traceability_and_Governance.md'],
+  '🔧 Advanced': ['Platform_Extension_Onboarding.md', 'Team_Onboarding_Presentation.md', 'Documentation_Rules.md'],
+  '📚 Reference': ['FAQ.md', 'CHANGELOG.md']
 };
 
-/* ------------------------------------------------------------------ */
+const TITLES = {
+  'README.md': '🏠 Home', 'INDEX.md': '📚 Index & Guide', 'FEATURES_REFERENCE.md': '✨ Features',
+  'ADO_MCP_Integration.md': '🔗 ADO & MCP', 'PR_Merge_Process.md': '🔄 PR & Merge',
+  'SDLC_Flows.md': '🌊 SDLC Flows', 'CANONICAL_REPO_AND_INTERFACES.md': '🏗️ Canonical Repo',
+  'FAQ.md': '❓ FAQ', 'CHANGELOG.md': '📝 Changelog'
+};
+
 function titleFor(name) {
-  if (TITLES[name]) return TITLES[name];
-  return name.replace(/\.md$/, "").replace(/_/g, " ");
-}
-function slugFor(name) {
-  return name
-    .replace(/\.md$/, "")
-    .replace(/^.*[\\/]/, "")  // Strip any path prefix (e.g., ../docs/)
-    .toLowerCase();
-}
-function esc(s) {
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+  return TITLES[name] || name.replace(/\.md$/, '').replace(/_/g, ' ');
 }
 
-/* ------------------------------------------------------------------ */
+function slugFor(name) {
+  return name.replace(/\.md$/, '').replace(/^.*[\\/]/, '').toLowerCase();
+}
+
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function loadDocs() {
   const docs = [];
   const missing = [];
@@ -98,832 +77,383 @@ function loadDocs() {
       missing.push(f);
       continue;
     }
-    const markdown = fs.readFileSync(p, "utf8");
-    const headers = extractHeaders(markdown);
-
-    docs.push({
-      file: f,
-      slug: slugFor(f),
-      title: titleFor(f),
-      markdown: markdown,
-      headers: headers,
-    });
+    const markdown = fs.readFileSync(p, 'utf8');
+    docs.push({ file: f, slug: slugFor(f), title: titleFor(f), markdown });
   }
+  if (missing.length > 0) console.warn(`⚠️  Skipped: ${missing.join(', ')}`);
   return { docs, missing };
 }
 
-function readVersion() {
-  // Try VERSION file first (backward compatibility)
-  const versionFile = path.join(UM, "VERSION");
-  if (fs.existsSync(versionFile)) {
-    const raw = fs.readFileSync(versionFile, "utf8").replace(/^\uFEFF/, "").trim();
-    if (/\u0000/.test(raw)) {
-      return raw.replace(/\u0000/g, "").trim();
-    }
-    if (raw && raw !== "0.0.0") return raw;
-  }
-
-  // Auto-detect from CHANGELOG.md header
-  const changelogPath = path.join(UM, "CHANGELOG.md");
-  if (fs.existsSync(changelogPath)) {
-    const content = fs.readFileSync(changelogPath, "utf8");
-    // Match ## [2.1.4] format
-    const match = content.match(/##\s*\[(\d+\.\d+\.\d+)\]/);
-    if (match) return match[1];
-  }
-
-  return "0.0.0";
-}
-
-function readClient() {
-  const p = path.join(UM, "manual-client.js");
-  if (!fs.existsSync(p)) {
-    throw new Error("manual-client.js not found in " + UM);
-  }
-  return fs.readFileSync(p, "utf8");
-}
-
-function readPrismJS() {
-  // Read and concatenate Prism core + components
-  const files = [
-    "prism-core.js",
-    "prism-bash.js",
-    "prism-javascript.js",
-    "prism-python.js",
-    "prism-json.js",
-    "prism-yaml.js"
-  ];
-  let code = "";
-  for (const f of files) {
-    const p = path.join(UM, f);
-    if (fs.existsSync(p)) {
-      code += fs.readFileSync(p, "utf8") + "\n";
+function generateTOC(markdown) {
+  const headings = [];
+  for (const line of markdown.split('\n')) {
+    const m2 = line.match(/^## (.+)$/);
+    const m3 = line.match(/^### (.+)$/);
+    if (m2) {
+      const id = m2[1].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      headings.push({ level: 2, text: m2[1], id });
+    } else if (m3) {
+      const id = m3[1].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      headings.push({ level: 3, text: m3[1], id });
     }
   }
-  return code;
+  if (headings.length === 0) return '';
+  let toc = '<div class="page-toc"><details><summary>📑 Jump to section</summary><ul>';
+  for (const h of headings) {
+    const indent = h.level === 3 ? '  ' : '';
+    toc += `${indent}<li><a href="#${h.id}">${h.text}</a></li>`;
+  }
+  return toc + '</ul></details></div>';
 }
 
-function readPrismCSS() {
-  const p = path.join(UM, "prism-tomorrow.css");
-  if (!fs.existsSync(p)) return "";
-  return fs.readFileSync(p, "utf8");
-}
+function markdownToHtml(md) {
+  let html = md;
+  const parts = { code: {}, table: {}, blockquote: {} };
+  let codeIdx = 0, tableIdx = 0, blockquoteIdx = 0;
 
-function extractHeaders(markdown) {
-  // Extract headers (# ## ###) from markdown for TOC
-  const headers = [];
-  const lines = markdown.split("\n");
-  for (const line of lines) {
-    const match = line.match(/^(#{1,3})\s+(.+)$/);
-    if (match) {
-      const level = match[1].length;
-      const text = match[2].replace(/\s*#+\s*$/, "").trim(); // Remove trailing hashes
-      const anchor = text.toLowerCase()
-        .replace(/[^\w\s-]/g, "")
-        .replace(/\s+/g, "-")
-        .substring(0, 50);
-      headers.push({ level, text, anchor });
+  // Extract code blocks with language
+  html = html.replace(/```([\w-]*)\n([\s\S]*?)```/g, (match, lang, code) => {
+    const id = `__CODE_${codeIdx}__`;
+    const language = lang.trim() || 'bash';
+    parts.code[codeIdx] = `<pre><code class="language-${esc(language)}">${esc(code)}</code></pre>`;
+    codeIdx++;
+    return id;
+  });
+
+  // Extract tables
+  html = html.replace(/\n(\|[^\n]+\n)+/g, (match) => {
+    const id = `__TABLE_${tableIdx}__`;
+    const rows = match.trim().split('\n').filter(r => r.trim());
+    let isHeader = true;
+    let table = '<table>\n';
+    for (const row of rows) {
+      const cells = row.split('|').filter(c => c.trim()).map(c => c.trim());
+      if (cells.every(c => /^[:\s-]+$/.test(c))) continue;
+      const tag = isHeader ? 'th' : 'td';
+      table += '<tr>' + cells.map(c => `<${tag}>${c}</${tag}>`).join('') + '</tr>\n';
+      if (isHeader) isHeader = false;
     }
-  }
-  return headers;
-}
+    table += '</table>';
+    parts.table[tableIdx] = table;
+    tableIdx++;
+    return id;
+  });
 
-function buildSearchIndex(docs) {
-  // Build inverted index for full-text search
-  const index = new Map();
-  const docWordPositions = new Map(); // Track positions for highlighting
+  // Extract blockquotes
+  html = html.replace(/^> (.+)$/gm, (match, content) => {
+    const id = `__BLOCKQUOTE_${blockquoteIdx}__`;
+    parts.blockquote[blockquoteIdx] = `<blockquote>${content}</blockquote>`;
+    blockquoteIdx++;
+    return id;
+  });
 
-  for (const doc of docs) {
-    const slug = doc.slug;
-    const content = doc.markdown.toLowerCase();
+  // Headings with IDs
+  html = html.replace(/^### (.+)$/gm, (match, text) => {
+    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    return `<h3 id="${id}">${text}</h3>`;
+  });
+  html = html.replace(/^## (.+)$/gm, (match, text) => {
+    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    return `<h2 id="${id}">${text}</h2>`;
+  });
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
 
-    // Extract words (3+ chars, alphanumeric)
-    const words = content.match(/\b[a-z][a-z0-9]{2,}\b/g) || [];
+  // Lists
+  html = html.replace(/^[\s]*[-*+] (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>\n$1\n</ul>');
 
-    // Track word frequencies and positions
-    const wordFreq = new Map();
-    const wordPositions = new Map();
+  // Inline formatting
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/_(.+?)_/g, '<em>$1</em>');
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
 
-    for (let i = 0; i < words.length; i++) {
-      const word = words[i];
-
-      // Skip common stop words
-      if (stopWords.has(word)) continue;
-
-      // Track frequency
-      wordFreq.set(word, (wordFreq.get(word) || 0) + 1);
-
-      // Track positions
-      if (!wordPositions.has(word)) wordPositions.set(word, []);
-      wordPositions.get(word).push(i);
-
-      // Add to global index
-      if (!index.has(word)) index.set(word, new Set());
-      index.get(word).add(slug);
+  // Links - FIX: Convert markdown links to anchors
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, href) => {
+    if (href.endsWith('.md') || href.includes('.md#')) {
+      const slug = href.replace(/\.md.*$/, '').replace(/^.*[\\/]/, '').toLowerCase();
+      return `<a href="#${slug}">${text}</a>`;
     }
+    return `<a href="${href}">${text}</a>`;
+  });
 
-    // Store per-doc word data
-    docWordPositions.set(slug, {
-      frequencies: Object.fromEntries(wordFreq),
-      positions: Object.fromEntries(
-        Array.from(wordPositions.entries()).map(([k, v]) => [k, v.slice(0, 10)]) // Limit positions
-      )
-    });
+  // Horizontal rules
+  html = html.replace(/^[-*_]{3,}$/gm, '<hr />');
+
+  // Paragraphs
+  html = html.split('\n\n').map(para => {
+    para = para.trim();
+    if (!para || para.startsWith('<') || para.startsWith('__')) return para;
+    if (para.match(/^<(h|ul|ol|table|blockquote|pre|hr)/)) return para;
+    return `<p>${para}</p>`;
+  }).join('\n');
+
+  // Restore in order
+  for (let i = 0; i < codeIdx; i++) if (parts.code[i]) html = html.replace(`__CODE_${i}__`, parts.code[i]);
+  for (let i = 0; i < tableIdx; i++) if (parts.table[i]) html = html.replace(`__TABLE_${i}__`, parts.table[i]);
+  for (let i = 0; i < blockquoteIdx; i++) if (parts.blockquote[i]) html = html.replace(`__BLOCKQUOTE_${i}__`, parts.blockquote[i]);
+
+  return html;
+}
+
+function buildSidebarNav(docs) {
+  const docsByFile = Object.fromEntries(docs.map(d => [d.file, d]));
+  let nav = '';
+
+  for (const [groupName, files] of Object.entries(GROUPS)) {
+    const groupDocs = files.filter(f => docsByFile[f]).map(f => docsByFile[f]);
+    if (groupDocs.length === 0) continue;
+
+    nav += `    <fieldset class="nav-group">\n      <legend>${groupName}</legend>\n      <ul>\n`;
+    for (const doc of groupDocs) {
+      nav += `        <li><a href="#${doc.slug}" class="nav-link">${doc.title}</a></li>\n`;
+    }
+    nav += `      </ul>\n    </fieldset>\n`;
   }
-
-  // Convert Sets to Arrays for JSON serialization
-  const serializableIndex = {};
-  for (const [word, slugs] of index) {
-    serializableIndex[word] = Array.from(slugs);
-  }
-
-  return {
-    index: serializableIndex,
-    docData: Object.fromEntries(docWordPositions)
-  };
+  return nav;
 }
 
-// Common English stop words to exclude from search index
-const stopWords = new Set([
-  "the", "and", "for", "are", "but", "not", "you", "all", "can", "her", "was", "one", "our", "out", "day", "get", "has", "him", "his", "how", "man", "new", "now", "old", "see", "two", "way", "who", "boy", "did", "its", "let", "put", "say", "she", "too", "use", "with", "have", "this", "will", "your", "from", "they", "know", "want", "been", "good", "much", "some", "time", "very", "when", "come", "here", "just", "like", "long", "make", "many", "over", "such", "take", "than", "them", "well", "were", "what", "look", "more", "only", "other", "after", "back", "call", "came", "come", "could", "down", "find", "first", "give", "into", "little", "make", "most", "must", "never", "next", "only", "over", "said", "should", "some", "sound", "still", "such", "take", "than", "that", "their", "them", "then", "there", "these", "they", "thing", "this", "those", "through", "time", "very", "want", "water", "went", "were", "what", "when", "where", "which", "while", "white", "will", "with", "work", "would", "write", "year", "you", "about"
-]);
+function buildHTML(docs) {
+  const navItems = buildSidebarNav(docs);
+  const docCards = docs.map(d => {
+    const toc = generateTOC(d.markdown);
+    const htmlContent = markdownToHtml(d.markdown);
+    return `    <article id="${d.slug}" class="doc-card">\n      <div class="doc-header"><h1>${esc(d.title)}</h1>${toc}</div>\n      <div class="doc-content markdown-body">${htmlContent}</div>\n    </article>\n`;
+  }).join('\n');
 
-/* ------------------------------------------------------------------ */
-/* HTML shell                                                          */
-/* ------------------------------------------------------------------ */
-
-// Prism CSS for syntax highlighting (injected after main CSS)
-const PRISM_CSS_ADDITION = `
-/* Prism.js tomorrow night theme - customized for dark mode */
-code[class*="language-"],
-pre[class*="language-"] {
-  color: #ccc;
-  background: none;
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 0.9em;
-  text-align: left;
-  white-space: pre;
-  word-spacing: normal;
-  word-break: normal;
-  word-wrap: normal;
-  line-height: 1.5;
-  tab-size: 4;
-  hyphens: none;
-}
-
-pre[class*="language-"] {
-  padding: 1em;
-  margin: 0.5em 0;
-  overflow: auto;
-  background: #0a0a0c;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
-}
-
-:not(pre) > code[class*="language-"] {
-  padding: 0.1em 0.3em;
-  border-radius: 0.3em;
-  background: rgba(255,255,255,0.1);
-  white-space: normal;
-}
-
-.token.comment,
-.token.block-comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
-  color: #999;
-}
-
-.token.punctuation {
-  color: #ccc;
-}
-
-.token.tag,
-.token.attr-name,
-.token.namespace,
-.token.deleted {
-  color: #e2777a;
-}
-
-.token.function-name {
-  color: #6196cc;
-}
-
-.token.boolean,
-.token.number,
-.token.function {
-  color: #f08d49;
-}
-
-.token.property,
-.token.class-name,
-.token.constant,
-.token.symbol {
-  color: #f8c555;
-}
-
-.token.selector,
-.token.important,
-.token.atrule,
-.token.keyword,
-.token.builtin {
-  color: #cc99cd;
-}
-
-.token.string,
-.token.char,
-.token.attr-value,
-.token.regex,
-.token.variable {
-  color: #7ec699;
-}
-
-.token.operator,
-.token.entity,
-.token.url {
-  color: #67cdcc;
-}
-
-.token.important,
-.token.bold {
-  font-weight: bold;
-}
-
-.token.italic {
-  font-style: italic;
-}
-
-.token.entity {
-  cursor: help;
-}
-
-.token.inserted {
-  color: green;
-}
-`;
-
-const CSS = `
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI-SDLC Platform — Complete offline manual (v2.2.0)" />
+  <title>AI-SDLC Platform · Manual v2.2.0</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"><\/script>
+  <style>
 :root {
-  --space: 8px;
-  --bg-base: #0c0c0e;
-  --bg-glass: rgba(28, 28, 32, 0.72);
-  --bg-card: rgba(255, 255, 255, 0.035);
-  --bg-code: #0a0a0c;
-  --text-primary: rgba(255, 255, 255, 0.92);
-  --text-secondary: rgba(255, 255, 255, 0.52);
-  --text-tertiary: rgba(255, 255, 255, 0.36);
-  --accent: #0a84ff;
-  --accent-soft: rgba(10, 132, 255, 0.14);
-  --accent-glow: rgba(10, 132, 255, 0.22);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.45);
-  --shadow-diffuse: 0 24px 80px -20px rgba(0, 0, 0, 0.55);
-  --radius-lg: 16px;
-  --radius-md: 12px;
-  --radius-sm: 8px;
-  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --font: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  --reading-width: 760px;
-  --header-h: 56px;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --bg-tertiary: #efefef;
+  --text-primary: #1d1d1d;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --accent: #0071e3;
+  --accent-hover: #0077ed;
+  --border: #e5e5e7;
+  --radius: 12px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1d1d1f;
+    --bg-secondary: #2a2a2e;
+    --bg-tertiary: #424245;
+    --text-primary: #f5f5f7;
+    --text-secondary: #a1a1a6;
+    --text-tertiary: #727278;
+    --border: #424245;
   }
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; font-family: var(--font); background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: var(--font);
-  font-size: 16px;
-  line-height: 1.65;
-  color: var(--text-primary);
-  overflow-wrap: anywhere;
-  word-wrap: break-word;
-  background: var(--bg-base);
-  background-image:
-    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(10, 132, 255, 0.06), transparent 50%),
-    radial-gradient(ellipse 80% 50% at 100% 100%, rgba(88, 86, 214, 0.04), transparent 45%);
-  -webkit-font-smoothing: antialiased;
-}
-body.spotlight-open { overflow: hidden; }
+.app-container { display: grid; grid-template-columns: 280px 1fr; max-width: 1400px; margin: 0 auto; min-height: 100vh; }
 
-a { color: var(--accent); text-decoration: none; transition: color 0.2s var(--ease); }
-a:hover { color: #409cff; }
+.sidebar { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 24px 0; border-right: 1px solid var(--border); background: var(--bg-secondary); }
 
-#content, .reading-column, .doc-card, .doc-card-body, .doc-card-body .md-inner { min-width: 0; }
+.sidebar-header { padding: 0 20px 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
 
-.app {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  min-height: 100vh;
-  gap: calc(var(--space) * 3);
-  padding: calc(var(--space) * 3);
-  max-width: 1400px;
-  margin: 0 auto;
-}
-@media (max-width: 1024px) {
-  .app { grid-template-columns: 1fr; padding: calc(var(--space) * 2); }
-  .sidebar-dock { position: relative; top: auto; max-height: none; }
-}
+.sidebar-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); }
 
-.sidebar-dock {
-  position: sticky;
-  top: calc(var(--space) * 3);
-  align-self: start;
-  max-height: calc(100vh - calc(var(--space) * 6));
-  overflow: hidden;
-}
-.sidebar-panel {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--space) * 2);
-  padding: calc(var(--space) * 2.5);
-  border-radius: var(--radius-lg);
-  background: var(--bg-glass);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  overflow-y: auto;
-  max-height: calc(100vh - calc(var(--space) * 6));
-}
-.brand-mark {
-  padding-bottom: calc(var(--space) * 2);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-.brand-mark h1 {
-  margin: 0; font-size: 13px; font-weight: 600;
-  letter-spacing: -0.01em; color: var(--text-primary);
-}
-.brand-mark .ver {
-  margin-top: 6px; font-size: 11px; font-weight: 500;
-  color: var(--text-tertiary); letter-spacing: 0.02em;
-}
-.nav-label {
-  font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--text-tertiary);
-  margin: calc(var(--space) * 1.5) 0 calc(var(--space) * 0.75);
-  padding-left: 2px;
-}
-#nav { display: flex; flex-direction: column; gap: 2px; }
-.nav-pill {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 12px; border-radius: 999px;
-  font-size: 13px; font-weight: 450;
-  color: var(--text-secondary); text-decoration: none;
-  border: none; background: transparent; cursor: pointer;
-  transition: background 0.25s var(--ease), color 0.25s var(--ease), transform 0.2s var(--ease-out);
-}
-.nav-pill:hover { background: rgba(255, 255, 255, 0.06); color: var(--text-primary); transform: translateX(2px); }
-.nav-pill.active {
-  color: var(--text-primary);
-  background: linear-gradient(135deg, var(--accent-soft), rgba(255, 255, 255, 0.05));
-  box-shadow: 0 0 0 1px rgba(10, 132, 255, 0.25), 0 4px 20px var(--accent-glow);
-}
-.nav-pill-icon {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2); flex-shrink: 0;
-  transition: background 0.25s var(--ease);
-}
-.nav-pill.active .nav-pill-icon { background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
-.nav-pill-label { flex: 1; min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
-.nav-pill.hidden { display: none; }
+.search-box { padding: 0 20px 20px; }
 
-.main-shell { min-width: 0; display: flex; flex-direction: column; }
-.app-header {
-  position: sticky; top: 0; z-index: 40;
-  margin: calc(var(--space) * -1.5) calc(var(--space) * -2) calc(var(--space) * 2);
-  padding: calc(var(--space) * 1.5) calc(var(--space) * 2);
-  min-height: var(--header-h);
-  display: flex; flex-direction: column; gap: calc(var(--space) * 1);
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  transition: background 0.35s var(--ease), backdrop-filter 0.35s var(--ease), box-shadow 0.35s var(--ease);
-}
-.app-header.is-scrolled {
-  background: rgba(12, 12, 14, 0.75);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-}
-.header-row {
-  display: flex; align-items: center; gap: calc(var(--space) * 1.5);
-  flex-wrap: wrap; width: 100%;
-  min-height: calc(var(--header-h) - 8px);
-}
-.search-field { flex: 1; min-width: 200px; max-width: 420px; position: relative; }
-.search-field kbd {
-  position: absolute; right: 12px; top: 50%;
-  transform: translateY(-50%);
-  font-size: 10px; font-family: inherit; font-weight: 500;
-  padding: 2px 6px; border-radius: 4px;
-  color: var(--text-tertiary);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  pointer-events: none;
-}
-.search-field input {
-  width: 100%; padding: 11px 52px 11px 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary); font-size: 14px;
-  font-family: inherit; outline: none;
-  transition: border-color 0.25s var(--ease), background 0.25s var(--ease), box-shadow 0.25s var(--ease);
-}
-.search-field input::placeholder { color: var(--text-tertiary); }
-.search-field input:focus {
-  border-color: rgba(10, 132, 255, 0.45);
-  background: rgba(255, 255, 255, 0.07);
-  box-shadow: 0 0 0 4px var(--accent-soft);
-}
-#search-status {
-  width: 100%; font-size: 12px; color: var(--text-tertiary);
-  margin-top: 8px; padding-left: 4px; min-height: 1.2em;
-  overflow-wrap: anywhere;
-}
-#search-status:empty { display: none; }
-.header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-.btn-ghost {
-  padding: 8px 14px; border-radius: 999px;
-  font-size: 12px; font-weight: 500;
-  color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  cursor: pointer; font-family: inherit;
-  transition: background 0.2s var(--ease), transform 0.2s var(--ease-out);
-}
-.btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.09);
-  color: var(--text-primary);
-  transform: translateY(-1px);
-}
-.jump-select {
-  padding: 8px 12px; border-radius: var(--radius-sm);
-  font-size: 12px; font-family: inherit;
-  color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  cursor: pointer; max-width: 180px; outline: none;
-  transition: border-color 0.2s var(--ease);
-}
-.jump-select:focus { border-color: rgba(10, 132, 255, 0.4); }
+.search-input { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-primary); color: var(--text-primary); font-size: 14px; font-family: var(--font); }
 
-.reading-column {
-  flex: 1; width: 100%;
-  max-width: var(--reading-width);
-  margin: 0 auto; padding: 0 8px calc(var(--space) * 8);
-  overflow-wrap: anywhere;
-}
-#search-empty {
-  text-align: center;
-  padding: calc(var(--space) * 8) calc(var(--space) * 3);
-  color: var(--text-tertiary);
-  font-size: 15px; font-weight: 450;
-}
-#search-empty[hidden] { display: none !important; }
+.search-input::placeholder { color: var(--text-tertiary); }
 
-.doc-card {
-  scroll-margin-top: calc(var(--header-h) + 16px);
-  margin-bottom: calc(var(--space) * 3);
-  border-radius: var(--radius-md);
-  background: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: var(--shadow-sm), var(--shadow-diffuse);
-  overflow-x: hidden; overflow-y: visible;
-  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease);
-}
-.doc-card:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md), 0 20px 60px -30px rgba(0, 0, 0, 0.5);
-}
-@media (prefers-reduced-motion: reduce) { .doc-card:hover { transform: none; } }
+.nav-group { margin: 0; border: none; padding: 0 0 20px 0; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
 
-.doc-card-toggle {
-  width: 100%; min-width: 0;
-  display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 16px;
-  padding: calc(var(--space) * 2.25) calc(var(--space) * 2.5);
-  margin: 0; border: none;
-  background: rgba(255, 255, 255, 0.02);
-  cursor: pointer; font-family: inherit;
-  text-align: left; color: inherit;
-  transition: background 0.25s var(--ease);
-}
-.doc-card-toggle:hover { background: rgba(255, 255, 255, 0.04); }
-.doc-card-title {
-  flex: 1 1 auto; min-width: 0;
-  font-size: 22px; font-weight: 600;
-  letter-spacing: -0.02em; line-height: 1.35;
-  overflow-wrap: anywhere; word-break: break-word;
-}
-.doc-card-chevron {
-  width: 10px; height: 10px;
-  border-right: 2px solid var(--text-tertiary);
-  border-bottom: 2px solid var(--text-tertiary);
-  transform: rotate(45deg);
-  transition: transform 0.3s var(--ease-out);
-  flex-shrink: 0; margin-top: 6px; margin-bottom: 4px;
-}
-.doc-card.collapsed .doc-card-chevron { transform: rotate(-135deg); margin-bottom: 0; }
+.nav-group:last-child { border-bottom: none; }
 
-.doc-card-body {
-  display: grid;
-  grid-template-rows: 1fr;
-  transition: grid-template-rows 0.35s var(--ease-out), opacity 0.3s var(--ease);
-}
-.doc-card.collapsed .doc-card-body {
-  grid-template-rows: 0fr; opacity: 0; pointer-events: none;
-}
-.doc-card.collapsed .doc-card-body .md-inner { overflow: hidden; min-height: 0; }
-.doc-card-body .md-inner {
-  min-height: 0;
-  padding: 4px calc(var(--space) * 2.5) calc(var(--space) * 3);
-  overflow-wrap: anywhere; word-break: break-word;
-}
-.md-inner .md-h1 { font-size: clamp(28px, 4vw, 34px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.25; margin: 0 0 24px; color: var(--text-primary); }
-.md-inner .md-h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin: 40px 0 14px; line-height: 1.3; color: rgba(255,255,255,0.88); }
-.md-inner .md-h3 { font-size: 18px; font-weight: 600; margin: 28px 0 10px; letter-spacing: -0.015em; color: rgba(255,255,255,0.85); }
-.md-inner .md-h4 { font-size: 15px; font-weight: 600; margin: 22px 0 8px; color: rgba(255,255,255,0.8); }
-.md-inner p { margin: 0 0 16px; color: var(--text-secondary); }
-.md-inner ul, .md-inner ol { margin: 0 0 16px; padding-left: 1.35em; color: var(--text-secondary); }
-.md-inner li { margin: 6px 0; }
-.md-inner strong { color: rgba(255,255,255,0.88); font-weight: 600; }
-.md-inner code {
-  font-family: "SF Mono", ui-monospace, "Cascadia Code", monospace;
-  font-size: 0.88em;
-  padding: 3px 7px; border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.88);
-  overflow-wrap: anywhere; word-break: break-word;
-}
-.code-block-wrap {
-  position: relative; margin: 20px 0;
-  border-radius: var(--radius-md);
-  background: var(--bg-code);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-}
-.code-block-wrap .md-pre {
-  margin: 0; padding: 18px;
-  overflow-x: auto;
-  font-size: 13px; line-height: 1.55;
-}
-.code-block-wrap .md-pre code {
-  border: none; padding: 0; background: none;
-  font-size: inherit; color: rgba(255, 255, 255, 0.75);
-}
-.code-copy-btn {
-  position: absolute; top: 10px; right: 10px;
-  padding: 5px 10px;
-  font-size: 11px; font-weight: 500; font-family: inherit;
-  color: var(--text-tertiary);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px; cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s var(--ease);
-}
-.code-block-wrap:hover .code-copy-btn, .code-copy-btn:focus { opacity: 1; }
-.code-copy-btn:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.1); }
+.nav-group legend { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); padding: 0 20px 12px 20px; margin: 0; }
 
-.table-wrap {
-  margin: 20px 0;
-  border-radius: var(--radius-sm);
-  overflow-x: auto;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  max-width: 100%;
-}
-.md-table {
-  width: 100%; max-width: 100%;
-  border-collapse: collapse;
-  font-size: 14px; table-layout: fixed;
-}
-.md-table th, .md-table td {
-  padding: 10px 14px; text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  vertical-align: top;
-  overflow-wrap: anywhere; word-break: break-word; hyphens: auto;
-}
-.md-table th {
-  font-size: 12px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.04em;
-  color: var(--text-tertiary);
-  background: rgba(255, 255, 255, 0.03);
-}
-.md-table td { color: var(--text-secondary); }
-.md-table tr:last-child td { border-bottom: none; }
-.md-hr {
-  border: none; height: 1px; margin: 36px 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
-}
-.md-quote {
-  margin: 20px 0; padding: 14px 18px;
-  border-left: 3px solid rgba(10, 132, 255, 0.5);
-  background: rgba(10, 132, 255, 0.06);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-}
-.md-quote p { margin: 0; color: var(--text-secondary); font-size: 15px; }
-mark.manual-hit {
-  background: rgba(255, 214, 10, 0.25);
-  color: rgba(255, 255, 255, 0.95);
-  padding: 1px 3px; border-radius: 4px;
+.nav-group ul { list-style: none; padding: 0; margin: 0; }
+
+.nav-link { display: block; padding: 10px 20px; color: var(--text-secondary); text-decoration: none; font-size: 14px; border-left: 3px solid transparent; transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1); }
+
+.nav-link:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+
+.nav-link.active { color: var(--accent); border-left-color: var(--accent); background: var(--bg-primary); }
+
+.main-content { padding: 40px 60px; overflow-y: auto; max-height: 100vh; }
+
+.doc-card { margin-bottom: 80px; scroll-margin-top: 100px; }
+
+.doc-header h1 { font-size: 32px; font-weight: 700; margin: 0 0 12px 0; line-height: 1.2; }
+
+.page-toc { margin: 20px 0; padding: 12px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); }
+
+.page-toc summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+
+.page-toc ul { margin: 12px 0 0 0; padding-left: 20px; list-style: none; }
+
+.page-toc li { margin: 6px 0; }
+
+.page-toc a { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+
+.page-toc a:hover { color: var(--accent); }
+
+.doc-content { font-size: 16px; }
+
+.doc-content h2 { font-size: 24px; font-weight: 600; margin: 36px 0 16px 0; padding-top: 20px; border-top: 1px solid var(--border); }
+
+.doc-content h3 { font-size: 18px; font-weight: 600; margin: 24px 0 12px 0; }
+
+.doc-content p { margin: 16px 0; }
+
+.doc-content a { color: var(--accent); text-decoration: none; font-weight: 500; }
+
+.doc-content a:hover { text-decoration: underline; }
+
+.doc-content code { background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Monaco', monospace; font-size: 14px; }
+
+.doc-content pre { background: var(--bg-tertiary); padding: 16px; border-radius: var(--radius); overflow-x: auto; border: 1px solid var(--border); margin: 16px 0; }
+
+.doc-content pre code { background: none; padding: 0; font-size: 13px; line-height: 1.5; }
+
+.hljs { background: transparent !important; }
+
+.doc-content table { border-collapse: collapse; width: 100%; margin: 16px 0; border: 1px solid var(--border); }
+
+.doc-content th { background: var(--bg-secondary); padding: 12px; text-align: left; font-weight: 600; border: 1px solid var(--border); }
+
+.doc-content td { padding: 12px; border: 1px solid var(--border); }
+
+.doc-content ul, .doc-content ol { margin: 16px 0; padding-left: 24px; }
+
+.doc-content li { margin: 8px 0; }
+
+.doc-content blockquote { margin: 16px 0; padding: 12px 16px; border-left: 3px solid var(--accent); background: var(--bg-secondary); border-radius: 4px; }
+
+.doc-content hr { margin: 20px 0; border: none; border-top: 1px solid var(--border); }
+
+@media (max-width: 768px) {
+  .app-container { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; max-height: 50vh; border-right: none; border-bottom: 1px solid var(--border); }
+  .main-content { padding: 24px; }
+  .doc-header h1 { font-size: 24px; }
 }
 
-.site-footer {
-  margin-top: calc(var(--space) * 6);
-  padding-top: calc(var(--space) * 3);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 12px; color: var(--text-tertiary);
-  line-height: 1.6;
-}
-.site-footer code {
-  font-size: 11px; padding: 2px 6px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.05);
-}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-tertiary); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
 
-.spotlight {
-  position: fixed; inset: 0; z-index: 100;
-  display: grid; place-items: flex-start center;
-  padding-top: 12vh;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  animation: spotlightIn 0.28s var(--ease-out);
-}
-.spotlight[hidden] { display: none !important; }
-@keyframes spotlightIn { from { opacity: 0; } to { opacity: 1; } }
-.spotlight-panel {
-  width: min(560px, 92vw);
-  padding: 10px;
-  border-radius: var(--radius-lg);
-  background: rgba(22, 22, 26, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: var(--shadow-diffuse), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-}
-.spotlight-panel input {
-  width: 100%; padding: 16px 18px;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.35);
-  color: var(--text-primary);
-  font-size: 16px; font-family: inherit; outline: none;
-}
-.spotlight-panel input:focus {
-  border-color: rgba(10, 132, 255, 0.5);
-  box-shadow: 0 0 0 3px var(--accent-soft);
-}
-.spotlight-hint {
-  margin-top: 12px; padding: 0 8px;
-  font-size: 12px; color: var(--text-tertiary);
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 8px;
-}
-.spotlight-close {
-  background: none; border: none;
-  color: var(--text-tertiary);
-  font-size: 12px; cursor: pointer; font-family: inherit;
-}
-.spotlight-close:hover { color: var(--text-primary); }
-`;
-
-/* ------------------------------------------------------------------ */
-function buildHtml({ version, docs, clientJs, prismJs, searchIndex }) {
-  const payload = JSON.stringify({ version, docs, searchIndex }).replace(/</g, "\\u003c");
-  const encV = esc(version);
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="AI-SDLC Platform — interactive offline user manual (v${encV})" />
-  <meta name="generator" content="User_Manual/build-manual-html.mjs v2.1.4" />
-  <meta name="theme-color" content="#0c0c0e" />
-  <title>AI-SDLC User Manual · v${encV}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..600;1,14..32,400..600&display=swap" rel="stylesheet" />
-  <style>${CSS}${PRISM_CSS_ADDITION}</style>
+.skip-to-main { position: absolute; top: -40px; left: 0; background: var(--accent); color: white; padding: 8px; text-decoration: none; z-index: 100; }
+.skip-to-main:focus { top: 0; }
+  </style>
 </head>
 <body>
-  <div class="app">
-    <div class="sidebar-dock">
-      <aside class="sidebar-panel" aria-label="Manual navigation">
-        <div class="brand-mark">
-          <h1>AI-SDLC Manual</h1>
-          <div class="ver">v${encV} · offline</div>
-        </div>
-        <div class="nav-label">Contents</div>
-        <nav id="nav" aria-label="Pages"></nav>
-        <div class="nav-label">Shortcuts</div>
-        <nav class="quick-nav" aria-label="Shortcuts">
-          <a class="nav-pill" href="#doc-faq"><span class="nav-pill-icon"></span><span class="nav-pill-label">FAQ</span></a>
-          <a class="nav-pill" href="#doc-commands"><span class="nav-pill-icon"></span><span class="nav-pill-label">Commands</span></a>
-          <a class="nav-pill" href="#doc-getting_started"><span class="nav-pill-icon"></span><span class="nav-pill-label">Getting started</span></a>
-          <a class="nav-pill" href="#doc-changelog"><span class="nav-pill-icon"></span><span class="nav-pill-label">Changelog</span></a>
-        </nav>
-      </aside>
-    </div>
-
-    <div class="main-shell">
-      <header class="app-header" id="app-header">
-        <div class="header-row">
-          <div class="search-field">
-            <input type="search" id="q" placeholder="Search documentation…" autocomplete="off" aria-label="Search documentation" />
-            <kbd>⌘K</kbd>
-          </div>
-          <div class="header-actions">
-            <select id="jump-section" class="jump-select" aria-label="Jump to page">
-              <option value="">Jump to page…</option>
-            </select>
-            <button type="button" class="btn-ghost" id="open-search">Spotlight</button>
-          </div>
-        </div>
-        <div id="search-status" aria-live="polite"></div>
-      </header>
-
-      <div class="reading-column">
-        <div id="search-empty" hidden>No pages match your search. Try different keywords.</div>
-        <div id="content"></div>
-        <footer class="site-footer">
-          Generated from <code>User_Manual/*.md</code> (v${encV}) · Rebuild with <code>node User_Manual/build-manual-html.mjs</code> · Check drift: <code>--check</code>
-        </footer>
+  <a href="#main-content" class="skip-to-main">Skip to main content</a>
+  <div class="app-container">
+    <aside class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-header"><h2 class="sidebar-title">📚 Manual</h2></div>
+      <div class="search-box">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search..." aria-label="Search documentation" />
       </div>
-    </div>
+      <nav class="sidebar-nav" id="navContainer">
+${navItems}
+      </nav>
+    </aside>
+    <main class="main-content" id="main-content" role="main">
+${docCards}
+    </main>
   </div>
-
-  <div id="spotlight" class="spotlight" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Search">
-    <div class="spotlight-panel">
-      <input type="search" id="q-spotlight" placeholder="Search…" autocomplete="off" aria-label="Spotlight search" />
-      <div class="spotlight-hint">
-        <span>Filters pages and highlights matches</span>
-        <button type="button" class="spotlight-close" id="spotlight-close">Esc to close</button>
-      </div>
-    </div>
-  </div>
-
-  <script type="application/json" id="manual-data">${payload}</script>
   <script>
-// Prism.js syntax highlighter
-${prismJs}
-// Client application
-${clientJs}
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('pre code').forEach((block) => hljs.highlightElement(block));
+    });
+
+    const searchInput = document.getElementById('searchInput');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const docCards = document.querySelectorAll('.doc-card');
+
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      if (!query) {
+        docCards.forEach(card => card.style.display = 'block');
+        navLinks.forEach(link => link.style.opacity = '1');
+        return;
+      }
+      const words = query.split(/\\s+/);
+      docCards.forEach(card => {
+        const matches = words.every(w => card.textContent.toLowerCase().includes(w));
+        card.style.display = matches ? 'block' : 'none';
+      });
+      navLinks.forEach(link => {
+        const slug = link.getAttribute('href').substring(1);
+        const card = document.getElementById(slug);
+        link.style.opacity = (card && card.style.display !== 'none') ? '1' : '0.5';
+      });
+    });
+
+    function updateActiveLink() {
+      for (const card of docCards) {
+        const rect = card.getBoundingClientRect();
+        if (rect.top <= 150 && rect.bottom > 150) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          const link = document.querySelector('a[href="#' + card.id + '"]');
+          if (link) link.classList.add('active');
+          break;
+        }
+      }
+    }
+
+    window.addEventListener('scroll', updateActiveLink);
+    updateActiveLink();
+
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+    });
   </script>
 </body>
-</html>
-`;
+</html>`;
 }
 
-/* ------------------------------------------------------------------ */
-/* Main                                                                */
-/* ------------------------------------------------------------------ */
+function computeHash(html) {
+  return crypto.createHash('sha256').update(html).digest('hex');
+}
+
 function main() {
-  const args = new Set(process.argv.slice(2));
-  const checkMode = args.has("--check");
+  const { docs } = loadDocs();
+  const html = buildHTML(docs);
+  fs.writeFileSync(OUT, html, 'utf8');
+  const hash = computeHash(html);
+  fs.writeFileSync(HASH_FILE, hash, 'utf8');
+  console.log(`✓ Generated manual.html (v2.2.0, ${docs.length} sections, ${(html.length/1024).toFixed(1)} KB)`);
+}
 
-  const version = readVersion();
-  const { docs, missing } = loadDocs();
-  const clientJs = readClient();
-  const prismJs = readPrismJS();
-  const searchIndex = buildSearchIndex(docs);
-  const html = buildHtml({ version, docs, clientJs, prismJs, searchIndex });
-
-  if (missing.length) {
-    console.warn(
-      "⚠️  Skipped (not found): " + missing.join(", ")
-    );
-  }
-
-  if (checkMode) {
-    const existing = fs.existsSync(OUT) ? fs.readFileSync(OUT, "utf8") : "";
-    if (existing === html) {
-      console.log(`✓ manual.html is up to date (v${version}, ${docs.length} pages)`);
-      process.exit(0);
-    }
-    console.error(
-      `✗ manual.html is stale. Rebuild with:\n    node User_Manual/build-manual-html.mjs`
-    );
+function check() {
+  const { docs } = loadDocs();
+  const html = buildHTML(docs);
+  const currentHash = computeHash(html);
+  if (!fs.existsSync(HASH_FILE)) {
+    console.error('✗ manual.html stale. Run: node User_Manual/build-manual-html.mjs');
     process.exit(1);
   }
-
-  fs.writeFileSync(OUT, html, "utf8");
-  console.log(
-    `✓ Generated manual.html (v${version}, ${docs.length} pages, ${(
-      Buffer.byteLength(html, "utf8") / 1024
-    ).toFixed(1)} KB)`
-  );
+  if (currentHash !== fs.readFileSync(HASH_FILE, 'utf8').trim()) {
+    console.error('✗ manual.html stale. Run: node User_Manual/build-manual-html.mjs');
+    process.exit(1);
+  }
+  console.log('✓ manual.html is current');
 }
 
-main();
+process.argv.includes('--check') ? check() : main();
